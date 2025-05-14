@@ -30,7 +30,10 @@ This newsletter is personally curated for my customers to provide updates on **n
 - **Use Markdown formatting consistently**:
   - **Bold** important details (product names, headlines, dates).
   - Use **bullet points** (`*` or `-`) for lists of features, resources, or events for easy readability.
-  - **Embed links within text** for a clean layout (e.g., `[Link Text](URL)`). Avoid raw URLs.
+  - **Embed links within text** for a clean layout, using either style:
+    - **Bracket style**: `[[Descriptive Link Text]](URL)` at the end of a bullet point
+    - **Inline style**: `[link text](URL)` embedded directly within the text for grouped minor updates
+  - Avoid raw URLs.
 
 ---
 
@@ -39,15 +42,34 @@ This newsletter is personally curated for my customers to provide updates on **n
 ### 1. Copilot Updates
 This section is critical and should almost always be present.
 - **Feature Release Type**: Clearly label features as `(GA)` for Generally Available or `(PREVIEW)` for all other pre-release stages (Beta, Experimental, Private Preview, etc.). If the release type is unclear, do not associate one.
+- **Feature Hierarchy**:
+  - When a feature has both `GA` and `PREVIEW` components, **always include both**, with GA mentioned first
+  - Never drop GA information when including a related Preview update
+  - Example: `**Copilot Code Review Language Expansion** – Copilot Code Review is now generally available for C, C++, Kotlin, and Swift (`GA`), while support for remaining programming languages is available in public preview (`PREVIEW`). - [[GA Announcement]](URL) [[Preview Announcement]](URL)`
+- **IDE Feature Updates**:
+  - Follow the standard IDE update pattern in announcements: features generally start in VS Code (usually in Preview), then move to Visual Studio and JetBrains, followed by other IDEs (Eclipse, Xcode)
+  - Highlight the most impactful IDE update in a dedicated bullet with complete details
+  - Group minor IDE updates in a single "Other IDE Updates" bullet with inline links
+  - Include this explanatory format when introducing major IDE parity updates:
+    ```markdown
+    -   **Improved IDE Feature Parity** 
+        - **Visual Studio 17.14 Major Update** – Agent mode, Model Context Protocol (MCP) support, and Next Edit Suggestions now available in Visual Studio. - [[Announcement]](URL)
+        - **Other IDE Updates** – JetBrains adds [multi-file editing capabilities](URL), Eclipse now has full [Copilot Chat with model picker](URL), and Xcode gains [`@workspace` context support](URL)
+    ```
 - **Sub-sections (always include, with rare exceptions):**
-    -   **Latest Releases**: New Copilot features, functionalities, and significant updates.
-    -   **New Resources**: Links to new documentation, blog posts, learning paths, public repos, or tools related to Copilot.
-    -   **Copilot at Scale**: Content focused on enterprise adoption, metrics, measuring impact, training strategies, and best practices for large organizations. This section will usually contain training and metrics content. It should also include the standard changelog links (see below).
+  - **Latest Releases**: New Copilot features, functionalities, and significant updates.
+  - **Copilot at Scale**: Content focused on enterprise adoption, metrics, measuring impact, training strategies, and best practices for large organizations. This section will usually contain training and metrics content. It should also include the standard changelog links (see below).
+- **Section Grouping**:
+  - Create a dedicated subsection when a significant update requires multiple related bullet points (e.g., "Premium Model Quotas Delayed to June 4")
+  - Group thematically related updates under descriptive headers
+  - Use standard bullets for standalone updates
 - Additional Copilot-related sub-sections can be added if relevant for a particular month. Note: Additional thematic sub-sections (e.g., 'Premium Model Usage Controls') can be created within 'Copilot Updates' if the month's news contains a distinct, significant topic that warrants its own heading. Raw notes should ideally indicate such a grouping.
-- **Content Format for Announcements (Latest Releases, New Resources, etc.):**
-    Use a format similar to:
-    `*   **[Product Name/Feature Headline] (`(GA)` or `(PREVIEW)`)** – {{One or two sentences describing the release, tailored for leadership/DevOps admin audience, but also noting developer impact if applicable. If the announcement covers multiple distinct sub-features, consider using nested bullet points under the main description for clarity.}} - [[Descriptive Link Text 1]](URL1) [[Descriptive Link Text 2]](URL2)`
-    *Note on Link Text:* Link text should be descriptive of the link's destination (e.g., 'View the docs', 'Get the Plugin', 'Read the announcement').
+- **Content Format for Announcements**:
+  Use a format similar to:
+  ```markdown
+  -   **[Product Name/Feature Headline] (`GA`)** – {{One or two sentences describing the release, tailored for leadership/DevOps admin audience.}} - [[Descriptive Link Text 1]](URL1) [[Descriptive Link Text 2]](URL2)
+  ```
+  *Note on Link Text:* Link text should be descriptive of the link's destination (e.g., 'View the docs', 'Get the Plugin', 'Read the announcement').
     *Example 1 (Feature focused):*
     `*   **Agent Mode (`(GA)`)** – Copilot Agent Mode is now generally available, enabling developers to trigger multi-step tasks autonomously such as debugging and running tests. - [[Enable Agent mode in VS Code]](https://code.visualstudio.com/updates/v1_99#_agent-mode-is-available-in-vs-code-stable) [[Announcement]](https://github.blog/news-insights/product-news/github-copilot-agent-mode-activated/)`
     *Example 2 (Resource focused):*
@@ -60,33 +82,90 @@ This section is critical and should almost always be present.
     - [Visual Studio Copilot Changelog](https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-notes#github-copilot)
     - [JetBrains Copilot Changelog](https://plugins.jetbrains.com/plugin/17718-github-copilot/versions/stable)
     - [XCode Copilot Changelog](https://github.com/github/CopilotForXcode/blob/main/ReleaseNotes.md)
+    - [Eclipse Copilot Changelog](https://marketplace.eclipse.org/content/github-copilot#details)
     ```
 
 ### 2. Webinars, Events, and Recordings
 A curated list of relevant upcoming engagements and links to recordings of past events if available.
 - **Standard Content (include if relevant for the month):**
     `Also, watch the [Copilot Fridays back catalog](https://resources.github.com/copilot-fridays-english-on-demand/): Prompt Fundamentals, Copilot for MLOps/Data Science, Copilot for Infrastructure Engineers, GitHub Enterprise Managed Users for Copilot Users`
-- **Format for Upcoming Events:**
-    ```markdown
-    ### Upcoming Virtual Events
-    *   **[Month Day]** – [[Event Title/Series Name]]([Link to registration/details])
-    *   **[Month Day]** – [[Event Title/Series Name]]([Link to registration/details])
+- **Format for Conference Events**:
+  For major conferences like Microsoft Build or GitHub Galaxy, use tables with columns for Date, Time, Session, Description, and optionally Speakers:
+  ```markdown
+  #### Keynotes
+  | Date | Time (PDT) | Session | Speakers | Description |
+  |------|------------|---------|----------|-------------|
+  | May 19 | 9:05 AM - 10:30 AM | [**Session Title**](URL) | Speaker Names | Brief description |
 
-    ### Upcoming In-person Events
-    *   [City, ST] - **[Month Day]** - [[Event Name]]([Link to event page])
-    *   [City, ST] - **[Month Day]** - [[Event Name]]([Link to event page])
-    ```
-    *Example based on provided structure:*
-    ```markdown
-    ### Upcoming Virtual Events
-    Also, watch the [Copilot Fridays back catalog](https://resources.github.com/copilot-fridays-english-on-demand/): Prompt Fundamentals, Copilot for MLOps/Data Science, Copilot for Infrastructure Engineers, GitHub Enterprise Managed Users for Copilot Users
-    *   **Apr 15** - [[Copilot Metrics API Roadmap Webinar]](https://github.registration.goldcast.io/webinar/162b1da3-f526-4479-9f0f-4346fa29376f)
-    *   **Apr 17** – Copilot Fridays: [[Level up your Prompting]](https://github.registration.goldcast.io/series/ff0939de-f20a-4395-80ff-4bc606e356fd)
+  #### Topic Sessions
+  | Date | Time (PDT) | Session | Description |
+  |------|------------|---------|----------|
+  | May 19 | 11:45 AM - 12:45 PM | [**Session Title**](URL) | Brief description |
+  ```
 
-    ### Upcoming In-person Events
-    *   Las Vegas, NV - **Apr 9** - [[Google Next]](https://resources.github.com/events/github-at-google-cloud-next-apr2025/)
-    *   Seattle, WA - **May 19** - [[Microsoft Build]](https://build.microsoft.com/en-US/home)
-    ```
+- **Format for Virtual Events**:
+  For all virtual events, strictly use the following table format with focused category labels:
+  ```markdown
+  | Date | Event | Categories |
+  |------|-------|-----------|
+  | May 22 | [Event Title](URL) | Copilot for Security, Beginner |
+  ```
+  
+  For the Categories column:
+  - Generally use 1-3 specific, confident category labels per event
+  - For skill level, use only "Introductory" or "Advanced" when clearly applicable; omit skill level if neither applies
+  - Be conservative in labeling - only use categories you can confidently determine from the event title or description
+  - Use specific GitHub-related terms, abbreviations, and product names rather than generic concepts
+  - Categories should be drawn from the following (though not limited to):
+    - Copilot (or Copilot for [Specific Role] if clearly indicated)
+    - Copilot Roadmap (for forward-looking Copilot features/releases)
+    - GHAS or GitHub Advanced Security
+    - Dependabot
+    - Actions
+    - ADO (Azure DevOps)
+    - GHE (GitHub Enterprise)
+    - Platform (for enterprise infrastructure topics)
+    - Enterprise Administration
+    - DevOps Integration
+    - Supply Chain Security
+    - Security (when security is a focus but not specifically GHAS)
+    - Product Roadmap
+    - Compliance
+    - Developer Productivity
+  
+  When considering categories (though this information is for Copilot's guidance only and won't appear in the table), keep in mind the target audience:
+  - Platform Engineers
+  - DevSecOps Teams
+  - Engineering Managers
+  - Developers
+  - DevOps Engineers
+  - Security Teams
+  - IT Leadership
+  - Enterprise Administrators
+
+- **Format for In-person Events**:
+  For in-person events, use bullet points with location:
+  ```markdown
+  * City, State - **Month Day** - [Event Name](URL)
+    Brief description (1 sentence, optional)
+  ```
+
+### 3. Dylan's Corner (Mandatory)
+A specialized section written from Dylan's perspective with a "Did You Know?" format that focuses on specialized Copilot features, legal/compliance aspects, or unique use cases that customers may not be aware of. This section should:
+- Use a conversational tone that's different from the rest of the newsletter
+- Focus on one specific topic per newsletter
+- Include links to relevant documentation
+- Typically follow this format:
+  ```markdown
+  # Dylan's Corner
+
+  ### Did You Know?
+  {{A paragraph or two about a specialized Copilot feature, legal/compliance aspect, or unique use case}}
+
+  {{Optional second paragraph with more details, examples, or benefits}}
+
+  📚 Learn more: [Link Description 1](URL) | [Link Description 2](URL)
+  ```
 
 ### Other Potential Sections (Flexible based on monthly content):
 - Security Updates
@@ -101,14 +180,24 @@ A curated list of relevant upcoming engagements and links to recordings of past 
 ## Content Selection Criteria
 When deciding what to include:
 1.  **Prioritize recency**: Focus on updates from the past month.
-2.  **Relevance to Audience**:
-    -   **Administration, governance, and management features**.
-    -   **Metrics and tools that measure product impact**.
-    -   **Security, compliance, and risk management**.
+2.  **Feature Type Priority**:
+    -   **GA features** over preview features when both exist
+    -   **IDE feature parity updates** following this pattern: VS Code → Visual Studio → JetBrains → other IDEs (Eclipse, Xcode)
+    -   **Administration, governance, and management features**
+    -   **Metrics and tools that measure product impact**
+    -   **Security, compliance, and risk management**
+    -   Then Codebases/Packages/Actions/GHAS features as applicable
+3.  **Relevance to Audience**:
     -   Features that appeal to Engineering Managers, DevOps Leads, IT Leadership, and Developers in large, regulated industries.
-3.  **Feature Maturity**:
+    -   **Note**: Enterprise customers cannot use Copilot Free/Individual/Pro/Pro+, so avoid mentioning these plans
+4.  **Feature Maturity**:
     -   Prioritize `(GA)` features.
     -   Include `(PREVIEW)` features (which encompasses Beta, Experimental, etc.) if they are impactful and relevant, ensuring they are clearly labeled. The goal is to capture customer attention with exciting developments while managing expectations about feature maturity.
+5.  **Information Density**:
+    -   Emphasize major updates with detailed bullets
+    -   Group minor related updates with inline links for conciseness
+    -   Create dedicated subsections only for significant topics that require multiple bullets
+    -   Balance detail with brevity to maintain readability
 
 Each newsletter should balance:
 - **New launches** (product updates, roadmap highlights).
@@ -121,9 +210,9 @@ Each newsletter should balance:
 ## Tone & Style
 - **Professional but conversational**: Write clearly but with a natural, engaging tone.
 - **Maintain a consistent style** across all issues.
-- **Personalized for my audience**: Reinforce that the newsletter is specifically curated for them.
+- **Personalized for my audience**: Reinforce that the newsletter is specifically curated for large enterprise customers in regulated industries.
 - **Strictly avoid em dashes (—)**. Use commas, parentheses, or rephrase the sentence.
-- Avoid phrases that strongly signal AI generation (e.g., "Certainly!", "I can help with that!", "Here is the...").
+- **Use consistent GitHub terminology**: Refer to the `/Reference/GitHub_Common_Jargon.md` file for standard GitHub terminology, product names, and industry-specific language to ensure consistency and authenticity. This helps ground the newsletter in GitHub's ecosystem and makes it resonate with both technical and leadership audiences.
 
 ---
 
