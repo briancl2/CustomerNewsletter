@@ -1,0 +1,37 @@
+curator:
+  name: "Brian"
+  voice: "professional but conversational"
+
+audience:
+  primary_roles:
+    - "Engineering Managers"
+    - "DevOps Leads"
+    - "IT Leadership"
+  secondary_roles:
+    - "Developers"
+  industries:
+    - "Healthcare"
+    - "Manufacturing"
+    - "Financial Services"
+
+time:
+  timezone: "America/Chicago"
+
+publishing:
+  archive_url: "https://github.com/briancl2/CustomerNewsletter/discussions"
+
+links:
+  youtube_playlists:
+    - label: "Copilot Tips and Training Video"
+      url: "https://www.youtube.com/playlist?list=PLCiDM8_DsPQ1WJ5Ss3e0Lsw8EaijUL_6D"
+    - label: "GitHub Enterprise, Actions, and GHAS videos"
+      url: "https://www.youtube.com/playlist?list=PLCiDM8_DsPQ3wk4atKpN-yOW1FtyxN48W"
+    - label: "How GitHub GitHubs videos"
+      url: "https://www.youtube.com/playlist?list=PLCiDM8_DsPQ1nWhqxi-UQF_O-gYWo5jpG"
+  copilot_fridays_catalog_url: "https://resources.github.com/copilot-fridays-english-on-demand/"
+
+sections:
+  optional:
+    personal_corner:
+      enabled: false
+      title: "Curator's Corner"

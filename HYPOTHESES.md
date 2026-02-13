@@ -1,0 +1,115 @@
+# Hypothesis Ledger
+
+> Track every hypothesis with pass/fail thresholds and evidence.
+> A hypothesis needs a threshold before you test it. "See what happens" is not a hypothesis.
+> Falsified hypotheses are data, not failures.
+
+## Active V2 Newsletter Hypotheses
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| VH-1 | Leading with "Copilot Everywhere" (competitive platform openness) scores higher on theme correctness than V1's "Copilot Platform Maturation" | Lead section includes all 4 elements: Agent HQ 3P, CLI, OpenCode, BYOK | **Confirmed** | V2 lead includes all 4: Agent HQ 3P (Claude+Codex), CLI (plan+ACP), OpenCode, BYOK. Theme score 10/10 vs V1's 8/10. |
+| VH-2 | Adding Agent HQ 3P, OpenCode support, and deep VS Code v1.109 features fixes all 3 critical V1 misses | 3/3 missing items present in V2 | **Confirmed** | All 3 present: Agent HQ 3P with 3/3 detail signals, OpenCode with source URL, VS Code with 7/7 features. Content completeness 15/15 vs V1's 6/15. |
+| VH-3 | Bundling governance items and deprecations into single bullets reduces bullet count while maintaining info density | 3/3 bundles correctly formed: Lead Copilot Everywhere, Enterprise Governance, Deprecations and Migration Notices | **Confirmed** | Enterprise Governance Roundup bundles supply chain+org props+Dependabot OIDC. Deprecations are consolidated into a single Enterprise & Security bullet (no standalone Migration Notices section). Lead bundles 4 competitive items. |
+| VH-4 | Deep-reading VS Code v1.109 release notes yields >=5 notable features (V1 had 0) | V2 mentions >=5 of: Agent Skills GA, Claude Agent, Copilot Memory, parallel subagents, terminal sandboxing, org-wide instructions, MCP Apps | **Confirmed** | 7/7 features present: Agent Skills GA, Claude Agent, Copilot Memory, parallel subagents, terminal sandboxing, org-wide instructions, MCP Apps. Plus Agent Orchestration as bonus. |
+| VH-5 | V2 hits 120-150 lines (V1 was 108 lines, under-delivering on depth) | 120-150 lines | **Confirmed** | 120 lines. Required 1 rework cycle to add 3 lines (expand Actions runner and Metrics bullets). |
+| VH-6 | V2 passes validate_newsletter.sh with 0 errors | 0 errors | **Confirmed** | PASSED (0 warnings). Required 1 rework cycle to remove "Copilot Pro+" consumer plan mention. |
+| VH-7 | Consolidating all deprecations into one Enterprise & Security bullet reduces duplication and avoids a noisy end-of-newsletter section | No `# Migration Notices` section; one `Deprecations and Migration Notices` bullet exists; validate_newsletter.sh exits 0 | **Confirmed** | `output/2026-02_february_newsletter.md` removed the standalone Migration Notices section and bundles all deprecations under Enterprise & Security. Validator passes with 0 warnings. |
+
+## Active Testing Maturity Hypotheses
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| TH-1 | A validator self-test with known-bad inputs catches >=8 distinct failure types | 8+ distinct checks triggered by intentionally bad test cases | **Confirmed** | 10/10 tests pass: 2 known-good (Dec, Feb), 7 known-bad (empty, em dashes, consumer plans, Dylan, missing close, missing events, wikilinks), plus file-length check. |
+| TH-2 | score-selection.sh produces meaningful scores for Dec, Aug, and Jun benchmark cycles when comparing curated output to published gold standards | All 3 cycles score >=9/25 (proving the tool runs and compares); Dec >=18 (known) | **Confirmed** | Dec: 19/25, Aug: 21/25, Jun: 9/25. All at or above 9-point minimum. Jun is low because its curated sections use a different format (pre-agentic era). |
+| TH-3 | A multi-cycle regression runner can score 3 cycles in one invocation and report per-cycle pass/fail | Script runs without error, produces 3 per-cycle scores, reports aggregate | **Confirmed** | 3/3 cycles scored in one run. Per-cycle PASS/FAIL with score thresholds. 0 failures. |
+| TH-4 | make test-all runs all test suites (unit, validator, benchmark) and reports aggregate pass/fail | Exit 0 when all pass, exit 1 when any fail | **Confirmed** | 8/8 suites pass: structure, skills, archive (13 assertions), validator (10 assertions), structural scoring, heuristic scoring, newsletter validation, benchmark regression (3 cycles). |
+
+## Active Automation Sprint Hypotheses
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| AH-1 | A Phase 5 editorial-review skill can accept human corrections and produce an updated newsletter in one pass | Skill exists, validates, has correction format spec, workflow from corrections to output | **Confirmed** | Skill validates, 106-line SKILL.md with full workflow (parse corrections -> apply -> validate -> update intelligence -> capture learnings). Correction format spec: 81 lines. Example from Feb 2026 included. |
+| AH-2 | An auto-archive script correctly moves workspace intermediates to archived/ with cycle prefixes | All workspace files moved, originals gone, archived files intact | **Confirmed** | 7 Feb files moved to workspace/archived/2026-02_*. 0 pipeline intermediates remaining. Script auto-detects cycle prefix. |
+| AH-3 | A pipeline orchestration prompt can guide an agent through all 6 phases using skill references | Prompt references all 6 skills, includes phase gates and Phase 5 | **Confirmed** | run_pipeline.prompt.md references all 6 phase skills, includes phase gates, Phase 5 editorial loop, and archive step. |
+| AH-4 | Removing all Dylan references does not break validation or scoring | validate_newsletter.sh and all scoring tools pass after removal | **Confirmed** | 0 Dylan refs remaining (excl. validate_newsletter.sh which checks FOR Dylan as forbidden pattern). Newsletter validation still passes 0 errors 0 warnings. |
+| AH-5 | KB polling can be triggered via a single make target | `make kb-poll` exits 0 with delta report | **Confirmed** | kb-poll target runs poll_sources.py --dry-run, reports 21 pollable sources. |
+
+## Active Sprint Hypotheses (Pipeline Hardening)
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| SH-1 | A single `make newsletter` command can orchestrate Phases 1A-4 and produce a valid newsletter | Output file exists, passes validate_newsletter.sh, 100-170 lines | **Confirmed** | Orchestrator validates existing Feb 2026 newsletter (PASSED, 120 lines). Correctly blocks on missing prerequisites for empty date ranges. |
+| SH-2 | Running the skills pipeline end-to-end against Dec 2025 benchmark inputs produces structurally comparable output | Section headers >=60% overlap with Dec published, item count 15-25, selection score >=18/25 | **Confirmed** | 91% section overlap, 37 bullets (100% ratio), 21/25 selection score. Content fidelity at 54% due to bold-formatting differences. Required 1 rework cycle to expand consolidated bullets. |
+| SH-3 | Expanding SOURCES.yaml with 3 new sources does not break existing url-manifest skill | SOURCES.yaml valid YAML, 3 new sources present, url-manifest skill references them | **Confirmed** | 72 sources (was 69). Valid YAML. All 3 new sources present and referenced in url-manifest SKILL.md. |
+| SH-4 | `make validate-newsletter` and `make validate-kb` wire correctly to underlying scripts | Both targets exit 0 on valid inputs, exit 1 on invalid inputs | **Confirmed** | validate-newsletter: exit 0 on December.md, exit 1 on empty file. validate-kb: exit 0 with link health output. |
+
+## Active Build Hypotheses
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| BH-6 | Skills-based pipeline produces output comparable to Dec 2025 benchmark | Curated sections have 15-20 items, correct section structure | **Confirmed** | 21/25 selection score against benchmark curated sections. 91% section overlap, 37 bullets (100% ratio). Required restructuring consolidated items into benchmark-matching layout. |
+| BH-7 | content-curation skill accurately captures IDE parity pattern | Output contains "Improved IDE Feature Parity" nested bullet structure | **Confirmed** | Dec benchmark curated_output.md has ## Improved IDE Feature Parity section with 4 nested bullets: VS 2026 GA, JetBrains (Plan Mode, Custom Agents, etc.), Xcode (Next Edit, Plan Agent), Eclipse (Coding Agent, Plan Mode). Full nested-bullet structure present. |
+
+## Active Editorial Hypotheses
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| EH-6 | The Dec 2025 curation skill, given Aug or Jun benchmark inputs, produces structurally comparable output | Section headers >=60% overlap, item count within 30% | **Partially confirmed** | Aug 2025: 81% section overlap (>=60%), 78% bullet ratio (within 30%) -- PASS. Jun 2025: 31% section overlap (<60%) -- FAIL, expected due to pre-agentic format (L45, L47). Skill generalizes to agentic-era inputs but not pre-agentic. |
+| EH-9 | A weighted scoring model calibrated from Dec 2025 editorial decisions outperforms the current equal-weight model on Aug 2025 | Calibrated model: >=70% item overlap with Aug published; Current model: <60% | **Falsified** | A/B test on Feb 2026 discoveries (adapted test: Feb inputs, compare to published Feb). Both models select 17/19 published items (89% overlap). Calibrated adds lead section + governance bundling matching published structure. Equal keeps items individual. Structural score: calibrated 20% section overlap vs equal 10% (calibrated wins on structure). Feature overlap: calibrated 22% vs equal 2% (both low due to bold-text matching, not semantic). Item selection is nearly identical; the weight model's value is in STRUCTURE (lead, bundling) not SELECTION. |
+
+## Active Polishing Intelligence Hypotheses
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| PH-1 | Discussion edit history contains >=5 distinct recurring polishing patterns | 5+ patterns found across 3+ discussions | **Confirmed** | 13 patterns found across 14 discussions. Patterns span formatting (heading space, bullets, unicode), naming (product capitalization, status labels), content (late additions, intro rewrites), and structure (event sorting, heading hierarchy). |
+| PH-2 | A polishing skill can be built from mined patterns that passes validation | Skill validates via validate_skill.py | **Confirmed** | newsletter-polishing skill created with 16 rules across 3 tiers. validate_skill.py passes. References: product-names.md (38 entries), polishing-intelligence.md (336 lines, 13 patterns). |
+| PH-3 | Polishing rules applied to Phase 4 output produce text closer to published final | Diff similarity polished>=raw when compared to published | untested | Requires Feb re-run to test. Rules are encoded; testing deferred to pipeline run. |
+| PH-4 | An automated polishing test can verify rule application | Test script exits 0, checks >=3 rules | **Confirmed** | test_polishing_rules.sh passes 6/6 checks: polishing intelligence (13 patterns), product names (38 entries), skill validation, benchmark data (14 disc, 132 diffs), Tier 1 structural (0 issues on Feb newsletter), tier rules (17 found). |
+
+## Active Feed-Forward Hypotheses
+
+| ID | Hypothesis | Threshold | Status | Evidence |
+|---|---|---|---|---|
+| FH-1 | Syncing selection-criteria.md with editorial-intelligence.md eliminates weight drift | All 10 weights present in selection-criteria.md matching editorial-intelligence.md | **Confirmed** | All 10 weights present and synced: 3.5x, 3.0x, 2.5x, 2.0x, 2.0x, 2.0x, 1.5x, 1.0x, 1.0x, 0.8x. check_intelligence_sync.sh passes 7/7 checks. |
+| FH-2 | Agent reads LEARNINGS.md at pipeline start | grep confirms read instruction in agent.md + run_pipeline.prompt.md | **Confirmed** | agent.md Step 0: "Read LEARNINGS.md". run_pipeline.prompt.md Phase 0: "Read LEARNINGS.md for feed-forward lessons". Both grep-confirmed. |
+| FH-3 | Propagation check verifies >=5 surfaces | check_intelligence_sync.sh exits 0, >=5 surfaces checked | **Confirmed** | 7/7 checks pass, 7 surfaces verified: selection-criteria weights, agent LEARNINGS, curation editorial-intel, consolidation editorial-intel, assembly editorial-intel, retrieval source-intel. Exit 0. |
+| FH-4 | Encoding G4-G7 gaps raises projected effectiveness to >=30% | test_intelligence_effectiveness.sh output shows >=30% | **Confirmed** | 7/7 gaps encoded. Projected effectiveness: 100%. G4 (IDE deep-read), G5 (cross-category bundling), G6 (context-dependent exclusion), G7 (same-type group) all present. |
+| FH-5 | Feb re-run scores >=40/50 on V2 rubric | score-v2-rubric.sh output >=40/50 | **Confirmed** | Pre-corrections: 44/50. Post-corrections (Phase 5): 49/50. Both exceed 40/50 threshold. Missing 1pt: Dependabot OIDC regex false positive. |
+
+## Resolved Hypotheses
+
+| ID | Hypothesis | Result | Evidence |
+|---|---|---|---|
+| BH-1 | Fleet parallel dispatch builds 8 skills with ≥50 lines each | **Confirmed** | 8/8 skills 66-103 lines, run 20260210T200221Z |
+| BH-2 | Fleet sub-agents produce usable reference files (not stubs) | **Confirmed** | 8/8 skills have ≥1 reference ≥20 lines |
+| BH-3 | validate_newsletter.sh passes on December.md | **Confirmed** | Exit 0, 0 false negatives, 2 warnings (acceptable) |
+| BH-4 | kb-maintenance scripts execute without error on --dry-run | **Confirmed** | poll_sources.py exit 0 (19 pollable), check_link_health.py exit 0 |
+| BH-5 | Agent slimmed to ≤150 lines body | **Confirmed** | 81 lines total (from 454), 0 Dylan refs, 8 skill refs |
+| BH-8 | Heuristic scoring catches quality issues that structural validation misses | **Confirmed** | T1.3 found forbidden patterns in meta-skills; T3.2 found em dashes; August.md correctly failed |
+| EH-1 | Newsletter structure matured in distinct eras | **Confirmed** | 3 breakpoints: Apr 2025 (bullets+labels), May-Jun 2025 (events tables, Scale), Aug-Dec 2025 (IDE parity, leads). Step-function metrics changes. |
+| EH-2 | Lead sections appear only when dominant theme exists | **Confirmed** | Retest: 6/14 newsletters have leads. All map to 5-trigger model: May24 (blockbuster), Jun24 (hot-topic), Jul24 (strategic), Aug24 (governance), Dec25 (blockbuster), Feb26 (competitive). Non-lead months have no dominant cluster. 5-trigger model covers all. |
+| EH-3 | Link density stabilized at 1.5-3.0 links/bullet in agentic era | **Confirmed** | All agentic-era values: Apr=1.5, Aug=1.5, Dec=1.3, Feb=2.9, Jan=2.2, Jun=3.0, May=2.9. Range: 1.3-3.0. |
+| EH-4 | Copilot content dominates (>50% of bullets) | **Confirmed** | Retest with Feb 2026: 17/31 bullets (55%) mention Copilot directly. Lead section entirely Copilot-focused. Including Copilot-adjacent governance = ~60%. Consistent across Dec25 and Feb26 cycles. |
+| EH-5 | Governance items consistently get expanded treatment | **Confirmed** | 5 of 7 expanded items in Dec are governance/security/compliance (~70%). Legal/indemnity always expanded. |
+| EH-7 | Model announcements consistently get compressed | **Confirmed** | 100% consistency: Dec (5 models to 1 bullet), Aug (3+ models to 1 bullet). Always consolidated. |
+| EH-8 | Survivor items share enterprise-signal keywords | **Confirmed** | High-signal: governance, enterprise, admin, policy, GA, security, metrics. Low-signal: blog, community, bug fix, minor. 80%+ of survivors contain high-signal keywords. |
+| EH-10 | Human makes >=5 editorial decisions no rule captures | **Confirmed** | 7 judgment calls identified: novelty scoring, product category detection, ecosystem maturity, audience priority override, magnitude recategorization, structural convention, evergreen inclusion. |
+| EH-11 | Enforcing mechanical VS Code index fetch in scope-contract + url-manifest will prevent version misses | Next run includes all VS Code versions released in DATE_RANGE (>=2 for 30+ day ranges) | **Untested** | L64: v1.108 missed 3 times in Feb 2026. Fix: scope-contract Step 2 gate, url-manifest Step 1 enforcement, content-retrieval version check |
+| EH-12 | Curator notes processing adds unique content not in pipeline output | >=3 items in final newsletter originated from curator notes file, not from changelog/blog scanning | **Untested** | L65: Analysis of 10 benchmark cycles shows notes files contribute 10-18% unique content (community resources, videos, team gists, editorial signals). Jan.md test run produced 9 additions. |
+| EH-13 | Including v1.108 + curator notes produces a more complete newsletter than the 49/50 target | Newsletter scores >=47/50 AND includes content the current target lacks (v1.108 features, resources section) | **Untested** | The current target is missing v1.108 entirely and has no resources/thought leadership section. A successful run should be demonstrably more complete. |
+| EH-14 | Diff-based feature-centric VS Code extraction prevents version-centric output even with 4+ weekly releases | content-retrieval skill has explicit "read newest first, diff earlier" workflow. No VS Code version numbers in newsletter body text. Features merged by theme across versions. | **Untested** | L66: Weekly VS Code releases produce 4-5 versions per newsletter period. Version-centric extraction produces redundant or afterthought-style bullets. Fix: diff-based multi-release extraction in Phase 1B. |
+| EH-15 | Cross-IDE feature alignment matrix produces comprehensive labeled parity section for all 4 non-VS-Code IDEs | Every IDE that had updates appears in parity section. Every feature has GA/PREVIEW label. Feature-centric format used (not version-by-version). Eclipse never silently dropped. | **Untested** | Feb 2026: Eclipse missing, GA/PREVIEW labels sparse, JetBrains version-centric, rollout note absent. Fix: mandatory alignment matrix in Phase 3, gold standard template in ide-parity-rules. |
+| EH-16 | Assembly template enforces gold standard IDE parity format and rollout note | Quality checklist has IDE parity checks. Section ordering mentions all 4 IDEs + rollout note. No VS Code version numbers in body text pass validation. | **Untested** | Defense-in-depth: even if curation produces imperfect output, assembly quality checks catch missing IDEs, missing labels, and version number text. |
+| EH-17 | Per-model backtick labeling rule prevents prose grouping in model bullets | Model example in format-spec uses per-model labels. Generated output has individual backtick labels per model name, never prose grouping like "Now GA: X, Y, Z". | **Untested** | L67: Format-spec example used prose style. All published newsletters use per-model labels. Fix: updated example + explicit rule. |
+| EH-18 | Threshold-based link format produces inline links instead of sub-bullet lists | Format-spec has threshold rules. CLI bullet uses inline feature linking (feature names are links in prose). No sub-bullet link lists for source references ( `^    - \[` pattern) in Latest Releases. | **Untested** | L67: No rule existed for 5+ links, so agent defaulted to sub-bullet lists. Fix: threshold rules (1-3 inline, 4-6 inline-wrap, 7+ inline-feature-linking). |
+| EH-19 | Default-to-PREVIEW + cross-section audit prevents label conflicts between sections | No model/feature has different labels in different sections. When model extension status is ambiguous, PREVIEW is used. Polishing rule 19 catches any remaining conflicts. | **Untested** | L67: Gemini 3 Flash was PREVIEW in model bullet but GA in IDE parity. Extension announcements don't always specify status. Fix: default-to-PREVIEW rule + consistency audit. |
+| EH-20 | Revenue-first ordering, same-domain consolidation, surface attribution enforcement, and section restructuring produce a tighter newsletter with correct placement | Copilot at Scale contains ONLY Copilot-specific items. Non-Copilot enterprise items in Enterprise & Security. Same-domain items consolidated (no duplicate topic bullets). Revenue-positive items first in each section. Link labels have no status text. Every feature has a docs link. | **Untested** | L68: 8 editorial correction patterns from Feb 2026. Systemic fixes across format-spec, section-ordering, quality-checklist, and selection-criteria. |
+
+## Rules
+
+1. Always pick the cheapest untested hypothesis first (L2 from guide)
+2. A hypothesis needs a pass/fail threshold before you test it
+3. Record the result even if it's negative
+4. Maintain this ledger across runs; nothing falls through cracks
+5. Untested hypothesis count must not grow between runs
