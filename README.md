@@ -49,8 +49,8 @@ make score-all
 ## February 2026 Impact Highlights
 
 Distilled from the February 2026 build report:
-- Report source (private working repo): [newsletter_system_report_2026-02.md](https://briancl2.github.io/CustomerNewsletter/reports/newsletter_system_report_2026-02/)
-- Verbatim public copy in this repo: `docs/reports/newsletter_system_report_2026-02.md`
+- Report source (public): `docs/reports/newsletter_system_report_2026-02.md`
+- Report context note: `docs/reports/newsletter_system_report_2026-02_context.md`
 
 Most impactful outcomes:
 - Manual monthly process (4-6 hours plus repeated edits) was converted to a skills-first pipeline in 4 days.

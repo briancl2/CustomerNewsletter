@@ -57,7 +57,7 @@ For each line/item in the notes file, classify into one of these types:
 | **YouTube video** | `youtube.com/watch`, `youtu.be/` | PROCESS: visit, extract title and context |
 | **Event registration** | `registration.goldcast.io/`, `github.com/resources/events/` | PROCESS: extract event details |
 | **Named feature hint** | Text line without URL referencing a product name | SIGNAL: flag as editorial priority |
-| **Internal link** | `<internal-chat-domain>/`, `<internal-docs-domain>/`, `github.com/github/` (private repos), `<internal-portal-domain>/` | SIGNAL: translate topic to public reference |
+| **Internal link** | Internal collaboration URLs (chat, docs, private repos, project boards) | SIGNAL: translate topic to public reference |
 | **Industry content** | `hbr.org/`, `substack.com/`, `medium.com/`, `martinfowler.com/`, analyst reports | SIGNAL: framing context only |
 | **Competitor content** | `blog.cloudflare.com/`, `sonarsource.com/`, etc. | SIGNAL: competitive context only |
 | **Text note** (vague) | Bare text, no URL, no product name | SIGNAL: note for context |
@@ -117,7 +117,7 @@ For each PROCESS item not already covered by Phase 1C:
 - [Industry article summary]: Useful for newsletter introduction framing.
 
 ### Internal Signals (not linkable)
-- [Slack thread topic]: Something is happening around [X]. Watch for public announcement.
+- [Internal thread topic]: Something is happening around [X]. Watch for public announcement.
 ```
 
 ## Integration with Pipeline

@@ -2,7 +2,7 @@
 
 ## Source of Truth Model
 
-- Private working repository: `briancl2/private-source-repo`
+- Private working repository: internal source repository (not public)
 - Public product repository: `briancl2/CustomerNewsletter`
 
 The public repo is a sanitized, release-ready snapshot of the working system.
@@ -21,7 +21,7 @@ The public repo is a sanitized, release-ready snapshot of the working system.
 
 ## Sync Approach
 
-Use allowlisted publish automation from the private repo:
+Use allowlisted publish automation from the internal source repository:
 - `tools/publish_public_snapshot.sh`
 - `tools/public_snapshot_allowlist.txt`
 

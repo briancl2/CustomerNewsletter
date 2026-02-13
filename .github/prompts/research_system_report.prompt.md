@@ -145,8 +145,8 @@ Also show:
 
 1. **Discover and analyze VS Code session logs** for this workspace:
    ```bash
-   python3 <path-to-session-analysis-tools>/.agents/skills/session-log-analysis/scripts/parse_session.py \
-     --vscode-workspace private-source-repo
+   python3 <path-to-session-analysis-tools>/parse_session.py \
+     --vscode-workspace <workspace-name>
    ```
 
 2. **If the above doesn't find sessions, search manually**:
@@ -158,8 +158,8 @@ Also show:
 
 3. **Search session history for key patterns**:
    ```bash
-   python3 <path-to-session-analysis-tools>/.agents/skills/session-log-analysis/scripts/search_sessions.py \
-     "newsletter" --workspace private-source-repo --last 48h
+   python3 <path-to-session-analysis-tools>/search_sessions.py \
+     "newsletter" --workspace <workspace-name> --last 48h
    ```
 
 4. **Analyze tool usage patterns**:

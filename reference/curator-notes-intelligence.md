@@ -38,7 +38,7 @@ The notes file is a seed -- a minimal brain dump of 5-40 raw URLs. The agentic p
 | **Microsoft DevBlog** | 2 | 50% | Depends on GitHub-specificity |
 | **GitHub Blog news-insights** | 2 | 100% | Major announcements always survive |
 | **Industry thought leadership** (HBR, Substack, Substack, etc.) | 8 | 0% | ALWAYS EXCLUDED from newsletter body. But may inform framing |
-| **Internal links** (Slack, Google Docs, GH Discussions, project boards) | 12 | 0% | ALWAYS EXCLUDED. Serve as "something is happening" signals |
+| **Internal links** (chat, docs, discussions, project boards) | 12 | 0% | ALWAYS EXCLUDED. Serve as "something is happening" signals |
 | **YouTube videos** | 4 | 25% | Only conference keynotes survive; standalone explainers drop |
 | **Analyst reports** (Forrester, Gartner) | 1 | 0% | Paywalled, never linked directly |
 | **Event registrations** | 3 | 33% | Only future events within newsletter window survive |
@@ -58,7 +58,7 @@ The notes file is a seed -- a minimal brain dump of 5-40 raw URLs. The agentic p
 - YouTube videos of major conference sessions (Build, Universe, Ignite)
 
 **0% survival** (always filter):
-- Internal links (Slack, Google Docs, GH Discussions, project boards)
+- Internal links (chat, docs, discussions, project boards)
 - Industry thought leadership (HBR, Pragmatic Engineer, Substack newsletters)
 - Analyst reports behind paywalls
 - Vague text notes without URLs
@@ -86,9 +86,9 @@ A bare text hint expands into a full section.
 
 ### Pattern D: Internal-to-Public Translation
 An internal link signals a topic; the pipeline finds the public-facing content.
-- Notes: `<internal-chat-link-redacted>`
-- Final: The feature discussed in Slack appears as a changelog-sourced item
-- *The Slack link was a "watch this space" signal*
+- Notes: `[internal-chat-link redacted]`
+- Final: The feature discussed in internal notes appears as a changelog-sourced item
+- *The internal link was a "watch this space" signal*
 
 ## 4. The Two Unique Contributions of Notes Files
 
@@ -98,11 +98,11 @@ These items exist ONLY because the human dropped them in the notes file:
 
 | Type | Examples | Why Pipeline Misses It |
 |------|----------|----------------------|
-| Team member gists | Dylan's PRU Budgeting Guide | Personal gists aren't on any changelog/blog feed |
+| Team member gists | PRU budgeting guide | Personal gists aren't on any changelog/blog feed |
 | VS Code extensions | Agent TODOs by digitarald | Third-party marketplace not scanned |
 | Community awesome lists | awesome-ai-native, awesome-copilot | Personal GitHub Pages not scanned |
 | Conference session videos | MS Build specific talks | YouTube is not a pipeline source |
-| Internal knowledge signals | Slack links, GH Discussions | Not public; translate to public references |
+| Internal knowledge signals | Internal chat/discussion links | Not public; translate to public references |
 
 ### 4B: Editorial Priority Signals
 
@@ -147,7 +147,7 @@ The skill should accept a `workspace/curator_notes_YYYY-MM.md` file that can be 
 ### Processing Steps
 
 1. **Parse and classify each item** using the link type taxonomy
-2. **Filter internal links** (Slack, Google Docs, GH Discussions, project boards) -- mark as "editorial signals only"
+2. **Filter internal links** (chat, docs, discussions, project boards) -- mark as "editorial signals only"
 3. **Filter industry content** (third-party blogs, analyst reports) -- mark as "framing context only, do not link"
 4. **Visit surviving public URLs** to extract content (title, description, dates)
 5. **Cross-reference with Phase 1A URL manifest** -- identify overlap (pipeline already has it) vs unique additions
