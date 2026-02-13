@@ -1,0 +1,29 @@
+site_name: CustomerNewsletter
+site_description: Open-source Copilot-powered newsletter generation system
+repo_url: https://github.com/briancl2/CustomerNewsletter
+site_url: https://briancl2.github.io/CustomerNewsletter/
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - How It Works: how-it-works.md
+  - Architecture: architecture.md
+  - Configuration: configuration.md
+  - Reports:
+      - Feb 2026 System Report: reports/newsletter_system_report_2026-02.md
+      - Report Context: reports/newsletter_system_report_2026-02_context.md
+  - Legacy: legacy/README.md
+  - Maintenance: how-we-maintain-this.md
