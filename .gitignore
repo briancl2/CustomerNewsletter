@@ -1,0 +1,23 @@
+# Workspace intermediates
+!workspace/.gitkeep
+
+# Build artifacts
+site/
+
+# Benchmark data (large, not tracked)
+benchmark/
+# CI test fixtures (small subset of benchmark data, committed)
+!tests/fixtures/benchmark/
+
+# OS files
+.DS_Store
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+.venv/
+
+# Verification report (generated)
+MIGRATION_VERIFICATION_REPORT.md
+runs/
+runs/sessions/

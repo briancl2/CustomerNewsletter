@@ -1,0 +1,1672 @@
+version: 1
+as_of: "2026-02-10"
+last_run_date: "2026-02-10"
+sources:
+  - id: "gh_copilot_docs_hub"
+    name: "GitHub Copilot Docs Hub"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general", "enterprise", "web"]
+    portability: "portable"
+    what_it_is: "Primary first-party documentation root for GitHub Copilot concepts, setup, and references."
+    why_it_matters: "Canonical entry point for feature definitions, platform setup, and policy-adjacent guidance."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot"
+    notes: "Use with feature matrix and changelog RSS for current-state tracking."
+
+  - id: "gh_copilot_feature_matrix"
+    name: "GitHub Copilot Feature Matrix"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/reference/copilot-feature-matrix"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general", "vscode", "visual_studio", "jetbrains", "xcode", "eclipse"]
+    portability: "portable"
+    what_it_is: "Official matrix of Copilot feature support by IDE/interface and version bands."
+    why_it_matters: "Primary anchor for cross-surface feature availability comparisons."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "live"
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/reference/copilot-feature-matrix"
+    notes: "Observed to lag some marketplace/release channels; pair with surface release streams."
+
+  - id: "gh_copilot_changelog_rss"
+    name: "GitHub Changelog Copilot Label Feed"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["changelog", "rss"]
+    canonical_urls:
+      - "https://github.blog/changelog/label/copilot/feed/"
+    update_feeds:
+      - type: "rss"
+        url: "https://github.blog/changelog/label/copilot/feed/"
+    applies_to: ["general", "web", "vscode", "visual_studio", "jetbrains", "xcode", "eclipse", "cli", "terminal"]
+    portability: "portable"
+    what_it_is: "Official RSS stream for Copilot-tagged product changelog entries."
+    why_it_matters: "Fastest broad signal for new Copilot capabilities and rollout announcements."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2026-02-09"
+      reference_url: "https://github.blog/changelog/label/copilot/feed/"
+    notes: "Latest observed item: GPT-5.3-Codex GA for Copilot."
+
+  - id: "gh_features_preview"
+    name: "GitHub Features Preview"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://github.com/features/preview"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["web", "enterprise", "general"]
+    portability: "portable"
+    what_it_is: "GitHub preview catalog and status information for pre-GA features."
+    why_it_matters: "Tracks where emerging feature truth may temporarily live before GA docs harden."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/features/preview"
+    notes: "Use to detect preview-to-GA migrations."
+
+  - id: "gh_customer_terms_updates"
+    name: "GitHub Customer Terms Updates"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://github.com/customer-terms/updates"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["enterprise", "general"]
+    portability: "portable"
+    what_it_is: "Official updates page for GitHub customer terms and policy changes."
+    why_it_matters: "Licensing/terms changes can alter Copilot availability and governance requirements."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/customer-terms/updates"
+    notes: "Review monthly for legal-impact deltas."
+
+  - id: "gh_copilot_what_is"
+    name: "What is GitHub Copilot"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/get-started/what-is-github-copilot"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general", "web", "cli", "terminal"]
+    portability: "portable"
+    what_it_is: "Official high-level page describing Copilot surfaces and feature categories."
+    why_it_matters: "Used to detect newly official surfaces (for example mobile, terminal, CLI)."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/get-started/what-is-github-copilot"
+    notes: "Includes non-IDE interfaces."
+
+  - id: "gh_copilot_install_extension"
+    name: "Install Copilot Extension (Multi-Tool Setup)"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-extension"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["vscode", "visual_studio", "jetbrains", "xcode", "eclipse", "general"]
+    portability: "platform-specific"
+    what_it_is: "GitHub setup reference with tool-specific install sections and compatibility notes."
+    why_it_matters: "Canonical install/upgrade path mapping across supported IDE surfaces."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-extension"
+    notes: "Includes Eclipse update-site URL and tool handoffs."
+
+  - id: "gh_copilot_custom_instructions_support"
+    name: "Support for Different Types of Custom Instructions"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/reference/custom-instructions-support"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general", "vscode", "visual_studio", "jetbrains", "xcode", "eclipse", "web", "skills"]
+    portability: "platform-specific"
+    what_it_is: "Official support matrix for repository-wide, path-specific, and agent instruction files across Copilot environments/features."
+    why_it_matters: "Canonical source for where `.github/copilot-instructions.md`, `.github/instructions/**/*.instructions.md`, and agent files are supported."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/reference/custom-instructions-support"
+    notes: "Important cross-surface governance source; check for support drift monthly."
+
+  - id: "gh_copilot_response_customization"
+    name: "About Customizing GitHub Copilot Responses"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/concepts/prompting/response-customization"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general", "web", "vscode", "visual_studio", "jetbrains", "xcode", "eclipse", "skills"]
+    portability: "platform-specific"
+    what_it_is: "Official conceptual guide for custom instruction types, precedence, and prompt file behavior by tool context."
+    why_it_matters: "Defines high-level customization semantics that affect prompt and instruction portability decisions."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/concepts/prompting/response-customization"
+    notes: "Use with custom-instructions support matrix for environment-specific behavior."
+
+  - id: "gh_copilot_prompt_files_tutorial"
+    name: "Your First Prompt File"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/tutorials/customization-library/prompt-files/your-first-prompt-file"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["vscode", "visual_studio", "jetbrains", "skills", "general"]
+    portability: "platform-specific"
+    what_it_is: "Official tutorial documenting prompt file conventions including `.github/prompts` and `*.prompt.md`."
+    why_it_matters: "Canonical source for prompt-file path/extension conventions and public-preview scope constraints."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "public preview"
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/tutorials/customization-library/prompt-files/your-first-prompt-file"
+    notes: "Explicitly states client availability constraints for prompt files."
+
+  - id: "gh_changelog_legacy_copilot_metrics_retirement"
+    name: "Legacy Copilot Metrics APIs Retirement Notice"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["changelog"]
+    canonical_urls:
+      - "https://github.blog/changelog/2026-01-29-closing-down-notice-of-legacy-copilot-metrics-apis/"
+    update_feeds:
+      - type: "rss"
+        url: "https://github.blog/changelog/label/copilot/feed/"
+    applies_to: ["enterprise", "general", "web"]
+    portability: "portable"
+    what_it_is: "Official Copilot changelog notice announcing retirement of legacy metrics APIs and migration guidance."
+    why_it_matters: "Contains hard sunset dates that can break reporting workflows if not tracked."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2026-01-29"
+      reference_url: "https://github.blog/changelog/2026-01-29-closing-down-notice-of-legacy-copilot-metrics-apis/"
+    notes: "Announces March 2, 2026 and April 2, 2026 sunset milestones."
+
+  - id: "gh_copilot_usage_metrics_concepts"
+    name: "GitHub Copilot Usage Metrics Concepts"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/concepts/copilot-usage-metrics/copilot-metrics"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["enterprise", "general", "web"]
+    portability: "portable"
+    what_it_is: "Official conceptual documentation for Copilot usage metrics and reporting semantics."
+    why_it_matters: "Canonical reference for interpreting modern Copilot metrics after legacy API retirement."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/concepts/copilot-usage-metrics/copilot-metrics"
+    notes: "Pair with REST API endpoint docs for implementation details."
+
+  - id: "gh_copilot_usage_metrics_rest_api"
+    name: "REST API Endpoints for Copilot Usage Metrics"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["api", "docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/rest/copilot/copilot-usage-metrics"
+      - "https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage-metrics"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["enterprise", "general", "web"]
+    portability: "portable"
+    what_it_is: "Official REST API documentation for current Copilot usage metrics endpoints."
+    why_it_matters: "Migration target for workflows retiring legacy metrics APIs."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "2022-11-28 API version family"
+      release_date: ""
+      reference_url: "https://docs.github.com/en/rest/copilot/copilot-usage-metrics"
+    notes: "Unversioned docs URL redirects to current enterprise-cloud docs path."
+
+  - id: "gh_copilot_plans"
+    name: "GitHub Copilot Plans"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/get-started/plans"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["enterprise", "general"]
+    portability: "portable"
+    what_it_is: "Official plan and entitlement documentation for Copilot offerings."
+    why_it_matters: "Feature availability and rollout decisions depend on plan entitlements."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/get-started/plans"
+    notes: "Use when matrix support intersects plan gating."
+
+  - id: "vscode_copilot_overview_docs"
+    name: "VS Code Copilot Overview"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://code.visualstudio.com/docs/copilot/overview"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["vscode"]
+    portability: "platform-specific"
+    what_it_is: "VS Code official overview for Copilot experience and capabilities."
+    why_it_matters: "Primary VS Code-side documentation for feature behavior and usage."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://code.visualstudio.com/docs/copilot/overview"
+    notes: "Pair with VS Code updates and marketplace version data."
+
+  - id: "vscode_copilot_setup_docs"
+    name: "VS Code Copilot Setup"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://code.visualstudio.com/docs/copilot/setup"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["vscode"]
+    portability: "platform-specific"
+    what_it_is: "VS Code setup guide for Copilot installation and first-run."
+    why_it_matters: "Canonical setup path for VS Code users and troubleshooting."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://code.visualstudio.com/docs/copilot/setup"
+    notes: "Install guidance can shift as extension packaging changes."
+
+  - id: "vscode_updates"
+    name: "VS Code Updates"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["release-notes"]
+    canonical_urls:
+      - "https://code.visualstudio.com/updates/"
+      - "https://code.visualstudio.com/updates/v1_109"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["vscode"]
+    portability: "platform-specific"
+    what_it_is: "Official Visual Studio Code monthly release notes stream."
+    why_it_matters: "Contains Copilot UI/integration changes and deprecation notices."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "1.109"
+      release_date: "2026-02-04"
+      reference_url: "https://code.visualstudio.com/updates/v1_109"
+    previous_versions_in_cycle:
+      - version: "1.108"
+        named_month: "December 2025"
+        actual_release_date: "2026-01-08"
+        reference_url: "https://code.visualstudio.com/updates/v1_108"
+    notes: "CRITICAL: Named months lag actual release dates by 1-2 months (L64). v1.108 is titled 'December 2025' but released Jan 8, 2026. Always check the updates index page for actual release dates. Do NOT assume named month = release month."
+
+  - id: "vscode_releases_stable_api"
+    name: "VS Code Stable Releases API"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["api"]
+    canonical_urls:
+      - "https://update.code.visualstudio.com/api/releases/stable"
+    update_feeds:
+      - type: "api"
+        url: "https://update.code.visualstudio.com/api/releases/stable"
+    applies_to: ["vscode"]
+    portability: "platform-specific"
+    what_it_is: "Machine-readable list of VS Code stable versions."
+    why_it_matters: "Enables automation-friendly release detection for monthly refresh."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "1.109.0"
+      release_date: ""
+      reference_url: "https://update.code.visualstudio.com/api/releases/stable"
+    notes: "Use with release note pages for human-readable changes and dates."
+
+  - id: "vscode_releases_insider_api"
+    name: "VS Code Insider Releases API"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["api"]
+    canonical_urls:
+      - "https://update.code.visualstudio.com/api/releases/insider"
+    update_feeds:
+      - type: "api"
+        url: "https://update.code.visualstudio.com/api/releases/insider"
+    applies_to: ["vscode"]
+    portability: "platform-specific"
+    what_it_is: "Machine-readable list of VS Code Insider versions."
+    why_it_matters: "Tracks pre-stable Copilot-adjacent UX/agent features arriving in Insiders."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "1.110.0-insider"
+      release_date: ""
+      reference_url: "https://update.code.visualstudio.com/api/releases/insider"
+    notes: "Useful early signal stream for upcoming stable changes."
+
+  - id: "vscode_copilot_chat_marketplace"
+    name: "VS Marketplace: GitHub Copilot Chat"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["marketplace"]
+    canonical_urls:
+      - "https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["vscode"]
+    portability: "platform-specific"
+    what_it_is: "Visual Studio Marketplace listing with extension metadata and version history JSON payload."
+    why_it_matters: "Most direct source for extension version cadence and latest update timestamps."
+    update_cadence: "frequent"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "0.38.2026021002"
+      release_date: "2026-02-10"
+      reference_url: "https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat"
+    notes: "Page-embedded JSON includes `LastUpdatedDateString` and `Versions` list."
+
+  - id: "visual_studio_copilot_install"
+    name: "Visual Studio Copilot Install and States"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://learn.microsoft.com/en-us/visualstudio/ide/visual-studio-github-copilot-install-and-states"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["visual_studio", "enterprise"]
+    portability: "platform-specific"
+    what_it_is: "Official install and configuration states guide for Copilot in Visual Studio."
+    why_it_matters: "Canonical operational setup source for Visual Studio surface."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://learn.microsoft.com/en-us/visualstudio/ide/visual-studio-github-copilot-install-and-states"
+    notes: "Check with release-notes pages for version-specific behavior."
+
+  - id: "visual_studio_release_notes_2026"
+    name: "Visual Studio 2026 Release Notes"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["release-notes"]
+    canonical_urls:
+      - "https://learn.microsoft.com/en-us/visualstudio/releases/2026/release-notes"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["visual_studio"]
+    portability: "platform-specific"
+    what_it_is: "Current-year Visual Studio release notes including Copilot-related updates."
+    why_it_matters: "Primary current release stream for Visual Studio Copilot behavior changes."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "18.2.1"
+      release_date: "2026-01-20"
+      reference_url: "https://learn.microsoft.com/en-us/visualstudio/releases/2026/release-notes"
+    notes: "Use with 2022 page for historical and long-tail compatibility notes."
+
+  - id: "visual_studio_release_notes_2022"
+    name: "Visual Studio 2022 Release Notes (Copilot Section)"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["release-notes"]
+    canonical_urls:
+      - "https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-notes#github-copilot"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["visual_studio"]
+    portability: "platform-specific"
+    what_it_is: "Visual Studio 2022 release notes with Copilot-specific sections."
+    why_it_matters: "Essential for organizations still pinned to 2022 channels."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "17.x track"
+      release_date: ""
+      reference_url: "https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-notes#github-copilot"
+    notes: "Track backport fixes and compatibility updates."
+
+  - id: "jetbrains_copilot_marketplace"
+    name: "JetBrains Marketplace: GitHub Copilot Plugin"
+    vendor: "JetBrains"
+    section: "A"
+    source_type: ["marketplace"]
+    canonical_urls:
+      - "https://plugins.jetbrains.com/plugin/17718-github-copilot"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["jetbrains"]
+    portability: "platform-specific"
+    what_it_is: "Primary JetBrains plugin listing for GitHub Copilot."
+    why_it_matters: "Canonical install and metadata page for JetBrains surface."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "1.5.64-243"
+      release_date: "2026-02-05"
+      reference_url: "https://plugins.jetbrains.com/plugin/17718-github-copilot/versions/stable"
+    notes: "Use updates API for machine-readable polling."
+
+  - id: "jetbrains_copilot_versions_stable"
+    name: "JetBrains Copilot Stable Versions"
+    vendor: "JetBrains"
+    section: "A"
+    source_type: ["marketplace", "release-notes"]
+    canonical_urls:
+      - "https://plugins.jetbrains.com/plugin/17718-github-copilot/versions/stable"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["jetbrains"]
+    portability: "platform-specific"
+    what_it_is: "Stable version history page for GitHub Copilot plugin on JetBrains Marketplace."
+    why_it_matters: "Human-readable plugin version progression and compatibility context."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "1.5.64-243"
+      release_date: "2026-02-05"
+      reference_url: "https://plugins.jetbrains.com/plugin/17718-github-copilot/versions/stable"
+    notes: "Cross-check against matrix version tables for drift."
+
+  - id: "jetbrains_plugin_updates_api"
+    name: "JetBrains Plugin Updates API"
+    vendor: "JetBrains"
+    section: "A"
+    source_type: ["api"]
+    canonical_urls:
+      - "https://plugins.jetbrains.com/api/plugins/17718/updates?channel=&size=10"
+    update_feeds:
+      - type: "api"
+        url: "https://plugins.jetbrains.com/api/plugins/17718/updates?channel=&size=10"
+    applies_to: ["jetbrains"]
+    portability: "platform-specific"
+    what_it_is: "Machine-readable updates endpoint for JetBrains plugin versions."
+    why_it_matters: "Automation-friendly source for latest plugin versions and update timestamps."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "1.5.64-243"
+      release_date: "2026-02-05"
+      reference_url: "https://plugins.jetbrains.com/api/plugins/17718/updates?channel=&size=10"
+    notes: "`cdate` is epoch milliseconds; convert to UTC date for snapshotting."
+
+  - id: "xcode_copilot_repo"
+    name: "GitHub Copilot for Xcode Repository"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/github/CopilotForXcode"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/github/CopilotForXcode/releases.atom"
+    applies_to: ["xcode"]
+    portability: "platform-specific"
+    what_it_is: "Official repository for GitHub Copilot Xcode extension."
+    why_it_matters: "Canonical source for Xcode extension binaries, issues, and release stream."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "0.47.0"
+      release_date: "2026-02-05"
+      reference_url: "https://github.com/github/CopilotForXcode/releases/tag/0.47.0"
+    notes: "Use with ReleaseNotes.md for behavior details."
+
+  - id: "xcode_copilot_releases"
+    name: "GitHub Copilot for Xcode Releases"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["release-notes", "atom"]
+    canonical_urls:
+      - "https://github.com/github/CopilotForXcode/releases"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/github/CopilotForXcode/releases.atom"
+    applies_to: ["xcode"]
+    portability: "platform-specific"
+    what_it_is: "Release history page for Copilot for Xcode binaries and notes."
+    why_it_matters: "Primary source for latest Xcode extension version and release date."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "0.47.0"
+      release_date: "2026-02-05"
+      reference_url: "https://github.com/github/CopilotForXcode/releases/tag/0.47.0"
+    notes: "Prefer tag page for exact published timestamp."
+
+  - id: "xcode_copilot_release_notes_md"
+    name: "GitHub Copilot for Xcode ReleaseNotes.md"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["release-notes"]
+    canonical_urls:
+      - "https://github.com/github/CopilotForXcode/blob/main/ReleaseNotes.md"
+      - "https://raw.githubusercontent.com/github/CopilotForXcode/main/ReleaseNotes.md"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["xcode"]
+    portability: "platform-specific"
+    what_it_is: "Repository-maintained rolling markdown release notes for Copilot for Xcode."
+    why_it_matters: "Detailed version-by-version changes beyond release page summaries."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "0.47.0"
+      release_date: "2026-02-05"
+      reference_url: "https://github.com/github/CopilotForXcode/blob/main/ReleaseNotes.md"
+    notes: "Raw URL is useful for automation-friendly parsing."
+
+  - id: "eclipse_copilot_marketplace"
+    name: "Eclipse Marketplace: GitHub Copilot"
+    vendor: "Other"
+    section: "A"
+    source_type: ["marketplace"]
+    canonical_urls:
+      - "https://marketplace.eclipse.org/content/github-copilot#details"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["eclipse"]
+    portability: "platform-specific"
+    what_it_is: "Eclipse marketplace listing for GitHub Copilot plugin."
+    why_it_matters: "Primary discoverability and compatibility source for Eclipse users."
+    update_cadence: "monthly"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2026-01-27"
+      reference_url: "https://marketplace.eclipse.org/content/github-copilot#details"
+    notes: "Date Updated captured from listing details."
+
+  - id: "eclipse_copilot_update_site"
+    name: "Eclipse Copilot Update Site"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["eclipse"]
+    portability: "platform-specific"
+    what_it_is: "Documented Eclipse update site URL referenced by GitHub Docs setup page."
+    why_it_matters: "Direct installation/upgrade channel for Eclipse plugin."
+    update_cadence: "irregular"
+    stability: "low"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/"
+    notes: "Returned HTTP 404 during this run; keep as broken-link watch item."
+
+  - id: "copilot_cli_docs_about"
+    name: "About GitHub Copilot CLI"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["cli", "terminal"]
+    portability: "platform-specific"
+    what_it_is: "Official conceptual documentation for Copilot CLI."
+    why_it_matters: "Defines capability scope and relationship with other Copilot interfaces."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli"
+    notes: "Use with install and release sources."
+
+  - id: "copilot_cli_docs_install"
+    name: "Installing GitHub Copilot CLI"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/how-tos/copilot-cli/install-copilot-cli"
+      - "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-getting-started"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["cli", "terminal"]
+    portability: "platform-specific"
+    what_it_is: "Official install/get-started docs for Copilot CLI."
+    why_it_matters: "Canonical install path and setup prerequisites."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/how-tos/copilot-cli/install-copilot-cli"
+    notes: "Watch for package manager path changes."
+
+  - id: "copilot_cli_docs_use"
+    name: "Using GitHub CLI Copilot Extension"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/how-tos/use-copilot-for-common-tasks/use-copilot-in-the-cli"
+      - "https://cli.github.com/manual/gh_copilot"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["cli", "terminal"]
+    portability: "platform-specific"
+    what_it_is: "Usage docs and command manual for Copilot in CLI contexts."
+    why_it_matters: "Primary command behavior reference for operators and tooling automation."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://cli.github.com/manual/gh_copilot"
+    notes: "CLI manual host provides command-level detail beyond Docs narratives."
+
+  - id: "copilot_cli_releases"
+    name: "GitHub Copilot CLI Releases"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["release-notes", "repo", "atom"]
+    canonical_urls:
+      - "https://github.com/github/copilot-cli/releases"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/github/copilot-cli/releases.atom"
+    applies_to: ["cli", "terminal"]
+    portability: "platform-specific"
+    what_it_is: "Official release history for Copilot CLI."
+    why_it_matters: "Canonical source for latest CLI version and release notes."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-12"
+    latest_known:
+      version: "v0.0.408"
+      release_date: "2026-02-12"
+      reference_url: "https://github.com/github/copilot-cli/releases/tag/v0.0.408"
+    notes: "Use releases atom for monthly automation polling. CLI ships daily releases — the GitHub Releases page is the primary discovery source, NOT the blog changelog (which only publishes occasional summary posts and misses most features)."
+
+  - id: "neovim_copilot_vim"
+    name: "GitHub Copilot Vim/NeoVim Plugin"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/github/copilot.vim"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["terminal", "general"]
+    portability: "platform-specific"
+    what_it_is: "Official repository for Copilot integration in Vim/NeoVim."
+    why_it_matters: "Canonical installation and ongoing update source for NeoVim surface."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "v1.59.0"
+      release_date: "2026-01-09"
+      reference_url: "https://github.com/github/copilot.vim"
+    notes: "Uses tags/commits rather than a robust releases stream."
+
+  - id: "github_mobile_copilot_docs"
+    name: "Copilot Chat in GitHub Mobile"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-mobile"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["web", "general"]
+    portability: "platform-specific"
+    what_it_is: "Official docs page for using Copilot chat from GitHub Mobile."
+    why_it_matters: "Confirms mobile as an official Copilot interface with setup/usage details."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-mobile"
+    notes: "No dedicated machine-readable mobile Copilot feed identified."
+
+  - id: "windows_terminal_copilot_docs"
+    name: "Copilot Chat in Windows Terminal"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-windows-terminal"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["terminal"]
+    portability: "platform-specific"
+    what_it_is: "Official docs page for Copilot chat in Windows Terminal Canary context."
+    why_it_matters: "Canonical reference for terminal chat setup and behavior."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-windows-terminal"
+    notes: "Monitor Copilot changelog RSS for update announcements."
+
+  - id: "azure_data_studio_copilot_docs"
+    name: "Azure Data Studio Copilot Extension Overview"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://learn.microsoft.com/en-us/azure-data-studio/extensions/github-copilot-extension-overview"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general"]
+    portability: "platform-specific"
+    what_it_is: "Microsoft documentation for Copilot extension behavior in Azure Data Studio."
+    why_it_matters: "Additional official surface outside the feature matrix IDE rows."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://learn.microsoft.com/en-us/azure-data-studio/extensions/github-copilot-extension-overview"
+    notes: "Referenced by GitHub Docs setup page."
+
+  - id: "gh_changelog_opencode_support"
+    name: "GitHub Copilot Now Supports OpenCode"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["changelog"]
+    canonical_urls:
+      - "https://github.blog/changelog/2026-01-16-github-copilot-now-supports-opencode/"
+    update_feeds:
+      - type: "rss"
+        url: "https://github.blog/changelog/label/copilot/feed/"
+    applies_to: ["opencode", "general", "enterprise"]
+    portability: "portable"
+    what_it_is: "Official GitHub changelog announcement that Copilot subscriptions can authenticate and run with OpenCode."
+    why_it_matters: "Canonical evidence that OpenCode is an officially Copilot-supported external surface."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2026-01-16"
+      reference_url: "https://github.blog/changelog/2026-01-16-github-copilot-now-supports-opencode/"
+    notes: "OpenCode product release/version streams remain community-managed."
+
+  - id: "opencode_docs"
+    name: "OpenCode Documentation"
+    vendor: "Community"
+    section: "A"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://opencode.ai/docs"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["opencode", "agents", "general"]
+    portability: "portable"
+    what_it_is: "Community documentation for OpenCode coding-agent runtime."
+    why_it_matters: "Useful for teams evaluating Copilot-adjacent community surfaces."
+    update_cadence: "frequent"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://opencode.ai/docs"
+    notes: "Community-managed product docs; official Copilot support evidence comes from GitHub changelog."
+
+  - id: "opencode_repo"
+    name: "OpenCode Repository (Active)"
+    vendor: "Community"
+    section: "A"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/anomalyco/opencode"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/anomalyco/opencode/releases.atom"
+    applies_to: ["opencode", "agents", "cli"]
+    portability: "portable"
+    what_it_is: "Active canonical repository for OpenCode."
+    why_it_matters: "Primary source for releases, install methods, and project status."
+    update_cadence: "frequent"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "v1.1.53"
+      release_date: "2026-02-05"
+      reference_url: "https://github.com/anomalyco/opencode/releases/tag/v1.1.53"
+    notes: "Default branch is `dev`; high activity observed."
+
+  - id: "opencode_releases"
+    name: "OpenCode Releases"
+    vendor: "Community"
+    section: "A"
+    source_type: ["release-notes", "atom"]
+    canonical_urls:
+      - "https://github.com/anomalyco/opencode/releases"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/anomalyco/opencode/releases.atom"
+    applies_to: ["opencode", "cli"]
+    portability: "portable"
+    what_it_is: "Release history page for OpenCode binaries and changelog snippets."
+    why_it_matters: "Canonical latest version stream for OpenCode monitoring."
+    update_cadence: "frequent"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "v1.1.53"
+      release_date: "2026-02-05"
+      reference_url: "https://github.com/anomalyco/opencode/releases/tag/v1.1.53"
+    notes: "Use with docs page for install changes."
+
+  - id: "opencode_legacy_archived_repo"
+    name: "OpenCode Legacy Repository (Archived)"
+    vendor: "Community"
+    section: "A"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/opencode-ai/opencode"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["opencode"]
+    portability: "deprecated"
+    what_it_is: "Previously active OpenCode repository, now archived."
+    why_it_matters: "Important migration context to avoid stale references."
+    update_cadence: "irregular"
+    stability: "low"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "archived"
+      release_date: ""
+      reference_url: "https://github.com/opencode-ai/opencode"
+    notes: "Do not use as canonical source; replaced by `anomalyco/opencode`."
+
+  - id: "gh_aw_repo"
+    name: "GitHub Agentic Workflows Repository"
+    vendor: "GitHub"
+    section: "B"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/github/gh-aw"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/github/gh-aw/releases.atom"
+    applies_to: ["agents", "security", "enterprise"]
+    portability: "platform-specific"
+    what_it_is: "GitHub repository for agentic workflows compiled to GitHub Actions."
+    why_it_matters: "Key official framework for repository-level agent orchestration with guardrails."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "v0.43.0"
+      release_date: "2026-02-10"
+      reference_url: "https://github.com/github/gh-aw/releases/tag/v0.43.0"
+    notes: "Companion projects include firewall and MCP gateway."
+
+  - id: "gh_aw_docs"
+    name: "GitHub Agentic Workflows Docs"
+    vendor: "GitHub"
+    section: "B"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://github.github.io/gh-aw/"
+    update_feeds:
+      - type: "rss"
+        url: "https://github.github.io/gh-aw/blog/rss.xml"
+    applies_to: ["agents", "security"]
+    portability: "platform-specific"
+    what_it_is: "Official documentation site for GitHub Agentic Workflows."
+    why_it_matters: "Defines architecture, setup, guardrails, and operational patterns."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "live"
+      release_date: ""
+      reference_url: "https://github.github.io/gh-aw/"
+    notes: "Use docs + repo releases together for full picture."
+
+  - id: "gh_aw_blog_feed"
+    name: "GitHub Agentic Workflows Blog RSS"
+    vendor: "GitHub"
+    section: "B"
+    source_type: ["rss", "practitioner-guide"]
+    canonical_urls:
+      - "https://github.github.io/gh-aw/blog/rss.xml"
+    update_feeds:
+      - type: "rss"
+        url: "https://github.github.io/gh-aw/blog/rss.xml"
+    applies_to: ["agents", "general"]
+    portability: "portable"
+    what_it_is: "RSS stream for GH-AW blog posts and applied workflow patterns."
+    why_it_matters: "High-signal operational lessons from real agent workflow deployment."
+    update_cadence: "frequent"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2026-01-12"
+      reference_url: "https://github.github.io/gh-aw/blog/2026-01-12-welcome-to-pelis-agent-factory/"
+    notes: "Operationally concrete but not normative product policy source."
+
+  - id: "copilot_orchestra_repo"
+    name: "Copilot Orchestra Repository"
+    vendor: "Community"
+    section: "B"
+    source_type: ["repo", "practitioner-guide"]
+    canonical_urls:
+      - "https://github.com/ShepAlderson/copilot-orchestra"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["vscode", "agents", "skills"]
+    portability: "platform-specific"
+    what_it_is: "Community Copilot multi-agent orchestration pattern for VS Code."
+    why_it_matters: "Concrete pattern for staged planning/implementation/review loops with Copilot."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/ShepAlderson/copilot-orchestra"
+    notes: "VS Code Insiders and custom agent workflows required."
+
+  - id: "loop_agent_repo"
+    name: "Loop Agent Repository"
+    vendor: "Community"
+    section: "B"
+    source_type: ["repo", "practitioner-guide"]
+    canonical_urls:
+      - "https://github.com/digitarald/loop-agent"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["agents", "skills"]
+    portability: "portable"
+    what_it_is: "Early-stage framework for self-correcting multi-agent orchestration."
+    why_it_matters: "Introduces useful monitoring/handoff ideas for long-running agent workflows."
+    update_cadence: "irregular"
+    stability: "low"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/digitarald/loop-agent"
+    notes: "Low adoption at time of run; treat as experimental."
+
+  - id: "spec_kit_repo"
+    name: "GitHub Spec Kit Repository"
+    vendor: "GitHub"
+    section: "B"
+    source_type: ["repo", "release-notes", "atom"]
+    canonical_urls:
+      - "https://github.com/github/spec-kit"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/github/spec-kit/releases.atom"
+    applies_to: ["agents", "skills", "general"]
+    portability: "portable"
+    what_it_is: "GitHub-maintained toolkit for spec-driven development workflows."
+    why_it_matters: "High-adoption framework for moving from requirements to implementation with agent support."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "v0.0.92"
+      release_date: "2026-02-10"
+      reference_url: "https://github.com/github/spec-kit/releases/tag/v0.0.92"
+    notes: "Strong Copilot-adjacent workflow relevance with broad agent support list."
+
+  - id: "spec_kit_docs"
+    name: "Spec Kit Documentation"
+    vendor: "GitHub"
+    section: "B"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://github.github.io/spec-kit/"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["agents", "skills"]
+    portability: "portable"
+    what_it_is: "Documentation site for Spec Kit concepts and workflows."
+    why_it_matters: "Operational guidance for spec-driven adoption and command workflows."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "live"
+      release_date: ""
+      reference_url: "https://github.github.io/spec-kit/"
+    notes: "Pair with repo releases for versioned updates."
+
+  - id: "bmad_method_repo"
+    name: "BMAD Method Repository"
+    vendor: "Community"
+    section: "B"
+    source_type: ["repo", "release-notes", "atom"]
+    canonical_urls:
+      - "https://github.com/bmad-code-org/BMAD-METHOD"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/bmad-code-org/BMAD-METHOD/releases.atom"
+    applies_to: ["agents", "skills", "general"]
+    portability: "portable"
+    what_it_is: "Community framework for agile AI-driven development workflows and role-based agents."
+    why_it_matters: "Popular process framework teams evaluate alongside Copilot-based implementations."
+    update_cadence: "frequent"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "v6.0.0-Beta.8"
+      release_date: "2026-02-09"
+      reference_url: "https://github.com/bmad-code-org/BMAD-METHOD/releases/tag/v6.0.0-Beta.8"
+    notes: "Community-driven; verify compatibility assumptions per environment."
+
+  - id: "bmad_method_docs"
+    name: "BMAD Method Documentation"
+    vendor: "Community"
+    section: "B"
+    source_type: ["docs", "practitioner-guide"]
+    canonical_urls:
+      - "http://docs.bmad-method.org"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["agents", "skills", "general"]
+    portability: "portable"
+    what_it_is: "Documentation portal for BMAD workflows and modules."
+    why_it_matters: "Operational detail for teams adopting BMAD process patterns."
+    update_cadence: "monthly"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "v6 docs"
+      release_date: ""
+      reference_url: "http://docs.bmad-method.org"
+    notes: "Community source; validate critical claims against implementation artifacts."
+
+  - id: "mcp_spec_repo"
+    name: "Model Context Protocol Repository"
+    vendor: "Other"
+    section: "B"
+    source_type: ["standard", "repo"]
+    canonical_urls:
+      - "https://github.com/modelcontextprotocol/modelcontextprotocol"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["mcp", "agents", "skills", "general"]
+    portability: "portable"
+    what_it_is: "Canonical repository for MCP specification and schemas."
+    why_it_matters: "Defines interoperability layer used by many modern agent toolchains."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "live"
+      release_date: ""
+      reference_url: "https://github.com/modelcontextprotocol/modelcontextprotocol"
+    notes: "Use alongside docs site for latest rendered guidance."
+
+  - id: "mcp_docs_site"
+    name: "Model Context Protocol Docs"
+    vendor: "Other"
+    section: "B"
+    source_type: ["standard", "docs"]
+    canonical_urls:
+      - "https://modelcontextprotocol.io"
+      - "https://modelcontextprotocol.io/specification/latest"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["mcp", "agents", "general"]
+    portability: "portable"
+    what_it_is: "Official MCP documentation and specification site."
+    why_it_matters: "Primary human-readable standard reference for integration design."
+    update_cadence: "monthly"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "latest"
+      release_date: ""
+      reference_url: "https://modelcontextprotocol.io/specification/latest"
+    notes: "Cross-check schema versions in repo when implementing strict validation."
+
+  - id: "promptfoo_repo"
+    name: "Promptfoo Repository"
+    vendor: "Community"
+    section: "B"
+    source_type: ["repo", "practitioner-guide"]
+    canonical_urls:
+      - "https://github.com/promptfoo/promptfoo"
+    update_feeds:
+      - type: "github_releases_atom"
+        url: "https://github.com/promptfoo/promptfoo/releases.atom"
+    applies_to: ["evals", "agents", "general"]
+    portability: "portable"
+    what_it_is: "Open-source framework for LLM prompt evaluation and red teaming."
+    why_it_matters: "Common practical eval harness for CI-based prompt regression checks."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/promptfoo/promptfoo"
+    notes: "Use as vendor-neutral eval layer for Copilot-adjacent prompt assets."
+
+  - id: "openai_evals_repo"
+    name: "OpenAI Evals Repository"
+    vendor: "OpenAI"
+    section: "B"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/openai/evals"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["evals", "general"]
+    portability: "portable"
+    what_it_is: "OpenAI evaluation framework repository and example datasets."
+    why_it_matters: "Reference implementation and methodology for eval-driven improvement loops."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/openai/evals"
+    notes: "No reliable release stream used in this run."
+
+  - id: "swe_bench_repo"
+    name: "SWE-bench Repository"
+    vendor: "Community"
+    section: "B"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/SWE-bench/SWE-bench"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["evals", "agents", "general"]
+    portability: "portable"
+    what_it_is: "Benchmark suite for evaluating coding agents on real software tasks."
+    why_it_matters: "Useful comparative benchmark context for coding-agent capability claims."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/SWE-bench/SWE-bench"
+    notes: "Benchmark results should be paired with internal task-level evals."
+
+  - id: "agentos_genai_works_repo"
+    name: "AgentOS (genai-works)"
+    vendor: "Community"
+    section: "B"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/genai-works-org/genai-agentos"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["agents", "general"]
+    portability: "portable"
+    what_it_is: "Modern project using the AgentOS name for GenAI agent infrastructure patterns."
+    why_it_matters: "Disambiguation target when teams ask for AgentOS in current agent discussions."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/genai-works-org/genai-agentos"
+    notes: "Different project lineage than `agentos-project/agentos`."
+
+  - id: "agentos_project_legacy_repo"
+    name: "AgentOS (agentos-project legacy)"
+    vendor: "Community"
+    section: "B"
+    source_type: ["repo"]
+    canonical_urls:
+      - "https://github.com/agentos-project/agentos"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["agents", "general"]
+    portability: "portable"
+    what_it_is: "Older AgentOS-named project with different scope and historical context."
+    why_it_matters: "Prevents mistaken substitution when evaluating current AgentOS requests."
+    update_cadence: "irregular"
+    stability: "low"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://github.com/agentos-project/agentos"
+    notes: "Treat as historical/legacy unless specific compatibility need exists."
+
+  - id: "agentconfig_site"
+    name: "agentconfig.org"
+    vendor: "Community"
+    section: "C"
+    source_type: ["standard", "practitioner-guide"]
+    canonical_urls:
+      - "https://agentconfig.org/"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["agents", "skills", "general"]
+    portability: "portable"
+    what_it_is: "Community reference site for cross-agent configuration conventions and tutorials."
+    why_it_matters: "Useful practical map of config primitives across major coding assistants."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "live"
+      release_date: ""
+      reference_url: "https://agentconfig.org/"
+    notes: "Treat as practitioner guidance, not normative vendor policy."
+
+  - id: "agentconfig_llms_index"
+    name: "agentconfig.org LLM Index"
+    vendor: "Community"
+    section: "C"
+    source_type: ["practitioner-guide"]
+    canonical_urls:
+      - "https://agentconfig.org/llms.txt"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["agents", "skills", "general"]
+    portability: "portable"
+    what_it_is: "Machine-oriented index of agentconfig pages and references."
+    why_it_matters: "Convenient starting point for scripted documentation discovery."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://agentconfig.org/llms.txt"
+    notes: "Useful for automation, but not a policy authority."
+
+  - id: "agentskills_site"
+    name: "Agent Skills Documentation"
+    vendor: "Community"
+    section: "C"
+    source_type: ["standard", "docs"]
+    canonical_urls:
+      - "https://agentskills.io"
+      - "https://agentskills.io/llms.txt"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["skills", "agents", "general"]
+    portability: "portable"
+    what_it_is: "Open documentation site for the Agent Skills format and integration guidance."
+    why_it_matters: "Foundation for portable skill packaging independent of a single vendor."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "live"
+      release_date: ""
+      reference_url: "https://agentskills.io"
+    notes: "Supports portable `.agents/skills` governance in this KB."
+
+  - id: "agentskills_spec"
+    name: "Agent Skills Specification"
+    vendor: "Community"
+    section: "C"
+    source_type: ["standard"]
+    canonical_urls:
+      - "https://agentskills.io/specification.md"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["skills", "agents"]
+    portability: "portable"
+    what_it_is: "Formal specification for SKILL.md structure and conventions."
+    why_it_matters: "Enables consistent, machine-parseable, cross-runtime skill assets."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://agentskills.io/specification.md"
+    notes: "Spec does not force a single directory path; KB policy standardizes on `.agents/skills`."
+
+  - id: "anthropic_prompt_best_practices"
+    name: "Anthropic Prompting Best Practices"
+    vendor: "Anthropic"
+    section: "C"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general", "agents", "skills"]
+    portability: "portable"
+    what_it_is: "Vendor guidance for prompt engineering with practical instruction patterns."
+    why_it_matters: "Portable prompting principles map well to Copilot-adjacent workflows."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    notes: "Use as supplemental prompt quality guidance, not Copilot product truth."
+
+  - id: "anthropic_models_whats_new"
+    name: "Anthropic Model Updates (Claude 4.6 Page)"
+    vendor: "Anthropic"
+    section: "C"
+    source_type: ["docs"]
+    canonical_urls:
+      - "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-6"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["general", "agents"]
+    portability: "portable"
+    what_it_is: "Vendor update page documenting model changes and timeline context."
+    why_it_matters: "Model changes can alter prompt reliability and agent behavior assumptions."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: "Claude 4.6 page"
+      release_date: ""
+      reference_url: "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-6"
+    notes: "Track alongside eval regressions after model changes."
+
+  - id: "openai_eval_flywheel"
+    name: "OpenAI Evaluation Flywheel Cookbook"
+    vendor: "OpenAI"
+    section: "C"
+    source_type: ["docs", "practitioner-guide"]
+    canonical_urls:
+      - "https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["evals", "general", "agents"]
+    portability: "portable"
+    what_it_is: "Operational guide for iterative prompt hardening using eval loops."
+    why_it_matters: "Useful blueprint for resilient prompt workflows across agent platforms."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel"
+    notes: "Methodology source; combine with internal golden sets for production use."
+
+  - id: "pelis_agent_factory_post"
+    name: "Peli's Agent Factory"
+    vendor: "GitHub"
+    section: "D"
+    source_type: ["practitioner-guide"]
+    canonical_urls:
+      - "https://github.github.io/gh-aw/blog/2026-01-12-welcome-to-pelis-agent-factory/"
+    update_feeds:
+      - type: "rss"
+        url: "https://github.github.io/gh-aw/blog/rss.xml"
+    applies_to: ["agents", "security", "general"]
+    portability: "portable"
+    what_it_is: "Operational narrative on large-scale repository agent workflows from GitHub-affiliated teams."
+    why_it_matters: "High-signal implementation lessons for safe, scalable agent operations."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2026-01-12"
+      reference_url: "https://github.github.io/gh-aw/blog/2026-01-12-welcome-to-pelis-agent-factory/"
+    notes: "Thought-leadership source; not a normative product-spec source."
+
+  - id: "jonmagic_systemic_improvements_post"
+    name: "Turning Agent Misses into Systemic Improvements"
+    vendor: "Community"
+    section: "D"
+    source_type: ["practitioner-guide"]
+    canonical_urls:
+      - "https://jonmagic.com/posts/turning-agent-misses-into-systemic-improvements/"
+    update_feeds:
+      - type: "rss"
+        url: "https://jonmagic.com/feed.xml"
+    applies_to: ["agents", "evals", "skills", "general"]
+    portability: "portable"
+    what_it_is: "Practitioner post detailing how repeated agent errors can be converted into durable process assets."
+    why_it_matters: "Concrete examples for building self-improving agent delivery loops."
+    update_cadence: "irregular"
+    stability: "medium"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2025-12-30"
+      reference_url: "https://jonmagic.com/posts/turning-agent-misses-into-systemic-improvements/"
+    notes: "Operationally concrete; validate product-specific claims against official sources."
+
+  - id: "vs_devblogs"
+    name: "Visual Studio DevBlogs"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["blog", "release-notes"]
+    canonical_urls:
+      - "https://devblogs.microsoft.com/visualstudio/"
+    update_feeds:
+      - type: "rss"
+        url: "https://devblogs.microsoft.com/visualstudio/feed/"
+    applies_to: ["visual_studio", "enterprise"]
+    portability: "platform-specific"
+    what_it_is: "Official Visual Studio team blog with monthly Copilot updates and feature announcements."
+    why_it_matters: "Cross-cycle analysis (L29) shows VS items are never discovered by the pipeline -- they are always added during curation from devblogs. Adding this source closes the gap."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://devblogs.microsoft.com/visualstudio/"
+    notes: "Primary source for 'Copilot in Visual Studio - [Month] update' posts. Use instead of MS Learn release notes for feature content."
+
+  - id: "azure_devops_devblogs"
+    name: "Azure DevOps DevBlogs"
+    vendor: "Microsoft"
+    section: "A"
+    source_type: ["blog"]
+    canonical_urls:
+      - "https://devblogs.microsoft.com/devops/"
+    update_feeds:
+      - type: "rss"
+        url: "https://devblogs.microsoft.com/devops/feed/"
+    applies_to: ["enterprise", "general"]
+    portability: "portable"
+    what_it_is: "Official Azure DevOps team blog covering CI/CD, pipelines, and ecosystem integration announcements."
+    why_it_matters: "Cross-cycle analysis (L30) shows Azure ecosystem content is a consistent curation-add that the pipeline misses. Adding this source automates discovery."
+    update_cadence: "frequent"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: ""
+      reference_url: "https://devblogs.microsoft.com/devops/"
+    notes: "Covers Azure DevOps migration, Azure MCP Server, Copilot for Azure announcements."
+
+  - id: "gh_blog_news_insights"
+    name: "GitHub Blog News and Insights"
+    vendor: "GitHub"
+    section: "A"
+    source_type: ["blog"]
+    canonical_urls:
+      - "https://github.blog/news-insights/"
+      - "https://github.blog/news-insights/company-news/"
+    update_feeds:
+      - type: "none"
+        url: ""
+    applies_to: ["enterprise", "general", "web"]
+    portability: "portable"
+    what_it_is: "GitHub Blog strategic announcements and company news not included in the changelog feed."
+    why_it_matters: "Feb 2026's biggest miss (L19): Agent HQ 3P (Claude+Codex) was at news-insights/company-news/, invisible to changelog-only scanning. CPO/CEO blog posts appear here."
+    update_cadence: "irregular"
+    stability: "high"
+    last_checked: "2026-02-10"
+    latest_known:
+      version: ""
+      release_date: "2026-02-04"
+      reference_url: "https://github.blog/news-insights/company-news/pick-your-agent-use-claude-and-codex-on-agent-hq/"
+    notes: "No RSS feed available; requires homepage scan during Phase 1A. Critical for catching strategic announcements."

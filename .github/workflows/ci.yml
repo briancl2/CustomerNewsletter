@@ -1,0 +1,58 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Structure validation
+        run: make validate-structure
+
+      - name: Skill validation (all skills)
+        run: make validate-all-skills
+
+      - name: Newsletter validator self-test
+        run: make test-validator
+
+      - name: Archive workspace tests
+        run: make test-archive
+
+      - name: Structural scoring (30pt)
+        run: bash tools/score-structural.sh
+
+      - name: Heuristic scoring (41pt)
+        run: bash tools/score-heuristic.sh
+
+      - name: Validate shipped sample newsletter
+        run: make validate-newsletter FILE=output/2026-02_february_newsletter.md
+
+      - name: Build docs
+        run: mkdocs build --strict
+
+      - name: Full test suite summary
+        if: always()
+        run: |
+          echo "=== Individual step results above ==="
+          echo "All steps that passed are green in the Actions UI."
