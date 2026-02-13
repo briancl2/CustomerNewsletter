@@ -87,7 +87,7 @@ Otherwise: no lead section; start with Copilot Latest Releases.
 - Security, compliance, and audit features
 - Administration, governance, and policy features
 - IDE feature parity updates
-- Evergreen training resources (2-3 per month in Copilot at Scale)
+- Evergreen training resources only when new items are published that month, up to 2-3 in Copilot at Scale (Q4=B)
 - Cross-product integrations (especially Azure, Microsoft 365, security toolchain)
 - Legal/indemnity changes (always expanded)
 

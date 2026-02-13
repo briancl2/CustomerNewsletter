@@ -22,7 +22,7 @@ Generate and validate candidate URLs from known sources for a given DATE_RANGE.
 
 - **DATE_RANGE**: Start date and end date in YYYY-MM-DD format
 - **Reference Year**: Extracted from DATE_RANGE
-- **kb/SOURCES.yaml**: Canonical URL source with 47 machine-readable entries
+- **kb/SOURCES.yaml**: Canonical URL source registry with machine-readable entries
 
 ## Output
 

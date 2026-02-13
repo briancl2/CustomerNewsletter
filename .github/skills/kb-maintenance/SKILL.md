@@ -19,7 +19,7 @@ Keep the knowledge base current through automated polling and health checks.
 
 ## Inputs
 
-- **kb/SOURCES.yaml**: Primary data source (47 entries with canonical URLs and feeds)
+- **kb/SOURCES.yaml**: Primary data source (canonical URLs and feeds)
 - **kb/CURRENT_STATE_SNAPSHOT.md**: Current state documentation
 
 ## Output

@@ -11,7 +11,6 @@ Requires: gh CLI authenticated (uses `gh auth token`)
 import argparse
 import difflib
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path

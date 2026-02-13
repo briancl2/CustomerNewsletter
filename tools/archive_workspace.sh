@@ -42,6 +42,10 @@ SKIPPED=0
 for f in workspace/newsletter_phase*.md; do
   [ ! -f "$f" ] && continue
   base=$(basename "$f")
+  if [[ "$base" != *"${PREFIX}-"* ]]; then
+    echo "  KEEP (different cycle): $base"
+    continue
+  fi
   dest="$ARCHIVE_DIR/${PREFIX}_${base}"
   if [ -f "$dest" ]; then
     echo "  SKIP (exists): $base -> $dest"

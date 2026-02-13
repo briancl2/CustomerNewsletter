@@ -93,6 +93,7 @@ assert_file_missing "$FAKE_REPO/workspace/newsletter_phase1a_url_manifest_2026-0
 assert_file_missing "$FAKE_REPO/workspace/2026-03_editorial_corrections.md"
 
 # Other cycle's files should still be in workspace (not archived)
+assert_file_exists "$FAKE_REPO/workspace/newsletter_phase1a_url_manifest_2026-02-01_to_2026-02-28.md"
 assert_file_exists "$FAKE_REPO/workspace/2026-02_editorial_review.md"
 
 # Output should report moved count

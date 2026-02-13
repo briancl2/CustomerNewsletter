@@ -128,18 +128,24 @@ phase_preflight() {
     exit 1
   fi
 
-  # Disk checks: verify examples populated
-  local skill_count example_count
-  skill_count=$(find .github/skills -name SKILL.md | wc -l | tr -d ' ')
+  # Disk checks: verify required skills and examples populated
+  local skill_count example_count missing_required=0
+  skill_count=$(find .github/skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
   example_count=$(find .github/skills/*/examples -type f 2>/dev/null | wc -l | tr -d ' ')
-  info "Skills: $skill_count | Example files: $example_count"
+  info "Skills discovered: $skill_count | Required build skills: ${#SKILLS[@]} | Example files: $example_count"
 
-  if [ "$skill_count" -ne 10 ]; then
-    fail "Expected 10 skills, found $skill_count"
+  for skill in "${SKILLS[@]}"; do
+    if [ ! -f ".github/skills/$skill/SKILL.md" ]; then
+      fail "Required skill missing: .github/skills/$skill/SKILL.md"
+      missing_required=$((missing_required + 1))
+    fi
+  done
+  if [ "$missing_required" -gt 0 ]; then
+    fail "Missing required build skills: $missing_required"
     exit 1
   fi
-  if [ "$example_count" -lt 10 ]; then
-    fail "Expected >=10 example files, found $example_count"
+  if [ "$example_count" -lt "${#SKILLS[@]}" ]; then
+    fail "Expected >=${#SKILLS[@]} example files, found $example_count"
     exit 1
   fi
 

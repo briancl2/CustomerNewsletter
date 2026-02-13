@@ -37,12 +37,13 @@ echo "════════════════════════�
 echo ""
 
 # Layer 1: Structural validation (cheapest, run first)
+skill_count=$(find .github/skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
 run_suite "Structure Validation" "make validate-structure"
-run_suite "Skill Validation (12 skills)" "make validate-all-skills"
+run_suite "Skill Validation (${skill_count} skills)" "make validate-all-skills"
 
 # Layer 2: Unit tests
-run_suite "Archive Workspace Tests (13 assertions)" "bash tools/test_archive_workspace.sh"
-run_suite "Newsletter Validator Self-Test (10 assertions)" "bash tools/test_validator.sh"
+run_suite "Archive Workspace Tests" "bash tools/test_archive_workspace.sh"
+run_suite "Newsletter Validator Self-Test" "bash tools/test_validator.sh"
 
 # Layer 3: Scoring tools
 run_suite "Structural Scoring (30pt)" "bash tools/score-structural.sh > /dev/null"
@@ -62,7 +63,7 @@ echo "════════════════════════�
 echo "  Results: $PASSED_SUITES/$TOTAL_SUITES suites passed"
 echo "══════════════════════════════════════════════════════"
 echo ""
-printf "$RESULTS"
+printf '%b' "$RESULTS"
 echo ""
 
 if [ "$FAILED_SUITES" -eq 0 ]; then

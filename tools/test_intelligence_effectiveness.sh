@@ -25,8 +25,18 @@ echo ""
 echo "Checking 7 intelligence gaps for encoded rules..."
 echo ""
 
+count_matches() {
+  local pattern="$1"
+  local file="$2"
+  local count
+  count=$(grep -Ec "$pattern" "$file" 2>/dev/null || true)
+  count=$(printf '%s' "$count" | tr -d '[:space:]')
+  [ -n "$count" ] || count=0
+  echo "$count"
+}
+
 # G1: Evergreen training resources included every month
-g1=$(grep -c "Include ONLY when new resources published\|Q4=B" .github/skills/content-curation/references/selection-criteria.md 2>/dev/null || echo 0)
+g1=$(count_matches "Include ONLY when new resources published|Q4=B" ".github/skills/content-curation/references/selection-criteria.md")
 if [ "$g1" -ge 1 ]; then
   echo "  ENCODED: G1 - Evergreen training resource rule (Q4=B)"
   ENCODED=$((ENCODED + 1))
@@ -35,7 +45,7 @@ else
 fi
 
 # G2: New product categories get own sections
-g2=$(grep -c "New product category.*section\|new product category" reference/editorial-intelligence.md 2>/dev/null || echo 0)
+g2=$(count_matches "New product category.*section|new product category" "reference/editorial-intelligence.md")
 if [ "$g2" -ge 1 ]; then
   echo "  ENCODED: G2 - New product categories get own sections"
   ENCODED=$((ENCODED + 1))
@@ -44,7 +54,7 @@ else
 fi
 
 # G3: Legal changes always expanded
-g3=$(grep -c "Legal.*always expand\|legal.*always expand\|indemnity.*always" .github/skills/content-curation/references/selection-criteria.md 2>/dev/null || echo 0)
+g3=$(count_matches "Legal.*always expand|legal.*always expand|indemnity.*always" ".github/skills/content-curation/references/selection-criteria.md")
 if [ "$g3" -ge 1 ]; then
   echo "  ENCODED: G3 - Legal changes always expanded"
   ENCODED=$((ENCODED + 1))
@@ -53,7 +63,7 @@ else
 fi
 
 # G4: IDE monthly update deep-read
-g4=$(grep -c "IDE Monthly Update Deep-Read\|deep-read the full release notes" .github/skills/content-retrieval/SKILL.md 2>/dev/null || echo 0)
+g4=$(count_matches "IDE Monthly Update Deep-Read|deep-read the full release notes" ".github/skills/content-retrieval/SKILL.md")
 if [ "$g4" -ge 1 ]; then
   echo "  ENCODED: G4 - IDE monthly update deep-read"
   ENCODED=$((ENCODED + 1))
@@ -62,7 +72,7 @@ else
 fi
 
 # G5: Cross-category governance bundling
-g5=$(grep -c "Cross-Category Governance Bundling\|cross-category governance" reference/editorial-intelligence.md 2>/dev/null || echo 0)
+g5=$(count_matches "Cross-Category Governance Bundling|cross-category governance" "reference/editorial-intelligence.md")
 if [ "$g5" -ge 1 ]; then
   echo "  ENCODED: G5 - Cross-category governance bundling"
   ENCODED=$((ENCODED + 1))
@@ -71,7 +81,7 @@ else
 fi
 
 # G6: Context-dependent exclusion
-g6=$(grep -c "Context-Dependent Exclusion\|context-dependent exclusion" reference/editorial-intelligence.md 2>/dev/null || echo 0)
+g6=$(count_matches "Context-Dependent Exclusion|context-dependent exclusion" "reference/editorial-intelligence.md")
 if [ "$g6" -ge 1 ]; then
   echo "  ENCODED: G6 - Context-dependent exclusion"
   ENCODED=$((ENCODED + 1))
@@ -80,7 +90,7 @@ else
 fi
 
 # G7: Same-type group compression (was Same-capability pair)
-g7=$(grep -c "Same-type group" reference/editorial-intelligence.md 2>/dev/null || echo 0)
+g7=$(count_matches "Same-type group" "reference/editorial-intelligence.md")
 if [ "$g7" -ge 1 ]; then
   echo "  ENCODED: G7 - Same-type group compression"
   ENCODED=$((ENCODED + 1))

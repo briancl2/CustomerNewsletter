@@ -44,7 +44,9 @@ echo ""
 # --- Check 1: Polishing intelligence exists with patterns ---
 pi_file="reference/polishing-intelligence.md"
 if [ -f "$pi_file" ]; then
-  pattern_count=$(grep -cE '^### Pattern [0-9]+' "$pi_file" 2>/dev/null || echo 0)
+  pattern_count=$(grep -cE '^### Pattern [0-9]+' "$pi_file" 2>/dev/null || true)
+  pattern_count=$(printf '%s' "$pattern_count" | tr -d '[:space:]')
+  pattern_count=${pattern_count:-0}
   if [ "$pattern_count" -ge 10 ]; then
     check "Polishing intelligence has >=10 patterns ($pattern_count found)" 0
   else
@@ -57,7 +59,9 @@ fi
 # --- Check 2: Product names dictionary exists ---
 pn_file=".github/skills/newsletter-polishing/references/product-names.md"
 if [ -f "$pn_file" ]; then
-  entry_count=$(grep -cE '^\| `' "$pn_file" 2>/dev/null || echo 0)
+  entry_count=$(grep -cE '^\| `' "$pn_file" 2>/dev/null || true)
+  entry_count=$(printf '%s' "$entry_count" | tr -d '[:space:]')
+  entry_count=${entry_count:-0}
   if [ "$entry_count" -ge 15 ]; then
     check "Product names dictionary has >=15 entries ($entry_count found)" 0
   else
@@ -79,8 +83,12 @@ fi
 # when run locally with benchmark data present, and gracefully skips in CI.
 manifest="benchmark/polishing/manifest.json"
 if [ -f "$manifest" ]; then
-  disc_count=$(python3 -c "import json; print(len(json.load(open('$manifest'))['discussions']))" 2>/dev/null || echo 0)
-  diff_count=$(python3 -c "import json; print(json.load(open('$manifest'))['total_diffs'])" 2>/dev/null || echo 0)
+  disc_count=$(python3 -c "import json; print(len(json.load(open('$manifest'))['discussions']))" 2>/dev/null || true)
+  diff_count=$(python3 -c "import json; print(json.load(open('$manifest'))['total_diffs'])" 2>/dev/null || true)
+  disc_count=$(printf '%s' "$disc_count" | tr -d '[:space:]')
+  diff_count=$(printf '%s' "$diff_count" | tr -d '[:space:]')
+  disc_count=${disc_count:-0}
+  diff_count=${diff_count:-0}
   if [ "$disc_count" -ge 10 ] && [ "$diff_count" -ge 100 ]; then
     check "Polishing benchmark data ($disc_count discussions, $diff_count diffs)" 0
   else
@@ -129,7 +137,9 @@ else
 fi
 
 # --- Check 6: Tier rules are referenced in polishing intelligence ---
-tier1_rules=$(grep -cE '^\| [0-9]+ \|' "$pi_file" 2>/dev/null || echo 0)
+tier1_rules=$(grep -cE '^\| [0-9]+ \|' "$pi_file" 2>/dev/null || true)
+tier1_rules=$(printf '%s' "$tier1_rules" | tr -d '[:space:]')
+tier1_rules=${tier1_rules:-0}
 if [ "$tier1_rules" -ge 15 ]; then
   check "Polishing intelligence has >=15 tier rules ($tier1_rules found)" 0
 else

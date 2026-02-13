@@ -55,7 +55,7 @@ def is_private_ip(hostname):
             if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_reserved:
                 return True
     except (socket.gaierror, OSError):
-        pass
+        pass  # DNS resolution failure is treated as non-private here; fetch step handles connectivity errors.
     return False
 
 
@@ -118,7 +118,7 @@ def parse_rss_entries(content, last_checked):
             try:
                 cutoff = datetime.strptime(str(last_checked), "%Y-%m-%d")
             except ValueError:
-                pass
+                pass  # Unknown date format; skip cutoff filtering for this source.
 
     all_entries = []
     filtered_entries = []
