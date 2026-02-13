@@ -46,6 +46,19 @@ make score-all
 - Legacy-to-modern mapping: `docs/legacy/README.md`
 - Maintenance/sync model: `docs/how-we-maintain-this.md`
 
+## February 2026 Impact Highlights
+
+Distilled from the February 2026 build report:
+- Report source (private working repo): [newsletter_system_report_2026-02.md](https://briancl2.github.io/CustomerNewsletter/reports/newsletter_system_report_2026-02/)
+- Verbatim public copy in this repo: `docs/reports/newsletter_system_report_2026-02.md`
+
+Most impactful outcomes:
+- Manual monthly process (4-6 hours plus repeated edits) was converted to a skills-first pipeline in 4 days.
+- Prompt sprawl (2,456 lines across monolithic files) was replaced by orchestrator plus modular skills and phase gates.
+- Intelligence was mined from 14 newsletters, 132 discussion edit diffs, and 72 curated knowledge sources.
+- Feedback now propagates system-wide through learnings, skill updates, validation rules, and scoring checks.
+- February 2026 output reached 49/50 on the editorial rubric and added capabilities that were previously missing (video links, MS Learn tables, richer resource coverage, stronger model/status labeling).
+
 ## Included Samples
 
 - `output/2026-02_february_newsletter.md`

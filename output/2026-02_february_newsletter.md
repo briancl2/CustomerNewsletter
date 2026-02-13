@@ -4,6 +4,16 @@ This is a personally curated newsletter for my customers, focused on the most re
 
 ---
 
+# Co-Launch: Open-Sourcing the Newsletter Generation System
+
+This month's issue is being released alongside a full public repo overhaul so teams can both consume updates and adopt the workflow that produced them.
+
+-   **Public release (`GA`)** -- `briancl2/CustomerNewsletter` is now open-sourced as a reusable Copilot newsletter generation system with agents, skills, prompts, scoring, and docs. - [Repository](https://github.com/briancl2/CustomerNewsletter) | [Quickstart](https://briancl2.github.io/CustomerNewsletter/quickstart/)
+-   **Build transparency** -- The complete February 2026 transformation report is published, including architecture decisions, testing methodology, and measurable outcomes. - [System Report (Public Copy)](https://briancl2.github.io/CustomerNewsletter/reports/newsletter_system_report_2026-02/) | [System Report (Source)](https://briancl2.github.io/CustomerNewsletter/reports/newsletter_system_report_2026-02/)
+-   **What customers can reuse** -- The repo includes a single profile configuration surface, deterministic quality gates, and sample outputs so teams can fork, customize, and run their own monthly update pipelines. - [Configuration Guide](https://briancl2.github.io/CustomerNewsletter/configuration/) | [How It Works](https://briancl2.github.io/CustomerNewsletter/how-it-works/)
+
+---
+
 # Copilot Everywhere: More Agents, More Models, More Surfaces, One Platform
 
 **The theme this period is choice.** Use more agents, with more models, from more surfaces, all powered by one Copilot subscription. That means one set of terms protecting your data, one payment, one platform to manage users, set budgets, and govern policies.
