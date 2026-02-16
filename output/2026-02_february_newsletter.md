@@ -6,11 +6,20 @@ This is a personally curated newsletter for my customers, focused on the most re
 
 # Co-Launch: Open-Sourcing the Newsletter Generation System
 
-This month's issue is being released alongside a full public repo overhaul so teams can both consume updates and adopt the workflow that produced them.
+This month's issue is being released alongside the system that drafted it.
 
--   **Public release (`GA`)** -- `briancl2/CustomerNewsletter` is now open-sourced as a reusable Copilot newsletter generation system with agents, skills, prompts, scoring, and docs. - [Repository](https://github.com/briancl2/CustomerNewsletter) | [Quickstart](https://briancl2.github.io/CustomerNewsletter/quickstart/)
--   **Build transparency** -- The complete February 2026 transformation report is published, including architecture decisions, testing methodology, and measurable outcomes. - [System Report](https://briancl2.github.io/CustomerNewsletter/reports/newsletter_system_report_2026-02/)
--   **What customers can reuse** -- The repo includes a single profile configuration surface, deterministic quality gates, and sample outputs so teams can fork, customize, and run their own monthly update pipelines. - [Configuration Guide](https://briancl2.github.io/CustomerNewsletter/configuration/) | [How It Works](https://briancl2.github.io/CustomerNewsletter/how-it-works/)
+The February newsletter was generated from a single prompt and a few minor editorial edits:
+
+```text
+i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026
+```
+
+If you want to reuse the workflow:
+
+- [Start here](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/start-here/)
+- [Short case study](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/case-study/)
+- [Timeline](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/timeline/)
+- [Full technical report](https://briancl2.github.io/CustomerNewsletter/reports/newsletter_system_report_2026-02/)
 
 ---
 

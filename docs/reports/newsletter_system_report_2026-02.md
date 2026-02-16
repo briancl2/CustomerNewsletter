@@ -6,11 +6,18 @@
 
 ## Executive Summary
 
-In four days (February 9-12, 2026), a single GitHub field engineer transformed a manually curated newsletter -- requiring 4-6 hours of monthly assembly and 7-28 rounds of post-publication edits -- into a fully automated, self-learning pipeline powered by GitHub Copilot. The system comprises 16 Agent Skills, 3 custom agents, 7 scoring tools, and 69 operational learnings, built through hypothesis-driven development across 56 commits.
+If you want the short version first:
+- Start here: [`launch/2026-02/start-here.md`](../launch/2026-02/start-here.md)
+- Case study: [`launch/2026-02/case-study.md`](../launch/2026-02/case-study.md)
+- Timeline: [`launch/2026-02/timeline.md`](../launch/2026-02/timeline.md)
 
-The pipeline's intelligence was mined from 14 published newsletters (644 benchmark files), 132 GitHub Discussion edit diffs, 72 knowledge base sources, and 10 curator brain dump files. Every human correction feeds back into permanent rules that propagate across 7 downstream surfaces, making regression structurally impossible.
+In February 2026, a manually curated Copilot newsletter workflow was rebuilt into a Copilot-assisted pipeline that can draft a full issue from a one-line prompt, then be brought to “ship ready” with a light editorial pass.
 
-The February 2026 newsletter scored 49/50 on the editorial rubric and introduced capabilities no previous edition had: inline video links with durations, Microsoft Learn course tables, a resources section, per-model GA/PREVIEW labeling, and systematic Microsoft Reactor event coverage.
+The core design is a loop: generate a draft, run checks, review what’s off, turn those notes into durable rules (skills, prompts, reference docs, validators), then rerun. The goal isn’t “no humans.” The goal is that repeated fixes don’t need to be repeated.
+
+A big unlock was treating the historical corpus as more than finished newsletters. The incremental git edits and publication-time polish capture how “good” was reached (what got removed, reordered, reframed, and tightened). Those patterns were turned into reusable instructions and checks.
+
+The rest of this document is the deep technical write-up: architecture, data sources, and the decisions that made the workflow more reliable.
 
 ---
 
@@ -98,7 +105,7 @@ The `check_intelligence_sync.sh` script verifies propagation across 7 surfaces. 
 
 | Feature | Previous Newsletters | Feb 2026 Generated |
 |---------|--------------------|--------------------|
-| Video links with duration | None | `[Video (Xm)](URL)` on 5 entries |
+| Video links with duration | None | Labels include duration (e.g., `Video (60m)`). |
 | MS Learn courses | None | 4 courses with episodes, durations, levels |
 | Docs/implementation links | Changelog only | Changelog + VS Code Setup + Docs |
 | Inline feature linking (7+ links) | Sub-bullet lists | Feature names ARE the links in prose |

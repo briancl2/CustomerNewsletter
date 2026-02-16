@@ -19,6 +19,10 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Quickstart: quickstart.md
+  - Launch (Feb 2026):
+      - Start Here: launch/2026-02/start-here.md
+      - Case Study: launch/2026-02/case-study.md
+      - Timeline: launch/2026-02/timeline.md
   - How It Works: how-it-works.md
   - Architecture: architecture.md
   - Configuration: configuration.md
