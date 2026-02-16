@@ -1,0 +1,52 @@
+{
+  "name": "feb2026_consistency",
+  "description": "Consistency contract for the February 2026 publication shape, excluding manual co-launch and Microsoft Learn add-ons.",
+  "date_range": {
+    "start": "2025-12-05",
+    "end": "2026-02-13"
+  },
+  "section_contract": {
+    "required_h1": [
+      "February 2026 Newsletter",
+      "Copilot",
+      "Enterprise and Security Updates",
+      "Resources and Best Practices",
+      "Webinars, Events, and Recordings"
+    ],
+    "required_h2": [
+      "Latest Releases",
+      "Virtual Events",
+      "In-Person Events",
+      "Behind the scenes"
+    ],
+    "required_h1_regex": [
+      "^Copilot Everywhere: More Agents, More Models, More Surfaces(, One Platform)?$"
+    ],
+    "forbidden_h1": [
+      "Copilot - Latest Releases",
+      "GitHub Platform Updates"
+    ],
+    "required_url_substrings": [
+      "github.com/github/copilot-cli/releases",
+      "docs.github.com/en/copilot/reference/copilot-feature-matrix",
+      "github.com/features/preview",
+      "github.com/customer-terms/updates",
+      "docs.github.com/en/site-policy/github-terms/github-dpa-previews",
+      "docs.github.com/en/site-policy/github-terms/github-pre-release-license-terms"
+    ],
+    "min_links": 110,
+    "min_words": 3000,
+    "min_h1_count": 6,
+    "domain_contract": {
+      "min_unique_domains": 16,
+      "required_domains": [
+        "github.blog",
+        "github.com",
+        "code.visualstudio.com",
+        "docs.github.com",
+        "developer.microsoft.com",
+        "youtube.com"
+      ]
+    }
+  }
+}

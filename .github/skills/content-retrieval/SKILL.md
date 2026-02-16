@@ -46,6 +46,15 @@ Chunk 4: JetBrains Plugin -> Write interim -> Checkpoint
 Chunk 5: Xcode CHANGELOG -> Write interim -> Complete
 ```
 
+### Runtime Constraint: Controlled Delegation Only
+
+During CLI pipeline runs in this repo, unbounded or generic delegation can deadlock Phase 1B after retrieval and before interim file creation.
+
+Hard rules:
+- Do not delegate to generic or "general-purpose" subagents.
+- If delegation is used, delegate only to a named agent with a strict Phase 1B boundary and explicit stop condition.
+- Always verify that all 5 interim files are written before exiting Phase 1B.
+
 ### CRITICAL: Anchor Unit = Feature, NOT Version
 
 The primary organizing unit is a **feature or update**, NOT a plugin/IDE version. Even when source material groups content by version, decompose each version into individual feature entries. This is critical for Phase 1C deduplication.
@@ -110,6 +119,45 @@ Each source has a fundamentally different data model. Use source-specific approa
 - **Xcode**: Single CHANGELOG.md on GitHub. "Added" and "Changed" sections are the primary content. Skip "Fixed" unless security-related. Cross-reference with GitHub Changelog for Xcode-specific announcements.
 
 - **Copilot CLI**: The **primary source is `github.com/github/copilot-cli/releases`**, NOT the GitHub blog changelog. The CLI ships daily releases (sometimes multiple per day), so a 30-day newsletter period can include 30+ releases. The blog changelog only publishes occasional summary posts that lag behind and miss most features. **Extraction strategy**: (1) Fetch the releases page and scan all stable releases (skip pre-releases with `-N` build suffixes appended to the version number, e.g., `v0.0.404-0`, `v0.0.404-1`; stable releases have no suffix after the final digit) whose date falls within DATE_RANGE. (2) Aggregate features across all releases into a single feature-centric list — never produce per-version bullets. (3) Categorize features by type: major capabilities (plan mode, background agents, plugins), platform integrations (ACP, MCP, SDK), quality-of-life (slash commands, permissions, themes), and bug fixes (skip unless security-related). (4) Cross-reference with GitHub blog changelog posts for richer narrative descriptions of major features — blog posts are supplementary links, not the discovery source. (5) The CLI is NOT in the Copilot feature matrix; pair CLI features with blog changelog links where available.
+
+### Copilot CLI Command Block (Benchmark Override)
+
+Run these explicit commands during Phase 1B when benchmarking against February 2026 fidelity:
+
+```bash
+# 1) Pull releases feed and keep stable tags only (exclude pre-release suffixes like -0 / -1)
+curl -sL "https://github.com/github/copilot-cli/releases.atom" \
+| rg -o 'v[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?' \
+| rg -v -- '-[0-9]+$' \
+| python3 -c "import re, sys; tags=sorted(set(sys.stdin.read().split()), key=lambda t: tuple(int(x) for x in re.findall(r'\\d+', t)[:3])); print('\\n'.join(tags))" \
+> /tmp/copilot_cli_stable_tags.txt
+
+# 2) Fetch recent stable release pages (latest 5 from the feed)
+tail -n 5 /tmp/copilot_cli_stable_tags.txt | while read -r tag; do
+  curl -sL "https://github.com/github/copilot-cli/releases/tag/${tag}" \
+    > "/tmp/copilot_cli_${tag}.html" || true
+done
+
+# 3) Feb 2026 anchor tags (fetch only if present in the stable tag list)
+for tag in v0.0.400 v0.0.404 v0.0.406; do
+  if rg -qx "$tag" /tmp/copilot_cli_stable_tags.txt; then
+    curl -sL "https://github.com/github/copilot-cli/releases/tag/${tag}" \
+      > "/tmp/copilot_cli_${tag}.html" || true
+  fi
+done
+
+# 4) Ensure interim output includes:
+#    - releases index URL
+#    - at least 2 release tag URLs
+#    - extracted capability bullets (delegate/background agents/plugins/autopilot)
+```
+
+If `rg` is unavailable, use `grep -oE` as a fallback for the tag extraction step.
+
+Minimum output requirement in `workspace/newsletter_phase1b_interim_github_*.md`:
+- `https://github.com/github/copilot-cli/releases`
+- At least two `https://github.com/github/copilot-cli/releases/tag/<tag>` URLs
+- A consolidated CLI capability summary grounded in those tag pages
 
 ### Cross-Referencing
 

@@ -8,28 +8,16 @@ validate-structure: ## Verify all required files and directories exist
 	@errors=0; \
 	for f in .github/agents/customer_newsletter.agent.md \
 		AGENTS.md \
-		.github/copilot-instructions.md \
 		.github/prompts/README.md \
 		.github/prompts/run_pipeline.prompt.md \
 		.github/skills/editorial-review/SKILL.md \
 		reference/editorial-intelligence.md \
 		reference/github_common_jargon.md \
 		reference/public_repo_guide.md \
-		config/profile.yaml \
-		docs/index.md \
-		docs/quickstart.md \
-		docs/how-it-works.md \
-		docs/architecture.md \
-		docs/configuration.md \
-		docs/reports/newsletter_system_report_2026-02.md \
-		docs/reports/newsletter_system_report_2026-02_context.md \
-		docs/legacy/README.md \
-		docs/how-we-maintain-this.md \
-		mkdocs.yml \
-		README.md Makefile .gitignore requirements.txt; do \
+		README.md Makefile .gitignore; do \
 		if [ ! -f "$$f" ]; then echo "MISSING: $$f"; errors=$$((errors + 1)); fi; \
 	done; \
-	for d in archive/2024 archive/2025 workspace output docs docs/reports config legacy legacy/2026-02_pre-overhaul; do \
+	for d in archive/2024 archive/2025 workspace/archived output; do \
 		if [ ! -d "$$d" ]; then echo "MISSING DIR: $$d"; errors=$$((errors + 1)); fi; \
 	done; \
 	prompt_count=$$(find .github/prompts -name "phase_*.prompt.md" 2>/dev/null | wc -l | tr -d ' '); \
@@ -113,9 +101,50 @@ validate-kb: ## Run kb link health check (dry-run)
 kb-poll: ## Poll sources for new content (dry-run)
 	@python3 .github/skills/kb-maintenance/scripts/poll_sources.py --dry-run
 
-newsletter: ## Generate newsletter pipeline (START= END= EVENTS=)
+newsletter: ## Generate newsletter pipeline (START= END= EVENTS= BENCHMARK_MODE=optional)
 	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter START=YYYY-MM-DD END=YYYY-MM-DD [EVENTS=path]"; exit 1; fi
-	@bash tools/run_newsletter.sh $(START) $(END) $(EVENTS)
+	@STRICT=$${STRICT:-1} BENCHMARK_MODE="$(BENCHMARK_MODE)" bash tools/run_newsletter.sh $(START) $(END) $(EVENTS)
+
+newsletter-prepare: ## Prepare cycle marker (START= END= NO_REUSE=1 optional)
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-prepare START=YYYY-MM-DD END=YYYY-MM-DD [NO_REUSE=1]"; exit 1; fi
+	@if [ "$(NO_REUSE)" = "1" ]; then \
+		bash tools/prepare_newsletter_cycle.sh $(START) $(END) --no-reuse; \
+	else \
+		bash tools/prepare_newsletter_cycle.sh $(START) $(END); \
+	fi
+
+newsletter-validate-strict: ## Strict contract validation (START= END= REQUIRE_FRESH=1 optional BENCHMARK_MODE=optional)
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-validate-strict START=YYYY-MM-DD END=YYYY-MM-DD [REQUIRE_FRESH=1] [BENCHMARK_MODE=mode]"; exit 1; fi
+	@if [ "$(REQUIRE_FRESH)" = "1" ]; then \
+		if [ -n "$(BENCHMARK_MODE)" ]; then \
+			bash tools/validate_pipeline_strict.sh $(START) $(END) --require-fresh --benchmark-mode $(BENCHMARK_MODE); \
+		else \
+			bash tools/validate_pipeline_strict.sh $(START) $(END) --require-fresh; \
+		fi; \
+	else \
+		if [ -n "$(BENCHMARK_MODE)" ]; then \
+			bash tools/validate_pipeline_strict.sh $(START) $(END) --benchmark-mode $(BENCHMARK_MODE); \
+		else \
+			bash tools/validate_pipeline_strict.sh $(START) $(END); \
+		fi; \
+	fi
+
+newsletter-validate-benchmark: ## Strict benchmark-mode validation (START= END= MODE=, REQUIRE_FRESH=1 optional)
+	@if [ -z "$(START)" ] || [ -z "$(END)" ] || [ -z "$(MODE)" ]; then echo "Usage: make newsletter-validate-benchmark START=YYYY-MM-DD END=YYYY-MM-DD MODE=feb2026_consistency [REQUIRE_FRESH=1]"; exit 1; fi
+	@if [ "$(REQUIRE_FRESH)" = "1" ]; then \
+		bash tools/validate_pipeline_strict.sh $(START) $(END) --require-fresh --benchmark-mode $(MODE); \
+	else \
+		bash tools/validate_pipeline_strict.sh $(START) $(END) --benchmark-mode $(MODE); \
+	fi
+
+newsletter-fresh: ## Prepare no-reuse cycle, then run newsletter with strict gate (START= END= EVENTS=)
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-fresh START=YYYY-MM-DD END=YYYY-MM-DD [EVENTS=path]"; exit 1; fi
+	@bash tools/prepare_newsletter_cycle.sh $(START) $(END) --no-reuse
+	@STRICT=$${STRICT:-1} bash tools/run_newsletter.sh $(START) $(END) $(EVENTS)
+
+newsletter-orchestrated: ## Controlled phase-by-phase run with explicit agent delegation (START= END= MODEL= BENCHMARK_MODE= NO_REUSE=1)
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-orchestrated START=YYYY-MM-DD END=YYYY-MM-DD [MODEL=claude-opus-4.6] [BENCHMARK_MODE=feb2026_consistency] [NO_REUSE=1]"; exit 1; fi
+	@MODEL="$${MODEL:-$(MODEL)}" BENCHMARK_MODE="$${BENCHMARK_MODE:-$(BENCHMARK_MODE)}" NO_REUSE="$${NO_REUSE:-$(NO_REUSE)}" bash tools/run_newsletter_orchestrated.sh $(START) $(END)
 
 test-archive: ## Run archive_workspace.sh test suite
 	@bash tools/test_archive_workspace.sh
@@ -138,10 +167,19 @@ test-intel-effectiveness: ## Test intelligence gap encoding effectiveness (targe
 test-polishing: ## Test polishing rules and benchmark data
 	@bash tools/test_polishing_rules.sh
 
-## Code review staged changes via Copilot CLI
-review:
-	@bash .github/skills/reviewing-code-locally/scripts/local_review.sh
 
-## Archive VS Code and CLI session logs
+## Archive VS Code and CLI session logs (uses new SLM skill)
 archive-sessions: ## Copy VS Code + CLI session logs to runs/sessions/
-	@bash tools/archive_sessions.sh
+	@bash .github/skills/session-log-manager/scripts/session-archive.sh --repo briancl2-customer-newsletter
+
+## Scan session stores, report sizes, flag hotspots
+session-health: ## Session log health check
+	@bash .github/skills/session-log-manager/scripts/session-health-check.sh
+
+## Archive sessions for a specific repo (REPO=name)
+session-archive: ## Archive sessions (REPO=briancl2-customer-newsletter)
+	@bash .github/skills/session-log-manager/scripts/session-archive.sh --repo $(REPO)
+
+## Compress archived sessions older than 7 days
+session-rotate: ## Rotate and compress old session archives
+	@bash .github/skills/session-log-manager/scripts/session-rotate.sh

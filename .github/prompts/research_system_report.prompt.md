@@ -49,7 +49,6 @@ Generate a detailed, evidence-based report documenting how this automated newsle
    - `.github/skills/*/SKILL.md` — all 16 skills (these ARE the agent instructions)
    - `tools/*.sh` — scoring and validation scripts
    - `Makefile` — automation targets
-   - `.github/skills/reviewing-code-locally/scripts/local_review.sh` — the code review integration
 
 ### What to Cover
 

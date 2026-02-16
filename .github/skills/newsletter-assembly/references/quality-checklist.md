@@ -7,19 +7,23 @@ Pre-delivery quality gates for the assembled newsletter.
 - [ ] **Introduction** present with standard template and 2-3 highlights
 - [ ] **Copilot section** present with Latest Releases subsection
 - [ ] **Copilot changelog links footer** present (inline paragraph, no `## Copilot at Scale` heading)
-- [ ] **Changelog links** present in Copilot section footer (all 6 IDEs):
+- [ ] **Tracking links** present in Copilot section footer:
+  - Copilot Feature Matrix
   - GitHub Copilot Changelog
-  - VS Code Copilot Changelog
-  - Visual Studio Copilot Changelog
-  - JetBrains Copilot Changelog
-  - Xcode Copilot Changelog
-  - Eclipse Copilot Changelog
+  - VS Code Release Notes
+  - Visual Studio Release Notes
+  - JetBrains Plugin
+  - Xcode Releases
+  - Copilot CLI Releases
+  - GitHub Previews
+  - Preview Terms Changelog
 - [ ] **No orphaned section headings** — every `#` or `##` heading has content below it. A heading with only links and no bullets is orphaned.
 - [ ] **YouTube playlists** present at start of Events section (all 3):
   - Copilot Tips and Training
   - GitHub Enterprise, Actions, and GHAS
   - How GitHub GitHubs
 - [ ] **Events section** present (virtual table + in-person bullets as applicable)
+- [ ] **Resources and Best Practices** section present when enablement content exists
 - [ ] **Closing** present with standard template
 - [ ] **Newsletter archive link** present in introduction
 
@@ -33,6 +37,7 @@ Pre-delivery quality gates for the assembled newsletter.
 - [ ] Section dividers (`---`) between major sections
 - [ ] Consistent bullet formatting (`-` or `*`)
 - [ ] Proper `#` hierarchy in headers
+- [ ] Major sections use H1 and event subsections use H2 for benchmark-style long-range runs
 
 ## Content Quality Checks
 
@@ -73,10 +78,11 @@ Pre-delivery quality gates for the assembled newsletter.
 ## Final Verification
 
 - [ ] Output file exists at expected path
-- [ ] File length: 120-150 lines ideal; up to 175 for rich months; flag if <120 or >175
+- [ ] File length: 120-150 lines ideal; up to 220 for rich 60+ day months
 - [ ] All sections are in mandatory order (Intro, Lead?, Copilot, Additional?, Events, Closing)
 - [ ] Legal/indemnity items are expanded with sub-bullets (never compressed)
 - [ ] Model availability is always a single consolidated bullet
 - [ ] Azure/M365 integrations prioritized over other integrations
 - [ ] Training resources included only when new (no stale evergreen)
 - [ ] IDE-unique features (not parity) have standalone bullets outside parity section
+- [ ] For >=60-day windows, target >=3000 words and >=110 markdown links

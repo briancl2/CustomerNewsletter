@@ -16,9 +16,10 @@ Mandatory section order for the assembled newsletter.
      - Feature-centric format (not version-by-version)
      - Standard rollout note at the bottom
    - Copilot at Scale changelog links footer:
-     - Standard changelog links (6 IDEs) as an inline paragraph at the bottom of the Copilot section
+     - Standard tracking links as an inline paragraph at the bottom of the Copilot section
      - NO `## Copilot at Scale` heading — this is a footer, not a section
      - Format: "Stay current with the latest changes:" followed by pipe-separated links
+     - Include: Copilot Feature Matrix, GitHub Copilot Changelog, VS Code Release Notes, Visual Studio Release Notes, JetBrains Plugin, Xcode Releases, Copilot CLI Releases, GitHub Previews, Preview Terms Changelog
      - NO content bullets. All governance items belong in Enterprise and Security section.
 4. **Additional Sections** (conditional) - As warranted by content:
    - **Enterprise and Security Updates** (preferred name when both enterprise platform and security items exist)
@@ -26,8 +27,12 @@ Mandatory section order for the assembled newsletter.
    - DevOps and Integrations
    - GitHub Actions
    - Learning Resources
-5. **Webinars, Events, and Recordings** (mandatory) - From Phase 2, preceded by YouTube playlists
-6. **Closing** - Standard template
+5. **Resources and Best Practices** (preferred when enablement content exists)
+6. **Webinars, Events, and Recordings** (mandatory) - From Phase 2, preceded by YouTube playlists
+   - Use `## Virtual Events`
+   - Use `## In-Person Events`
+   - Use `## Behind the scenes`
+7. **Closing** - Standard template
 
 ## Section Dividers
 
@@ -37,5 +42,7 @@ Use `---` (horizontal rule) between major sections for visual separation.
 
 - **Lead Section**: Include only when Phase 3 output has one. Do not invent a lead section.
 - **Additional Sections**: Include only when Phase 3 output contains items for them. Do not create empty sections.
+- **Feb 2026 benchmark consistency**: Do not emit a standalone `# GitHub Platform Updates` section. Fold any essential platform items into Enterprise and Security.
+- **Heading level consistency**: For benchmark-style long-range runs, use `#` for major sections and `##` for event subsections.
 - **Deprecations and migrations**: Consolidate into a single bundled bullet under **Enterprise and Security Updates**. Do not create a standalone `# Migration Notices` section.
 - **Conference Sessions**: Only when a major conference occurs in the newsletter cycle.

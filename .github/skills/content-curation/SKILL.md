@@ -1,6 +1,6 @@
 ---
 name: content-curation
-description: "Transforms raw discoveries into polished, newsletter-ready content sections. Use when running Phase 3 of the newsletter pipeline. Selects 15-20 most enterprise-relevant items from 30-50 discoveries, applies GA/PREVIEW labels, formats into Lead section, Copilot Latest Releases, and Copilot at Scale. Keywords: content curation, phase 3, selection, formatting, enterprise relevance."
+description: "Transforms raw discoveries into polished, newsletter-ready content sections. Use when running Phase 3 of the newsletter pipeline. Selects and structures high-value items from 30-50 discoveries, applies GA/PREVIEW labels, and prepares complete section material for assembly. Keywords: content curation, phase 3, selection, formatting, enterprise relevance."
 metadata:
   category: domain
   phase: "3"
@@ -13,8 +13,8 @@ Transform Phase 1C discoveries into polished, newsletter-ready content sections.
 ## Quick Start
 
 1. Read Phase 1C discoveries from `workspace/newsletter_phase1a_discoveries_*.md`
-2. Select 15-20 most enterprise-relevant items using selection criteria
-3. Organize into sections: Lead (optional), Copilot (Latest + IDE Parity), Copilot at Scale
+2. Select items using selection criteria with range-aware depth targets
+3. Organize into full newsletter sections: Lead (optional), Copilot (Latest + IDE Parity), Enterprise and Security, Platform, Resources and Best Practices
 4. Apply formatting: bold terms, GA/PREVIEW labels, embedded links, strip metadata
 5. Write output to `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md`
 
@@ -25,8 +25,11 @@ Transform Phase 1C discoveries into polished, newsletter-ready content sections.
 ## Output
 
 - **File**: `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md`
-- **Target**: 15-20 curated items (quality over quantity)
-- **Content**: Core product sections only (no events, no introduction/closing)
+- **Target**: range-aware depth
+  - >=60-day range: 24+ curated bullets
+  - >=30-day range: 18+ curated bullets
+  - <30-day range: 12+ curated bullets
+- **Content**: Full section-ready material (no final intro/closing text)
 
 ## Core Workflow
 
@@ -62,11 +65,23 @@ Priority weights:
 
 **Lead Section** (optional): Only when discoveries show a clear theme (major launch, vision update). Derive title from content cluster, not generic label.
 
-**Copilot - Latest Releases**: New features, model updates, agent capabilities. VS Code features go here, organized by feature theme (not by version number). Never reference specific VS Code version numbers in bullet text -- version numbers appear only in link URLs. With weekly VS Code releases, features may span multiple versions; present the end-of-period state.
+**Copilot (H1) + Latest Releases (H2)**: Use `# Copilot` then `## Latest Releases`. New features, model updates, and agent capabilities go here. VS Code features are grouped by feature theme (not by version number). Never reference specific VS Code version numbers in bullet text; version numbers appear only in links.
 
-**Copilot at Scale**: Enterprise governance, billing, training, metrics. Always include standard changelog links.
+**Enterprise and Security Updates**: Governance, billing, compliance, security controls, deprecations.
 
-**Additional Sections**: Security Updates, Platform Updates, etc. only when warranted by content.
+**GitHub Platform Updates**: Actions, Projects, PR workflows, repository/platform improvements.
+> **Benchmark override:** When `BENCHMARK_MODE=feb2026_consistency`, fold these into Enterprise and Security instead of a standalone H1.
+
+**Resources and Best Practices**: Enablement assets, implementation guides, adoption assets, operator tips.
+
+**Events handoff stubs**: Curate references that should feed into event framing, including virtual, in-person, and behind-the-scenes cues.
+
+**Copilot CLI placement (mandatory)**:
+- Keep the consolidated Copilot CLI bullet in `# Copilot Everywhere: ...`, not under Enterprise/Platform.
+- The CLI bullet must include legal links while in preview:
+  - `https://docs.github.com/en/site-policy/github-terms/github-dpa-previews`
+  - `https://docs.github.com/en/site-policy/github-terms/github-pre-release-license-terms`
+- Include `https://github.com/github/copilot-cli/releases` in the same bullet or its immediate "See also" links.
 
 ### Step 3.5: Build Cross-IDE Feature Alignment Matrix (L66)
 
@@ -126,6 +141,9 @@ Before writing output:
 - [ ] Quantitative metrics are directly from source (no derived calculations)
 - [ ] Sections with 3+ items have a bold framing intro: **Theme** -- Enterprise context
 - [ ] Feature descriptions cross-checked against docs, not just changelog titles
+- [ ] Range-aware depth floor met (24+/18+/12+ bullets)
+- [ ] `Resources and Best Practices` material present when enablement sources exist
+- [ ] At least one curator-note signal (if notes exist) is reflected in curated sections
 
 ## Reference
 
@@ -146,10 +164,11 @@ Before curating, check for these high-weight signals in the discoveries:
 ## Done When
 
 - [ ] Curated sections file exists at `workspace/newsletter_phase3_curated_sections_*.md`
-- [ ] 15-20 curated items total
-- [ ] Proper section structure (Lead if warranted, Copilot, Copilot at Scale)
+- [ ] Range-aware depth floor is met (24+/18+/12+ bullets by window size)
+- [ ] Proper section structure is present (Lead if warranted, Copilot, Enterprise and Security, Platform, Resources and Best Practices)
 - [ ] GA/PREVIEW labels present where known
 - [ ] IDE Parity pattern with rollout note included
-- [ ] Standard changelog links in Copilot at Scale
+- [ ] Standard changelog links in Copilot section footer
+- [ ] Copilot CLI consolidated bullet is under Copilot Everywhere and includes DPA + Pre-Release Terms links
 - [ ] No raw metadata, no em dashes, no raw URLs
 - [ ] Enterprise focus throughout

@@ -53,7 +53,7 @@ A 10-word note in Copilot Chat produces a systemic fix in under 2 minutes, inclu
 
 The 454-line monolithic agent shrank to 81 lines (a pure orchestrator). Domain logic moved into 16 SKILL.md files following the [Agent Skills](https://agentskills.io) specification. Intelligence was mined from 14 newsletters, 132 edit diffs, and 72 SOURCES.yaml entries.
 
-**Copilot features used**: VS Code Agent Mode (primary), Copilot CLI (`make review`), custom agents (`.agent.md`), custom instructions (`AGENTS.md`), prompt files (`.prompt.md`), Agent Skills (`SKILL.md`), GitHub Actions CI, `/fleet` for parallel sub-agent research.
+**Copilot features used**: VS Code Agent Mode (primary), Copilot CLI (`copilot -p`), custom agents (`.agent.md`), custom instructions (`AGENTS.md`), prompt files (`.prompt.md`), Agent Skills (`SKILL.md`), GitHub Actions CI, `/fleet` for parallel sub-agent research.
 
 **Key decisions**: Skills-first architecture (L42), file-driven configuration, disk-based phase gates (L2), deletion discipline, feed-forward learnings (L1-L69).
 
@@ -139,7 +139,7 @@ The `check_intelligence_sync.sh` script verifies propagation across 7 surfaces. 
 
 # Appendix: System Inventory
 
-**16 Skills**: url-manifest, content-retrieval, content-consolidation, curator-notes, events-extraction, content-curation, newsletter-assembly, newsletter-polishing, video-matching, newsletter-validation, editorial-review, scope-contract, kb-maintenance, testing-prompt-changes, building-skill, reviewing-code-locally
+**16 Skills (plus session-log-manager)**: url-manifest, content-retrieval, content-consolidation, curator-notes, events-extraction, content-curation, newsletter-assembly, newsletter-polishing, video-matching, newsletter-validation, editorial-review, scope-contract, kb-maintenance, testing-prompt-changes, building-skill, session-log-manager
 
 **7 Scoring Tools**: score-structural (30pt), score-heuristic (41pt), score-selection (25pt), score-v2-rubric (50pt), score-sync, score-automation, score-sprint
 

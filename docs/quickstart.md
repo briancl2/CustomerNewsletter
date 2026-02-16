@@ -39,10 +39,5 @@ make score-all
 make newsletter START=2026-01-01 END=2026-02-10
 ```
 
-### Optional review helper
-
-```bash
-make review
-```
 
 If `copilot` CLI is unavailable, use deterministic checks and edit skill files manually.

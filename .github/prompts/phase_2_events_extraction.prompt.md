@@ -24,8 +24,12 @@ I will adopt the newsletter chatmode taxonomy for categories. I will list Hybrid
 </decision>
 
 ## Inputs and Data Contract
-- Input: A list of event URLs (5–15 typical)
+- Input: deterministic event-source artifact plus event URLs
 - Output: Markdown sections and tables suitable for later newsletter integration, plus a compact internal log of decisions if requested
+
+Deterministic source artifact (required):
+- `workspace/newsletter_phase2_event_sources_<END_DATE>.json`
+- Generate with: `python3 tools/extract_event_sources.py <START_DATE> <END_DATE>`
 
 Required fields per event:
 - Event title (exact from source)
@@ -58,9 +62,18 @@ Skill level qualifier (separate, not a category):
 
 ## Phased Process
 
+<phase name="event-source-extraction">
+<thinking>
+First, generate and read the deterministic event-source artifact. Use candidate URLs from this JSON as the primary Phase 2 input set.
+</thinking>
+<checkpoint>
+Run `python3 tools/extract_event_sources.py <START_DATE> <END_DATE>` and confirm `workspace/newsletter_phase2_event_sources_<END_DATE>.json` exists before curation.
+</checkpoint>
+</phase>
+
 <phase name="discovery">
 <thinking>
-For each URL, fetch page content and identify whether it is a virtual webinar, an in-person event, or a conference session index. Follow relevant links on the page for speakers, agenda, and series details.
+For each candidate URL, fetch page content and identify whether it is a virtual webinar, an in-person event, or a conference session index. Follow relevant links on the page for speakers, agenda, and series details.
 </thinking>
 <checkpoint>
 Ensure every URL is accessible. If a page blocks scraping, capture what is visible and note missing items.
@@ -101,6 +114,12 @@ Before finalizing, check:
 - Categories minimal and precise (prefer 1; max 2)
 - Enterprise relevance satisfied
  - VS Code branded events (Dev Days, Live releases) implicitly also map to Copilot; add Copilot if absent
+- Event row URLs must be deep links, not landing/search placeholders
+- Do not use row-level event URLs:
+  - `https://resources.github.com/events/`
+  - `https://github.com/resources/events`
+  - `https://developer.microsoft.com/en-us/reactor/?search=...`
+  - `https://resources.github.com/copilot-fridays-english-on-demand/`
 </validation>
 </phase>
 
@@ -115,10 +134,11 @@ Format as a table (No times captured or output; date only):
 ```
 
 ### In-person Events (conferences, meetups)
-Format as bullet points with location. Hybrid appears here with a note:
+Format as a table with location. Hybrid appears with a note in the Event column:
 ```markdown
-* City, ST - **Sep 18** - [Event Name](URL) (Hybrid, virtual attendance available)
-  Brief description (1 sentence, optional)
+| Date | Location | Event |
+|------|----------|-------|
+| Sep 18 | Chicago, IL | [Event Name](URL) (Hybrid, virtual attendance available) |
 ```
 
 ### Conference Sessions (major conferences)
@@ -173,9 +193,10 @@ Virtual Events table row:
 |------|-------|-----------|
 | Sep 24 | [Securing Your Supply Chain with GHAS](https://example.com/reg) | Enterprise |
 
-In-person bullet (Hybrid):
-* Chicago, IL - **Oct 02** - [Copilot at Scale Workshop](https://example.com/reg) (Hybrid, virtual attendance available)
-  Hands-on enterprise rollout strategies and measurement approaches
+In-person event row (Hybrid):
+| Date | Location | Event |
+|------|----------|-------|
+| Oct 02 | Chicago, IL | [Copilot at Scale Workshop](https://example.com/reg) (Hybrid, virtual attendance available) |
 
 Conference session:
 | Date | Time (CT) | Session | Description |
@@ -214,16 +235,16 @@ Use this scaffolding to group your outputs. Formatting does not need to be perfe
 # Webinars, Events, and Recordings
 [Brian's YouTube playlists section]
 
-### [Conference Sessions Guide - if applicable]
-[Detailed conference tables]
-
-### Upcoming Virtual Events
+## Virtual Events
 [Standard Copilot Fridays content if relevant]
 
 [Virtual events table]
 
-### Upcoming In-person Events
-[Bullet point list with locations]
+## In-Person Events
+[In-person events table]
+
+## Behind the scenes
+[Brief operational notes]
 ```
 
 ---
@@ -252,16 +273,16 @@ Provide the grouped sections scaffold with populated content:
 # Webinars, Events, and Recordings
 [Brian's YouTube playlists section]
 
-### [Conference Sessions Guide - if applicable]
-[Detailed conference tables]
-
-### Upcoming Virtual Events
+## Virtual Events
 [Standard Copilot Fridays content if relevant]
 
 [Virtual events table]
 
-### Upcoming In-person Events
-[Bullet point list with locations]
+## In-Person Events
+[In-person events table]
+
+## Behind the scenes
+[Brief operational notes]
 ```
 
 <validation>

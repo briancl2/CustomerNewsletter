@@ -1,0 +1,27 @@
+schema_version: 1
+
+# Deterministic event-source inputs for Phase 2.
+# These sources are intentionally stable and parseable without browser automation.
+github_resources_events_url: "https://github.com/resources/events"
+
+reactor_series_seed_urls:
+  - "https://developer.microsoft.com/en-us/reactor/series/S-1625/"
+  - "https://developer.microsoft.com/en-us/reactor/series/S-1631/"
+
+curator_notes:
+  # Broad include is intentional: monthly notes may be named Jan.md / February.md / etc.
+  # Generated artifacts are filtered by exclude_globs below.
+  globs:
+    - "workspace/curator_notes_*.md"
+    - "workspace/[A-Za-z]*.md"
+  exclude_globs:
+    - "workspace/curator_notes_processed_*.md"
+    - "workspace/curator_notes_editorial_signals_*.md"
+    - "workspace/newsletter_*.md"
+  allowed_url_patterns:
+    - "^https://github\\.com/resources/events/[a-z0-9-]+/?$"
+    - "^https://developer\\.microsoft\\.com/(en-us/)?reactor/events/[0-9]+/?"
+    - "^https://developer\\.microsoft\\.com/(en-us/)?reactor/series/[A-Za-z0-9-]+/?"
+    - "^https://github\\.registration\\.goldcast\\.io/events/[A-Za-z0-9-]+"
+    - "^https://aitour\\.microsoft\\.com/"
+    - "^https://(www\\.)?youtube\\.com/(live/|watch\\?|@[^/]+/streams)"

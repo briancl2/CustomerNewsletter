@@ -1,86 +1,100 @@
-# CustomerNewsletter
+# Customer Newsletter Generator
 
-Open-source, skills-based system for generating enterprise-focused monthly Copilot newsletters.
-
-This repository is the public product surface for the February 2026 release and includes:
-- A reusable newsletter generation system (agents, skills, prompts, tools, scoring)
-- A sample generated issue: `output/2026-02_february_newsletter.md`
-- A full build report documenting the transformation to a self-learning workflow
+A fully automated, skills-based system for generating monthly GitHub customer newsletters. Built with hypothesis-driven development, layered scoring, and iterative editorial intelligence mining.
 
 ## Quick Start
 
-### Path A: VS Code Agent Mode (recommended)
-1. Open this repository in VS Code.
-2. Use the `customer_newsletter` agent from `.github/agents/customer_newsletter.agent.md`.
-3. Run the pipeline gates with:
-
 ```bash
+# Validate repository health
 make validate-structure
 make validate-all-skills
-make newsletter START=2026-01-01 END=2026-02-10
+
+# Generate and validate February 2026 window
+make newsletter START=2025-12-05 END=2026-02-13
 make validate-newsletter FILE=output/2026-02_february_newsletter.md
 ```
 
-### Path B: CLI-first
-Prerequisites:
-- `python3`
-- `make`
-- GitHub Copilot CLI (`copilot`) for agent-assisted paths
+VS Code flow: open the repo, select the `customer_newsletter` agent, then run:
 
-Deterministic checks (no Copilot required):
+```text
+please generate the february newsletter from scratch for the dates Dec 05 2025 to Feb 13 2026
+```
+
+Copilot CLI equivalent:
 
 ```bash
-make validate-structure
-make validate-all-skills
-make test-validator
-make score-all
+copilot --agent customer_newsletter \
+  --model claude-opus-4.6 \
+  --allow-all \
+  --no-ask-user \
+  -p "please generate the february newsletter from scratch for the dates Dec 05 2025 to Feb 13 2026"
+```
+
+More context: [release_bundle/2026-02_newsletter_launch/START_HERE.md](release_bundle/2026-02_newsletter_launch/START_HERE.md)
+
+## System Overview
+
+| Component | Count | Key Files |
+|-----------|-------|-----------|
+| **Skills** | 12 | `.github/skills/*/SKILL.md` |
+| **Agents** | 3 | `.github/agents/*.agent.md` |
+| **Prompts** | 7 | `.github/prompts/*.prompt.md` |
+| **Scoring tools** | 7 | `tools/score-*.sh` |
+| **KB sources** | 72 | `kb/SOURCES.yaml` |
+| **Reference docs** | 16 | `reference/` |
+
+## 6-Phase Pipeline
+
+| Phase | Skill | Input | Output |
+|-------|-------|-------|--------|
+| 1A | url-manifest | DATE_RANGE, SOURCES.yaml | Candidate URLs |
+| 1B | content-retrieval | URL manifest | 5 interim files |
+| 1C | content-consolidation | Interim files | 30-50 discoveries |
+| 2 | events-extraction | Event URLs | Event tables |
+| 3 | content-curation | Discoveries | 15-20 curated sections |
+| 4 | newsletter-assembly | Curated + Events | Final newsletter |
+| 5 | editorial-review | Human corrections | Updated newsletter |
+
+## Target Audience
+
+Engineering Managers, DevOps Leads, and IT Leadership at large regulated enterprises (Healthcare, Manufacturing, Financial Services).
+
+## Key Directories
+
+| Path | Purpose |
+|------|---------|
+| `.github/skills/` | 11 pipeline and meta skills |
+| `.github/prompts/` | Phase prompts + pipeline orchestrator |
+| `reference/` | Editorial intelligence, source intelligence, methodology |
+| `kb/` | Knowledge base with 72 source entries |
+| `tools/` | Scoring, build automation, archival scripts |
+| `output/` | Final newsletter files |
+| `archive/` | Historical newsletters by year |
+| `workspace/` | Pipeline intermediates (gitignored) |
+| `benchmark/` | 16 cycles, 339 files (gitignored) |
+
+## Methodology
+
+- **HIGR** (Hypothesis-Implement-Grade-Rework) for all changes
+- **Layered scoring**: structural (free) -> heuristic (5s) -> selection (benchmark) -> editorial rubric
+- **Feed-forward learnings**: 57 lessons captured in `LEARNINGS.md`
+- **Skills-first**: domain logic in skills, agent is a pure orchestrator (87 lines)
+
+## Makefile Targets
+
+```bash
+make help                      # Show all 32 targets
+make validate-all-skills       # Validate all skills
+make validate-newsletter FILE= # Validate a newsletter
+make validate-kb               # KB link health check
+make kb-poll                   # Poll sources for new content
+make score-all                 # Run all scoring layers
+make newsletter START= END=   # Full pipeline orchestration
 ```
 
 ## Documentation
 
-- Docs site source: `docs/`
-- Site config: `mkdocs.yml`
-- Architecture walkthrough: `docs/architecture.md`
-- System report (verbatim): `docs/reports/newsletter_system_report_2026-02.md`
-- Report context note: `docs/reports/newsletter_system_report_2026-02_context.md`
-- Legacy-to-modern mapping: `docs/legacy/README.md`
-- Maintenance/sync model: `docs/how-we-maintain-this.md`
-
-## February 2026 Impact Highlights
-
-Distilled from the February 2026 build report:
-- Report source (public): `docs/reports/newsletter_system_report_2026-02.md`
-- Report context note: `docs/reports/newsletter_system_report_2026-02_context.md`
-
-Most impactful outcomes:
-- Manual monthly process (4-6 hours plus repeated edits) was converted to a skills-first pipeline in 4 days.
-- Prompt sprawl (2,456 lines across monolithic files) was replaced by orchestrator plus modular skills and phase gates.
-- Intelligence was mined from 14 newsletters, 132 discussion edit diffs, and 72 curated knowledge sources.
-- Feedback now propagates system-wide through learnings, skill updates, validation rules, and scoring checks.
-- February 2026 output reached 49/50 on the editorial rubric and added capabilities that were previously missing (video links, MS Learn tables, richer resource coverage, stronger model/status labeling).
-
-## Included Samples
-
-- `output/2026-02_february_newsletter.md`
-- `archive/2025/December.md`
-- `archive/2024/June.md`
-
-## System Overview
-
-| Component | Count | Location |
-|---|---:|---|
-| Agents | 3 | `.github/agents/` |
-| Skills | 17 | `.github/skills/` |
-| Pipeline prompts | 6 phases + orchestrator | `.github/prompts/` |
-| Scoring tools | 7 | `tools/score-*.sh` |
-| Knowledge sources | 72 | `kb/SOURCES.yaml` |
-
-## Legacy Artifacts
-
-The pre-overhaul public prompts/chatmode are preserved under:
-- `legacy/2026-02_pre-overhaul/`
-- `legacy/README.md`
-
-## License
-
-MIT. See `LICENSE`.
+- [Build Plan](planning/BUILD_PLAN.md) -- phased implementation plan
+- [Handoff](planning/HANDOFF.md) -- project state for session continuity
+- [Hypotheses](HYPOTHESES.md) -- 46 tracked, 43 confirmed
+- [Learnings](LEARNINGS.md) -- 57 lessons with evidence and fixes

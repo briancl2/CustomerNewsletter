@@ -15,6 +15,9 @@
 #
 # Phase gates: each phase verifies its output file exists and has content
 # before proceeding to the next phase.
+# Optional strict gate:
+#   STRICT=1 (default) runs tools/validate_pipeline_strict.sh at the end.
+#   STRICT=0 disables the strict contract validator.
 
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
@@ -22,6 +25,8 @@ cd "$(git rev-parse --show-toplevel)"
 START="${1:-}"
 END="${2:-}"
 EVENTS="${3:-}"
+STRICT="${STRICT:-1}"
+BENCHMARK_MODE="${BENCHMARK_MODE:-}"
 
 if [ -z "$START" ] || [ -z "$END" ]; then
   echo "Usage: run_newsletter.sh <START_DATE> <END_DATE> [EVENT_URLS_FILE]"
@@ -56,6 +61,9 @@ echo "════════════════════════�
 echo "RUN_ID:     $RUN_ID"
 echo "DATE_RANGE: $START to $END"
 echo "OUTPUT:     $OUTPUT"
+if [ -n "$BENCHMARK_MODE" ]; then
+  echo "BENCHMARK:  $BENCHMARK_MODE"
+fi
 echo "══════════════════════════════════════════════════════"
 echo ""
 
@@ -216,3 +224,21 @@ echo "  Phase 3  (Curated Sections):  $([ -f "$CURATED" ] && echo 'DONE' || echo
 echo "  Phase 4  (Newsletter):        $([ -f "$OUTPUT" ] && echo 'DONE' || echo 'TODO')"
 echo "  Validation:                   $([ -f "$OUTPUT" ] && echo 'RUN' || echo 'PENDING')"
 echo "══════════════════════════════════════════════════════"
+
+if [ "$STRICT" = "1" ]; then
+  echo ""
+  echo "Strict Contract Gate:"
+  strict_cmd=(bash tools/validate_pipeline_strict.sh "$START" "$END")
+  if [ -n "$BENCHMARK_MODE" ]; then
+    strict_cmd+=(--benchmark-mode "$BENCHMARK_MODE")
+  fi
+  if "${strict_cmd[@]}"; then
+    echo "  STRICT VALIDATION: PASSED"
+  else
+    echo "  STRICT VALIDATION: FAILED"
+    exit 1
+  fi
+else
+  echo ""
+  echo "Strict Contract Gate: SKIPPED (STRICT=0)"
+fi
