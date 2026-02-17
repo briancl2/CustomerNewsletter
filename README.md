@@ -6,8 +6,10 @@ A public, reusable system for drafting enterprise-focused Copilot newsletters.
 
 - Start here (Feb 2026 launch):
   [Start here](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/start-here/)
-- See a shipped example:
-  [Published February issue (Discussion #18)](https://github.com/briancl2/CustomerNewsletter/discussions/18)
+- Current newsletter:
+  [February 2026 newsletter (Discussion #18)](https://github.com/briancl2/CustomerNewsletter/discussions/18)
+- Last newsletter:
+  [December 2025 newsletter (Discussion #15)](https://github.com/briancl2/CustomerNewsletter/discussions/15)
 
 ## Run It
 
