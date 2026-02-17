@@ -43,6 +43,14 @@ copilot --agent customer_newsletter --model claude-opus-4.6 -i
 
 Then paste the same prompt from the VS Code section.
 
+## Principles
+
+- **HIGR:** treat changes like experiments (Hypothesize → Implement → Grade → Rework), not one-off edits.
+- **Feed-forward learning:** when something is consistently off, fix the underlying skill/rule so future runs improve.
+- **Trust disk, not self-reports:** the system proves work by writing artifacts to `workspace/` and validating them.
+- **Layered scoring:** cheap checks first (structure/heuristics), then deeper rubric checks when needed.
+- **Skills-first architecture:** domain rules live in `.github/skills/`; the agent stays thin and orchestrates phases.
+
 ## What You Should See
 
 - Final draft written to `output/2026-02_february_newsletter.md`
