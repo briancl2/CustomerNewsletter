@@ -60,27 +60,27 @@ Then paste the same prompt from the VS Code section.
 - Final draft written to `output/2026-02_february_newsletter.md`
 - A paper trail in `workspace/` showing what was collected and curated along the way
 
-## Changing the Date Range
-
-You can reuse the same idea for another window. In VS Code Copilot Chat, try:
-
-```text
-Please generate a newsletter draft for START=<YYYY-MM-DD> and END=<YYYY-MM-DD>.
-```
-
 ## Two Prompts That Did Most of the Work
 
 Kickoff prompt (verbatim excerpt):
 
 ```text
 Fleet deployed: i want to plan for a large project that will take multiple steps,
-multiple agents, and a number of subdivided tasks. I want this plan to generate a large
-discovery to start and then generate a detailed multi-stage migration plan for the
-Newsletter portion of this repo
+multiple agents, and a number of subdivided tasks. I want this plan to generate a
+large discovery to start and then generate a detailed multi-stage migration plan for
+the Newsletter portion of this repo.
+
+the work is to 1) extract the Newsletter portion of this repo (e.g., a) newsletter
+archive, b) newsletter generation mechanisms such as prompts, agents, skills, and
+reference material, and c) any other related components that will be useful in the new
+standalone Newsletter repo) and 2) setup the Newsletter system in a new standalone repo
+with after migrating the parts from number one over.
 ```
 
-One-line run prompt (the one you can keep reusing):
+Full kickoff prompt:
+- [Timeline (kickoff prompt)](./timeline.md#kickoff-prompt)
 
-```text
-i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026
-```
+Why the one-line run prompt works:
+- It names the output (a newsletter) and pins a date window.
+- "from-scratch" forces a full run, not a patch.
+- If you only change one thing, change the dates.

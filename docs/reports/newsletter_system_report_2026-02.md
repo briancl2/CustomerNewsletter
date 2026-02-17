@@ -57,7 +57,6 @@ The 454-line monolithic agent shrank to 81 lines (a pure orchestrator). Domain l
 
 **Key decisions**: Skills-first architecture (L42), file-driven configuration, disk-based phase gates (L2), deletion discipline, feed-forward learnings (L1-L69).
 
-For detailed build plans, see [planning/BUILD_PLAN.md](planning/BUILD_PLAN.md), sprint designs at [planning/sprint-automation.md](planning/sprint-automation.md), [planning/sprint-polishing-intelligence.md](planning/sprint-polishing-intelligence.md), [planning/sprint-feed-forward.md](planning/sprint-feed-forward.md), [planning/sprint-pipeline-hardening.md](planning/sprint-pipeline-hardening.md), and session handoff at [planning/HANDOFF.md](planning/HANDOFF.md).
 
 ---
 

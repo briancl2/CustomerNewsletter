@@ -1,100 +1,69 @@
-# Customer Newsletter Generator
+# CustomerNewsletter
 
-A fully automated, skills-based system for generating monthly GitHub customer newsletters. Built with hypothesis-driven development, layered scoring, and iterative editorial intelligence mining.
+A public, reusable system for drafting enterprise-focused Copilot newsletters.
 
-## Quick Start
+## Start Here
 
-```bash
-# Validate repository health
-make validate-structure
-make validate-all-skills
+- Start here (Feb 2026 launch):
+  [Start here](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/start-here/)
+- See a shipped example:
+  [Published February issue (Discussion #18)](https://github.com/briancl2/CustomerNewsletter/discussions/18)
 
-# Generate and validate February 2026 window
-make newsletter START=2025-12-05 END=2026-02-13
-make validate-newsletter FILE=output/2026-02_february_newsletter.md
-```
+## Run It
 
-VS Code flow: open the repo, select the `customer_newsletter` agent, then run:
+### VS Code Copilot Chat
+
+1. Open this repo in VS Code.
+2. Open Copilot Chat and select the `customer_newsletter` agent.
+3. Paste this prompt:
 
 ```text
-please generate the february newsletter from scratch for the dates Dec 05 2025 to Feb 13 2026
+i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026
 ```
 
-Copilot CLI equivalent:
+### Copilot CLI
+
+Headless mode:
 
 ```bash
 copilot --agent customer_newsletter \
   --model claude-opus-4.6 \
   --allow-all \
   --no-ask-user \
-  -p "please generate the february newsletter from scratch for the dates Dec 05 2025 to Feb 13 2026"
+  -p "i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026"
 ```
 
-More context: [release_bundle/2026-02_newsletter_launch/START_HERE.md](release_bundle/2026-02_newsletter_launch/START_HERE.md)
-
-## System Overview
-
-| Component | Count | Key Files |
-|-----------|-------|-----------|
-| **Skills** | 12 | `.github/skills/*/SKILL.md` |
-| **Agents** | 3 | `.github/agents/*.agent.md` |
-| **Prompts** | 7 | `.github/prompts/*.prompt.md` |
-| **Scoring tools** | 7 | `tools/score-*.sh` |
-| **KB sources** | 72 | `kb/SOURCES.yaml` |
-| **Reference docs** | 16 | `reference/` |
-
-## 6-Phase Pipeline
-
-| Phase | Skill | Input | Output |
-|-------|-------|-------|--------|
-| 1A | url-manifest | DATE_RANGE, SOURCES.yaml | Candidate URLs |
-| 1B | content-retrieval | URL manifest | 5 interim files |
-| 1C | content-consolidation | Interim files | 30-50 discoveries |
-| 2 | events-extraction | Event URLs | Event tables |
-| 3 | content-curation | Discoveries | 15-20 curated sections |
-| 4 | newsletter-assembly | Curated + Events | Final newsletter |
-| 5 | editorial-review | Human corrections | Updated newsletter |
-
-## Target Audience
-
-Engineering Managers, DevOps Leads, and IT Leadership at large regulated enterprises (Healthcare, Manufacturing, Financial Services).
-
-## Key Directories
-
-| Path | Purpose |
-|------|---------|
-| `.github/skills/` | 11 pipeline and meta skills |
-| `.github/prompts/` | Phase prompts + pipeline orchestrator |
-| `reference/` | Editorial intelligence, source intelligence, methodology |
-| `kb/` | Knowledge base with 72 source entries |
-| `tools/` | Scoring, build automation, archival scripts |
-| `output/` | Final newsletter files |
-| `archive/` | Historical newsletters by year |
-| `workspace/` | Pipeline intermediates (gitignored) |
-| `benchmark/` | 16 cycles, 339 files (gitignored) |
-
-## Methodology
-
-- **HIGR** (Hypothesis-Implement-Grade-Rework) for all changes
-- **Layered scoring**: structural (free) -> heuristic (5s) -> selection (benchmark) -> editorial rubric
-- **Feed-forward learnings**: 57 lessons captured in `LEARNINGS.md`
-- **Skills-first**: domain logic in skills, agent is a pure orchestrator (87 lines)
-
-## Makefile Targets
+Interactive mode:
 
 ```bash
-make help                      # Show all 32 targets
-make validate-all-skills       # Validate all skills
-make validate-newsletter FILE= # Validate a newsletter
-make validate-kb               # KB link health check
-make kb-poll                   # Poll sources for new content
-make score-all                 # Run all scoring layers
-make newsletter START= END=   # Full pipeline orchestration
+copilot --agent customer_newsletter --model claude-opus-4.6 -i
 ```
 
-## Documentation
+Then paste the same prompt from the VS Code section.
 
-- [Build Plan](planning/BUILD_PLAN.md) -- phased implementation plan
-- [Handoff](planning/HANDOFF.md) -- project state for session continuity
-- [Hypotheses](HYPOTHESES.md) -- 46 tracked, 43 confirmed
-- [Learnings](LEARNINGS.md) -- 57 lessons with evidence and fixes
+## What You Should See
+
+- Final draft written to `output/2026-02_february_newsletter.md`
+- A paper trail in `workspace/` showing what was collected and curated along the way
+
+## Docs
+
+- Launch (Feb 2026):
+  - [Start here](docs/launch/2026-02/start-here.md)
+  - [Case study](docs/launch/2026-02/case-study.md)
+  - [Timeline](docs/launch/2026-02/timeline.md)
+- [How it works](docs/how-it-works.md)
+- [Architecture](docs/architecture.md)
+- [Feb 2026 system report](docs/reports/newsletter_system_report_2026-02.md)
+
+## Repo Layout
+
+- `.github/agents/`: the Copilot agent entrypoints
+- `.github/skills/`: the phase skills (the real “how it works”)
+- `.github/prompts/`: prompt files the agent uses for each phase
+- `kb/`: source intelligence and source lists
+- `reference/`: editorial intelligence and other long-lived guidance
+- `tools/`: scoring + validation scripts
+- `workspace/`: intermediate artifacts produced during a run
+- `output/`: final newsletter drafts
+- `archive/`: historical newsletters by year

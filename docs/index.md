@@ -1,40 +1,51 @@
 # CustomerNewsletter
 
-A public, reusable system for generating enterprise-focused monthly Copilot newsletters.
+A public, reusable system for drafting enterprise-focused Copilot newsletters.
 
-## What You Get
+## Start Here
 
-- Multi-phase generation pipeline powered by agents and skills
-- Deterministic validation and scoring gates
-- Self-learning loop that turns corrections into persistent rules
-- Sample outputs and legacy artifacts for comparison
+If you only read one page, start here:
+- [Start here (Feb 2026)](launch/2026-02/start-here.md)
 
-## Why This Exists
+Then, if you want the backstory:
+- [Short case study](launch/2026-02/case-study.md)
+- [Timeline](launch/2026-02/timeline.md)
 
-The project demonstrates how to evolve from:
-- manual curation and prompt sprawl
+Want to see a real shipped example?
+- [Published February issue (Discussion #18)](https://github.com/briancl2/CustomerNewsletter/discussions/18)
 
-to:
-- skills-first orchestration
-- repeatable quality gates
-- maintainable, auditable workflow design
+## Try It
 
-## Start in 10 Minutes
+### VS Code Copilot Chat
 
-1. Customize `config/profile.yaml`.
-2. Run `make validate-structure` and `make validate-all-skills`.
-3. Run `make newsletter START=2026-01-01 END=2026-02-10`.
-4. Validate output with `make validate-newsletter FILE=output/2026-02_february_newsletter.md`.
+1. Open this repo in VS Code.
+2. Open Copilot Chat and select the `customer_newsletter` agent.
+3. Paste this prompt:
 
-## Release Artifacts
+```text
+i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026
+```
 
-- February 2026 sample newsletter: `output/2026-02_february_newsletter.md`
-- System report (verbatim): `reports/newsletter_system_report_2026-02.md`
-- Legacy-to-modern mapping: `legacy/README.md`
+### Copilot CLI
 
-## Screenshots Placeholder
+Headless mode:
 
-Add screenshots here for:
-- VS Code Agent Mode orchestration
-- Pipeline artifacts in `workspace/`
-- Final newsletter rendering
+```bash
+copilot --agent customer_newsletter \
+  --model claude-opus-4.6 \
+  --allow-all \
+  --no-ask-user \
+  -p "i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026"
+```
+
+Interactive mode:
+
+```bash
+copilot --agent customer_newsletter --model claude-opus-4.6 -i
+```
+
+## Docs
+
+- [How it works](how-it-works.md)
+- [Architecture](architecture.md)
+- [Feb 2026 system report](reports/newsletter_system_report_2026-02.md)
