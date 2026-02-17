@@ -51,6 +51,24 @@ Then paste the same prompt from the VS Code section.
 - **Layered scoring:** cheap checks first (structure/heuristics), then deeper rubric checks when needed.
 - **Skills-first architecture:** domain rules live in `.github/skills/`; the agent stays thin and orchestrates phases.
 
+## Architecture
+
+At a high level, the system is a multi-phase pipeline plus a self-learning loop.
+
+- **End-to-end pipeline:** URL manifest → content retrieval → consolidation → curator notes (optional)
+  → event sources → events → content curation → assembly → polishing → validation + scoring.
+- **Self-learning loop:** human corrections → learning capture → skill/reference update → regenerate
+  → validate + score → future runs improve.
+- **Key interfaces:**
+  - Agent entrypoint: `.github/agents/customer_newsletter.agent.md`
+  - Phase skills: `.github/skills/*/SKILL.md`
+  - Phase prompts: `.github/prompts/*.prompt.md`
+  - Fresh-cycle prep: `tools/prepare_newsletter_cycle.sh`
+  - Strict validation: `tools/validate_pipeline_strict.sh`
+  - Deterministic event sources: `kb/EVENT_SOURCES.yaml`, `tools/extract_event_sources.py`
+
+More detail: [docs/architecture.md](docs/architecture.md)
+
 ## What You Should See
 
 - Final draft written to `output/2026-02_february_newsletter.md`
