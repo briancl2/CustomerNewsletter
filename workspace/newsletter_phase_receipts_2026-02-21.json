@@ -14,7 +14,62 @@
       "artifact_mtime_utc": "2026-02-21T14:57:42Z",
       "recorded_at_epoch": 1771685866,
       "recorded_at_utc": "2026-02-21T14:57:46Z"
+    },
+    {
+      "phase_id": "phase1b_github",
+      "artifact_path": "workspace/newsletter_phase1b_interim_github_2026-02-14_to_2026-02-21.md",
+      "artifact_sha256": "144fd31419311c6641cce0131a9fa8fd6acc25382603f3a4bdfc2d31f6056fd8",
+      "artifact_bytes": 9384,
+      "artifact_lines": 115,
+      "artifact_mtime_epoch": 1771685963,
+      "artifact_mtime_utc": "2026-02-21T14:59:23Z",
+      "recorded_at_epoch": 1771686035,
+      "recorded_at_utc": "2026-02-21T15:00:35Z"
+    },
+    {
+      "phase_id": "phase1b_jetbrains",
+      "artifact_path": "workspace/newsletter_phase1b_interim_jetbrains_2026-02-14_to_2026-02-21.md",
+      "artifact_sha256": "89023b03aadd1c39a6ea4d77f37c203c0230b6a938da7e652fdaa7ccccf9139c",
+      "artifact_bytes": 2785,
+      "artifact_lines": 42,
+      "artifact_mtime_epoch": 1771686018,
+      "artifact_mtime_utc": "2026-02-21T15:00:18Z",
+      "recorded_at_epoch": 1771686035,
+      "recorded_at_utc": "2026-02-21T15:00:35Z"
+    },
+    {
+      "phase_id": "phase1b_visualstudio",
+      "artifact_path": "workspace/newsletter_phase1b_interim_visualstudio_2026-02-14_to_2026-02-21.md",
+      "artifact_sha256": "4498d72182b2b1c86af2f3b2a94761eeca34f6fa44085eae13ac70844b93cdbf",
+      "artifact_bytes": 2026,
+      "artifact_lines": 34,
+      "artifact_mtime_epoch": 1771686003,
+      "artifact_mtime_utc": "2026-02-21T15:00:03Z",
+      "recorded_at_epoch": 1771686035,
+      "recorded_at_utc": "2026-02-21T15:00:35Z"
+    },
+    {
+      "phase_id": "phase1b_vscode",
+      "artifact_path": "workspace/newsletter_phase1b_interim_vscode_2026-02-14_to_2026-02-21.md",
+      "artifact_sha256": "9ce1a3f4f9ffbe0ccf13d057916702a55d48ed59a5cbe9e8da56ad3fa0e1f8c5",
+      "artifact_bytes": 5062,
+      "artifact_lines": 71,
+      "artifact_mtime_epoch": 1771685990,
+      "artifact_mtime_utc": "2026-02-21T14:59:50Z",
+      "recorded_at_epoch": 1771686035,
+      "recorded_at_utc": "2026-02-21T15:00:35Z"
+    },
+    {
+      "phase_id": "phase1b_xcode",
+      "artifact_path": "workspace/newsletter_phase1b_interim_xcode_2026-02-14_to_2026-02-21.md",
+      "artifact_sha256": "aef21ab9ac5127ef332077945bb6ebb1bb4842fd0b97ac862be8adb2188da722",
+      "artifact_bytes": 1945,
+      "artifact_lines": 34,
+      "artifact_mtime_epoch": 1771686027,
+      "artifact_mtime_utc": "2026-02-21T15:00:27Z",
+      "recorded_at_epoch": 1771686035,
+      "recorded_at_utc": "2026-02-21T15:00:35Z"
     }
   ],
-  "updated_at_utc": "2026-02-21T14:57:46Z"
+  "updated_at_utc": "2026-02-21T15:00:35Z"
 }
