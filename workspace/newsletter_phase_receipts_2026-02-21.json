@@ -113,7 +113,18 @@
       "artifact_mtime_utc": "2026-02-21T15:04:27Z",
       "recorded_at_epoch": 1771686272,
       "recorded_at_utc": "2026-02-21T15:04:32Z"
+    },
+    {
+      "phase_id": "phase4_output",
+      "artifact_path": "output/2026-02_february_newsletter.md",
+      "artifact_sha256": "bfde8ea894468a14eca754e30c9aa81d90a878223f14e6ee5e04f81253ce0cc2",
+      "artifact_bytes": 15187,
+      "artifact_lines": 115,
+      "artifact_mtime_epoch": 1771686381,
+      "artifact_mtime_utc": "2026-02-21T15:06:21Z",
+      "recorded_at_epoch": 1771686386,
+      "recorded_at_utc": "2026-02-21T15:06:26Z"
     }
   ],
-  "updated_at_utc": "2026-02-21T15:04:32Z"
+  "updated_at_utc": "2026-02-21T15:06:26Z"
 }
