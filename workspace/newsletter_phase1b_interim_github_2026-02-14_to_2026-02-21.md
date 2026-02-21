@@ -113,3 +113,23 @@
 - GitHub Changelog typically has 10-15 entries per week; 10 items extracted matching enterprise relevance threshold
 - Blog posts filtered from the latest page; 2 posts in window
 - News & Insights page scanned for major announcements
+
+## Copilot CLI Releases
+
+**Source**: https://github.com/github/copilot-cli/releases
+
+### [Copilot CLI v0.0.410: improved plan mode output formatting] (PREVIEW)
+- **Date**: 2026-02-18
+- **Description**: Copilot CLI v0.0.410 improves plan mode output formatting with structured task breakdowns, clearer step numbering, and support for nested sub-tasks. Plan mode now also supports file-level change previews before execution.
+- **Links**: [Releases](https://github.com/github/copilot-cli/releases) | [Release Tag](https://github.com/github/copilot-cli/releases/tag/v0.0.410)
+- **Relevance Score**: 7/10
+- **IDE Support**: CLI
+- **Enterprise Impact**: Improves planning workflow clarity for developers using Copilot CLI for complex tasks.
+
+### [Copilot CLI v0.0.411: MCP server auto-discovery from workspace config] (PREVIEW)
+- **Date**: 2026-02-20
+- **Description**: Copilot CLI v0.0.411 adds automatic discovery of MCP servers from workspace configuration files (`.vscode/mcp.json`, `.copilot/mcp.json`). The CLI now shares MCP server configuration with VS Code, eliminating the need for separate CLI configuration.
+- **Links**: [Releases](https://github.com/github/copilot-cli/releases) | [Release Tag](https://github.com/github/copilot-cli/releases/tag/v0.0.411)
+- **Relevance Score**: 8/10
+- **IDE Support**: CLI
+- **Enterprise Impact**: Simplifies MCP server management for teams using both VS Code and Copilot CLI, ensuring consistent tool access across environments.

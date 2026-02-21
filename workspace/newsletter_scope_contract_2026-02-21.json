@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-02-21T15:10:00Z",
+  "date_range": {
+    "start": "2026-02-14",
+    "end": "2026-02-21"
+  },
+  "window_days": 7,
+  "month": "february",
+  "year": 2026,
+  "expected_sources": ["github_changelog", "github_blog", "vscode", "visualstudio", "jetbrains", "xcode", "copilot_cli"],
+  "expected_versions": {
+    "vscode": ["1.110"]
+  },
+  "expected_categories": ["Security & Compliance", "AI & Automation", "Platform & DevEx", "Enterprise Administration"],
+  "previous_newsletter_end": "2026-02-13",
+  "gap_days": 0,
+  "notes": "Weekly newsletter covering Feb 14-21. Previous newsletter covered Dec 5 2025 through Feb 13 2026."
+}

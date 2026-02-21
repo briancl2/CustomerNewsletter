@@ -5,6 +5,17 @@
   "end": "2026-02-21",
   "receipts": [
     {
+      "phase_id": "phase0_scope_contract",
+      "artifact_path": "workspace/newsletter_scope_contract_2026-02-21.json",
+      "artifact_sha256": "23dab02f2237a98be20f9fb726ab82033752df1907d97c1dde2ff5fdee57ed46",
+      "artifact_bytes": 673,
+      "artifact_lines": 19,
+      "artifact_mtime_epoch": 1771686561,
+      "artifact_mtime_utc": "2026-02-21T15:09:21Z",
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
+    },
+    {
       "phase_id": "phase1a_manifest",
       "artifact_path": "workspace/newsletter_phase1a_url_manifest_2026-02-14_to_2026-02-21.md",
       "artifact_sha256": "6c47925a6562916c1d6a4523f846e8a3e816f08ae2c8ddcc5b5744b2891c1fe3",
@@ -12,19 +23,19 @@
       "artifact_lines": 111,
       "artifact_mtime_epoch": 1771685862,
       "artifact_mtime_utc": "2026-02-21T14:57:42Z",
-      "recorded_at_epoch": 1771685866,
-      "recorded_at_utc": "2026-02-21T14:57:46Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase1b_github",
       "artifact_path": "workspace/newsletter_phase1b_interim_github_2026-02-14_to_2026-02-21.md",
-      "artifact_sha256": "144fd31419311c6641cce0131a9fa8fd6acc25382603f3a4bdfc2d31f6056fd8",
-      "artifact_bytes": 9384,
-      "artifact_lines": 115,
-      "artifact_mtime_epoch": 1771685963,
-      "artifact_mtime_utc": "2026-02-21T14:59:23Z",
-      "recorded_at_epoch": 1771686035,
-      "recorded_at_utc": "2026-02-21T15:00:35Z"
+      "artifact_sha256": "d44260e87190aa8810d0e6420e72547521db06819a465d972afc67d487b4c4e5",
+      "artifact_bytes": 10857,
+      "artifact_lines": 135,
+      "artifact_mtime_epoch": 1771686515,
+      "artifact_mtime_utc": "2026-02-21T15:08:35Z",
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase1b_jetbrains",
@@ -34,8 +45,8 @@
       "artifact_lines": 42,
       "artifact_mtime_epoch": 1771686018,
       "artifact_mtime_utc": "2026-02-21T15:00:18Z",
-      "recorded_at_epoch": 1771686035,
-      "recorded_at_utc": "2026-02-21T15:00:35Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase1b_visualstudio",
@@ -45,8 +56,8 @@
       "artifact_lines": 34,
       "artifact_mtime_epoch": 1771686003,
       "artifact_mtime_utc": "2026-02-21T15:00:03Z",
-      "recorded_at_epoch": 1771686035,
-      "recorded_at_utc": "2026-02-21T15:00:35Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase1b_vscode",
@@ -56,8 +67,8 @@
       "artifact_lines": 71,
       "artifact_mtime_epoch": 1771685990,
       "artifact_mtime_utc": "2026-02-21T14:59:50Z",
-      "recorded_at_epoch": 1771686035,
-      "recorded_at_utc": "2026-02-21T15:00:35Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase1b_xcode",
@@ -67,8 +78,8 @@
       "artifact_lines": 34,
       "artifact_mtime_epoch": 1771686027,
       "artifact_mtime_utc": "2026-02-21T15:00:27Z",
-      "recorded_at_epoch": 1771686035,
-      "recorded_at_utc": "2026-02-21T15:00:35Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase1c_discoveries",
@@ -78,8 +89,8 @@
       "artifact_lines": 226,
       "artifact_mtime_epoch": 1771686116,
       "artifact_mtime_utc": "2026-02-21T15:01:56Z",
-      "recorded_at_epoch": 1771686121,
-      "recorded_at_utc": "2026-02-21T15:02:01Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase2_event_sources",
@@ -89,8 +100,8 @@
       "artifact_lines": 112,
       "artifact_mtime_epoch": 1771686132,
       "artifact_mtime_utc": "2026-02-21T15:02:12Z",
-      "recorded_at_epoch": 1771686142,
-      "recorded_at_utc": "2026-02-21T15:02:22Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase2_events",
@@ -100,8 +111,8 @@
       "artifact_lines": 55,
       "artifact_mtime_epoch": 1771686188,
       "artifact_mtime_utc": "2026-02-21T15:03:08Z",
-      "recorded_at_epoch": 1771686193,
-      "recorded_at_utc": "2026-02-21T15:03:13Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase3_curated",
@@ -111,20 +122,31 @@
       "artifact_lines": 57,
       "artifact_mtime_epoch": 1771686267,
       "artifact_mtime_utc": "2026-02-21T15:04:27Z",
-      "recorded_at_epoch": 1771686272,
-      "recorded_at_utc": "2026-02-21T15:04:32Z"
+      "recorded_at_epoch": 1771686574,
+      "recorded_at_utc": "2026-02-21T15:09:34Z"
     },
     {
       "phase_id": "phase4_output",
       "artifact_path": "output/2026-02_february_newsletter.md",
-      "artifact_sha256": "bfde8ea894468a14eca754e30c9aa81d90a878223f14e6ee5e04f81253ce0cc2",
-      "artifact_bytes": 15187,
-      "artifact_lines": 115,
-      "artifact_mtime_epoch": 1771686381,
-      "artifact_mtime_utc": "2026-02-21T15:06:21Z",
-      "recorded_at_epoch": 1771686386,
-      "recorded_at_utc": "2026-02-21T15:06:26Z"
+      "artifact_sha256": "fcb61d4b61f9eb24bd7dc87083a8ea7fe180ad4ddc738ef33d7072b0ab20c8b5",
+      "artifact_bytes": 16076,
+      "artifact_lines": 117,
+      "artifact_mtime_epoch": 1771686602,
+      "artifact_mtime_utc": "2026-02-21T15:10:02Z",
+      "recorded_at_epoch": 1771686602,
+      "recorded_at_utc": "2026-02-21T15:10:02Z"
+    },
+    {
+      "phase_id": "phase4_scope_results",
+      "artifact_path": "workspace/newsletter_scope_results_2026-02-21.md",
+      "artifact_sha256": "09aaf427445b0a8f4680eedd71559314e6cbfedabed1cc306af7d68f7b9feeaf",
+      "artifact_bytes": 923,
+      "artifact_lines": 30,
+      "artifact_mtime_epoch": 1771686603,
+      "artifact_mtime_utc": "2026-02-21T15:10:03Z",
+      "recorded_at_epoch": 1771686603,
+      "recorded_at_utc": "2026-02-21T15:10:03Z"
     }
   ],
-  "updated_at_utc": "2026-02-21T15:06:26Z"
+  "updated_at_utc": "2026-02-21T15:10:03Z"
 }
