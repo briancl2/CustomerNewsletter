@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "20260221T145616Z-3829",
+  "start": "2026-02-14",
+  "end": "2026-02-21",
+  "receipts": [
+    {
+      "phase_id": "phase1a_manifest",
+      "artifact_path": "workspace/newsletter_phase1a_url_manifest_2026-02-14_to_2026-02-21.md",
+      "artifact_sha256": "6c47925a6562916c1d6a4523f846e8a3e816f08ae2c8ddcc5b5744b2891c1fe3",
+      "artifact_bytes": 4207,
+      "artifact_lines": 111,
+      "artifact_mtime_epoch": 1771685862,
+      "artifact_mtime_utc": "2026-02-21T14:57:42Z",
+      "recorded_at_epoch": 1771685866,
+      "recorded_at_utc": "2026-02-21T14:57:46Z"
+    }
+  ],
+  "updated_at_utc": "2026-02-21T14:57:46Z"
+}
