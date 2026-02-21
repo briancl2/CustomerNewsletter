@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-02-21T15:02:12Z",
+  "start": "2026-02-14",
+  "end": "2026-02-21",
+  "config_path": "kb/EVENT_SOURCES.yaml",
+  "sources": [
+    {
+      "name": "github_resources_events",
+      "kind": "web",
+      "url_or_path": "https://github.com/resources/events",
+      "fetch_ok": true,
+      "status_code": 200,
+      "bytes": 341081,
+      "error": "",
+      "candidate_urls": [
+        "https://github.com/resources/events/github-connect-toronto26",
+        "https://github.com/resources/events/github-gcn2026",
+        "https://github.com/resources/events/github-kuwc-part-four26",
+        "https://github.com/resources/events/github-kuwc-part-one26",
+        "https://github.com/resources/events/github-kuwc-part-three26",
+        "https://github.com/resources/events/github-kuwc-part-two26",
+        "https://github.com/resources/events/github-rsac2026"
+      ]
+    },
+    {
+      "name": "reactor_series_1",
+      "kind": "web",
+      "url_or_path": "https://developer.microsoft.com/en-us/reactor/series/S-1625/",
+      "fetch_ok": false,
+      "status_code": 0,
+      "bytes": 0,
+      "error": "FetchError: <urlopen error [Errno -5] No address associated with hostname>",
+      "candidate_urls": []
+    },
+    {
+      "name": "reactor_series_2",
+      "kind": "web",
+      "url_or_path": "https://developer.microsoft.com/en-us/reactor/series/S-1631/",
+      "fetch_ok": false,
+      "status_code": 0,
+      "bytes": 0,
+      "error": "FetchError: <urlopen error [Errno -5] No address associated with hostname>",
+      "candidate_urls": []
+    }
+  ],
+  "candidate_urls": [
+    {
+      "url": "https://github.com/resources/events/github-connect-toronto26",
+      "source_types": [
+        "github_resources"
+      ],
+      "source_names": [
+        "github_resources_events"
+      ]
+    },
+    {
+      "url": "https://github.com/resources/events/github-gcn2026",
+      "source_types": [
+        "github_resources"
+      ],
+      "source_names": [
+        "github_resources_events"
+      ]
+    },
+    {
+      "url": "https://github.com/resources/events/github-kuwc-part-four26",
+      "source_types": [
+        "github_resources"
+      ],
+      "source_names": [
+        "github_resources_events"
+      ]
+    },
+    {
+      "url": "https://github.com/resources/events/github-kuwc-part-one26",
+      "source_types": [
+        "github_resources"
+      ],
+      "source_names": [
+        "github_resources_events"
+      ]
+    },
+    {
+      "url": "https://github.com/resources/events/github-kuwc-part-three26",
+      "source_types": [
+        "github_resources"
+      ],
+      "source_names": [
+        "github_resources_events"
+      ]
+    },
+    {
+      "url": "https://github.com/resources/events/github-kuwc-part-two26",
+      "source_types": [
+        "github_resources"
+      ],
+      "source_names": [
+        "github_resources_events"
+      ]
+    },
+    {
+      "url": "https://github.com/resources/events/github-rsac2026",
+      "source_types": [
+        "github_resources"
+      ],
+      "source_names": [
+        "github_resources_events"
+      ]
+    }
+  ]
+}

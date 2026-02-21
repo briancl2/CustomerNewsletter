@@ -69,7 +69,40 @@
       "artifact_mtime_utc": "2026-02-21T15:00:27Z",
       "recorded_at_epoch": 1771686035,
       "recorded_at_utc": "2026-02-21T15:00:35Z"
+    },
+    {
+      "phase_id": "phase1c_discoveries",
+      "artifact_path": "workspace/newsletter_phase1a_discoveries_2026-02-14_to_2026-02-21.md",
+      "artifact_sha256": "13de663c10a4d25492c909bf4a4b93b782c825083f7e337fa58692b05a200266",
+      "artifact_bytes": 14966,
+      "artifact_lines": 226,
+      "artifact_mtime_epoch": 1771686116,
+      "artifact_mtime_utc": "2026-02-21T15:01:56Z",
+      "recorded_at_epoch": 1771686121,
+      "recorded_at_utc": "2026-02-21T15:02:01Z"
+    },
+    {
+      "phase_id": "phase2_event_sources",
+      "artifact_path": "workspace/newsletter_phase2_event_sources_2026-02-21.json",
+      "artifact_sha256": "5479f723fcc2dbf3ad2945852edd1af3cd888d837f8227cd3e320e6fc285626f",
+      "artifact_bytes": 3115,
+      "artifact_lines": 112,
+      "artifact_mtime_epoch": 1771686132,
+      "artifact_mtime_utc": "2026-02-21T15:02:12Z",
+      "recorded_at_epoch": 1771686142,
+      "recorded_at_utc": "2026-02-21T15:02:22Z"
+    },
+    {
+      "phase_id": "phase2_events",
+      "artifact_path": "workspace/newsletter_phase2_events_2026-02-21.md",
+      "artifact_sha256": "5d59c412f09cd0bfc2ba522c025f1fbbd53637240f23b27dec4212a4e767d2ce",
+      "artifact_bytes": 5551,
+      "artifact_lines": 55,
+      "artifact_mtime_epoch": 1771686188,
+      "artifact_mtime_utc": "2026-02-21T15:03:08Z",
+      "recorded_at_epoch": 1771686193,
+      "recorded_at_utc": "2026-02-21T15:03:13Z"
     }
   ],
-  "updated_at_utc": "2026-02-21T15:00:35Z"
+  "updated_at_utc": "2026-02-21T15:03:13Z"
 }
