@@ -23,7 +23,7 @@ if ! [[ "$END" =~ ^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}$ ]]; then
   exit 1
 fi
 
-MODEL="${MODEL:-claude-opus-4.6}"
+MODEL="${MODEL:-claude-opus-4.7}"
 NO_REUSE="${NO_REUSE:-1}"
 MAX_RETRIES="${MAX_RETRIES:-2}"
 PHASE_TIMEOUT_SECONDS="${PHASE_TIMEOUT_SECONDS:-1800}"

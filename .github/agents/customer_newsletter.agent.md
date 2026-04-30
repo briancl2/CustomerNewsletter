@@ -1,7 +1,7 @@
 ---
 name: "customer_newsletter"
 description: "Generates monthly customer newsletters via a skills-based pipeline. Orchestrates 6 phases from URL discovery through final assembly and validation."
-model: "claude-opus-4.6"
+model: "claude-opus-4.7"
 tools: ['execute/getTerminalOutput', 'execute/runTask', 'execute/getTaskOutput', 'execute/createAndRunTask', 'execute/runInTerminal', 'read/terminalSelection', 'read/terminalLastCommand', 'read/readFile', 'edit/createDirectory', 'edit/createFile', 'edit/editFiles', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/searchResults', 'search/textSearch', 'web/fetch', 'agent', 'todo']
 infer: true
 ---

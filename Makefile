@@ -143,7 +143,7 @@ newsletter-fresh: ## Prepare no-reuse cycle, then run newsletter with strict gat
 	@STRICT=$${STRICT:-1} bash tools/run_newsletter.sh $(START) $(END) $(EVENTS)
 
 newsletter-orchestrated: ## Controlled phase-by-phase run with explicit agent delegation (START= END= MODEL= BENCHMARK_MODE= NO_REUSE=1)
-	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-orchestrated START=YYYY-MM-DD END=YYYY-MM-DD [MODEL=claude-opus-4.6] [BENCHMARK_MODE=feb2026_consistency] [NO_REUSE=1]"; exit 1; fi
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-orchestrated START=YYYY-MM-DD END=YYYY-MM-DD [MODEL=claude-opus-4.7] [BENCHMARK_MODE=feb2026_consistency] [NO_REUSE=1]"; exit 1; fi
 	@MODEL="$${MODEL:-$(MODEL)}" BENCHMARK_MODE="$${BENCHMARK_MODE:-$(BENCHMARK_MODE)}" NO_REUSE="$${NO_REUSE:-$(NO_REUSE)}" bash tools/run_newsletter_orchestrated.sh $(START) $(END)
 
 test-archive: ## Run archive_workspace.sh test suite

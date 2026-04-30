@@ -41,7 +41,7 @@ Headless mode:
 
 ```bash
 copilot --agent customer_newsletter \
-  --model claude-opus-4.6 \
+  --model claude-opus-4.7 \
   --allow-all \
   --no-ask-user \
   -p "i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026"
@@ -50,7 +50,7 @@ copilot --agent customer_newsletter \
 Interactive mode:
 
 ```bash
-copilot --agent customer_newsletter --model claude-opus-4.6 -i
+copilot --agent customer_newsletter --model claude-opus-4.7 -i
 ```
 
 Then paste the same prompt from the VS Code section.
