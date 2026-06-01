@@ -1,8 +1,8 @@
 # Newsletter Generation System Release Notes
 
-> **Bottom line:** I re-engineered this newsletter's generation system to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run -- about $6-12 per run in illustrative API-equivalent terms -- while quality gates stayed in force. **For:** developers and Admin & FinOps owners who want the technical map and the before/after evidence. **Read time:** about 12 minutes.
+> **Bottom line:** I re-engineered this newsletter's generation system to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run -- about $6-12 per run in illustrative API-equivalent terms -- while quality gates stayed in force. This note also doubles as the standard release readout of every system and repository change since the February 2026 release; see [Changes Since the February 2026 Release](#changes-since-the-february-2026-release). **For:** developers and Admin & FinOps owners who want the technical map and the before/after evidence. **Read time:** about 15 minutes.
 
-This note summarizes the customer-safe newsletter generation system changes included with the May 2026 public catch-up. It is about the reusable newsletter pipeline itself, not the May newsletter content.
+This note summarizes the customer-safe newsletter generation system changes included with the May 2026 public catch-up. It is about the reusable newsletter pipeline itself, not the May newsletter content. The cost-optimization work is the headline; the [Changes Since the February 2026 Release](#changes-since-the-february-2026-release) section is the full, grouped readout of everything else that changed in the same window.
 
 Use this file when you want the technical map: what changed, where it changed, what each change does, what it cost, and how to operate the updated system. For developer/admin cost guidance, start with [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md). For product-source inventory, use [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md).
 
@@ -165,6 +165,98 @@ For another agentic workflow, copy the pattern rather than the numbers:
 ### Published Outputs
 
 - Refreshed the May newsletter body and May public cost companion links so customer-facing cost guidance points to public-safe material. See [2026-05_may_newsletter.md](../../output/2026-05_may_newsletter.md) and [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md).
+
+## Changes Since the February 2026 Release
+
+This section is the standard release readout for the whole system: everything that
+changed between the February 2026 newsletter release and this May/June publication,
+grouped by area. The cost-optimization work above is the headline of this window;
+the items below place it alongside the other system, tooling, and repository
+changes from the same period. Where a change is detailed earlier in this note, the
+entry links to that subsection instead of repeating it.
+
+### Current System At A Glance
+
+This is the state the changes below add up to, so a reader can anchor the deltas
+against the current system:
+
+- **Pipeline:** six core phases (1A URL manifest, 1B retrieval, 1C consolidation,
+  2 events, 3 curation, 4 assembly) plus optional phase 4.5 (polishing and
+  deprecation consolidation), 4.6 (video matching), and 5 (editorial review). See
+  [run_pipeline.prompt.md](../../.github/prompts/run_pipeline.prompt.md).
+- **Skills:** 18 pipeline and operations skills under
+  [.github/skills/](../../.github/skills/).
+- **Agents:** 4 agents (`customer_newsletter`, `editorial-analyst`,
+  `skill-builder`, `upgrade-advisor`) under
+  [.github/agents/](../../.github/agents/).
+- **Docs site:** a source-owned MkDocs site under [docs/](../../docs/) describing
+  how the system works and its architecture.
+
+### March-April: Benchmark Recovery And Phase Repair
+
+- Added benchmark-recovery surfaces and bounded two phases that had been
+  over-running their scope: phase 0/1 scope-contract generation and phase 3
+  curation working-set construction now stay within explicit bounds, which set up
+  the May cost-optimization route.
+- Added strict closure and contract-replay test coverage so a production-like run
+  proves its phase contracts and retained artifacts rather than trusting
+  self-reports.
+- Produced and validated an April production cycle as an internal benchmark. It
+  was used to harden the pipeline and was not published as an official monthly
+  newsletter, so it is excluded from the world-facing public output surface while
+  retained in the GitHub-employee public snapshot.
+
+### May: Cost Optimization, Publishing, And Operator Surfaces
+
+- **Cost-optimization route.** The integrated source-pruning, compact working-set,
+  artifact-reuse, tool-suppression, and route-telemetry stack landed this cycle and
+  is the headline of this note. See [Cost Optimization
+  Mechanisms](#cost-optimization-mechanisms) and [How The Cost Mechanisms Fit
+  Together](#how-the-cost-mechanisms-fit-together).
+- **Safer public publishing.** The allowlist-and-prune snapshot flow,
+  pull-request-safe defaults, target safety checks, and expanded sensitive
+  scanning. See [Safer Public Publishing](#safer-public-publishing) and [Public
+  Snapshot Boundary](#public-snapshot-boundary).
+- **Stronger validation gates.** Required-vs-retained suite separation, May
+  drift-class validator coverage, and synced regression suites. See [Stronger
+  Validation Gates](#stronger-validation-gates).
+- **Operator surfaces.** The `upgrade-advisor` agent, refreshed pipeline prompts and
+  phase skills, prompt-rendered production and proof-run helpers, and refreshed
+  Copilot app and CLI source intelligence. See [Pipeline And Operator
+  Surfaces](#pipeline-and-operator-surfaces).
+
+### June: Finalization, Documentation, And Sanitization
+
+- **Source-owned documentation site.** The MkDocs site (`docs/` + `mkdocs.yml`) is
+  now maintained in the source repository and propagated on publish, with
+  `how-it-works` and the architecture diagram covering the optional phases. See
+  [docs/how-it-works.md](../../docs/how-it-works.md) and
+  [docs/architecture.md](../../docs/architecture.md).
+- **Full-pipeline framing in the entry docs.** `README.md` and `AGENTS.md` now
+  describe the complete pipeline including the optional 4.5/4.6/5 stages and the
+  full skill and agent inventory.
+- **Two divergent public targets.** The publisher gained a target-scoped prune
+  behind an explicit flag so the fully public repository can omit material (such as
+  the April internal cycle) that the GitHub-employee snapshot still retains, without
+  changing the shared allowlist. See [public_repo_guide.md](../../reference/public_repo_guide.md).
+- **Hardened sensitive scanning.** The publish-time sensitive-pattern scan now also
+  covers hidden directories that are copied to public (so dotfile surfaces are no
+  longer skipped), with the scan split so a small set of legitimate domains is
+  exempted narrowly rather than excluding whole files. Local absolute paths in a
+  research prompt were sanitized in the same pass.
+- **May newsletter content refresh.** The shipped May newsletter's Microsoft Build
+  session guide was updated to current sessions, and broken cross-links and pinned
+  command examples in this bundle were genericized. See
+  [2026-05_may_newsletter.md](../../output/2026-05_may_newsletter.md).
+
+### Knowledge Base And Source Intelligence
+
+- Refreshed the source-intelligence layer for the GitHub Copilot app and Copilot
+  CLI so future newsletters reason over current product areas. See
+  [copilot-app.md](../../reference/source-intelligence/copilot-app.md) and
+  [copilot-cli.md](../../reference/source-intelligence/copilot-cli.md).
+- Maintained the canonical source knowledge base and its change log. See
+  [kb/CHANGELOG.md](../../kb/CHANGELOG.md).
 
 ## Validation Summary
 
