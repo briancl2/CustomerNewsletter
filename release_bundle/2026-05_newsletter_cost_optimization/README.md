@@ -14,7 +14,7 @@ The shipped newsletter links to [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md), 
 | Directory pointer | [START_HERE.md](START_HERE.md) | You are browsing the directory and want a quick pointer to the companion. |
 | Developer enablement | [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) | You are shaping team guidance for agentic workflows, with worked examples. |
 | Admin and FinOps planning | [ADMIN_FINOPS_GUIDE.md](ADMIN_FINOPS_GUIDE.md) | You own budgets, reporting, policy, governance, attribution, or showback. |
-| Technical deep dive | [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) | You want the system changes, exact before/after token counts, code links, and an illustrative cost translation. |
+| Technical deep dive | [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) | You want the system changes, exact before/after token counts, code links, an illustrative cost translation, and the full release readout of every change since the February 2026 release. |
 | Product/source audit | [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) | You need the feature inventory, source links, and provider token-mechanics references. |
 | Newsletter excerpt | [NEWSLETTER_MAY_COST_SECTION.md](NEWSLETTER_MAY_COST_SECTION.md) | You want the exact newsletter section this bundle expands. |
 | Source list | [PUBLIC_SOURCES.md](PUBLIC_SOURCES.md) | You want all public first-party links in one place. |

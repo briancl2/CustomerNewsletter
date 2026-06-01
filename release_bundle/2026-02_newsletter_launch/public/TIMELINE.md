@@ -1,6 +1,6 @@
 # Timeline (How the System Got Built)
 
-This is a short, public-safe timeline of how the newsletter workflow evolved from
+This is a short timeline of how the newsletter workflow evolved from
 manual writing into a Copilot-assisted system.
 
 ## Milestones

@@ -2,7 +2,7 @@
 
 > **Bottom line:** Pair usage-based billing controls with reporting, model policy, and developer guidance; budgets limit runaway spend, but efficient work comes from workflow design. **For:** Admin & FinOps owners -- billing managers, platform owners, and FinOps partners. **Read time:** about 8 minutes.
 
-This guide combines admin readiness and FinOps operating guidance for usage-based billing (UBB) and agentic development at scale. It is customer-safe guidance, not invoice analysis or a savings guarantee. Use the [admin track](#admin-and-platform-track) for budgets, reporting, and governance, and the [FinOps track](#finops-track) for the operating model, evidence typing, and showback.
+This guide combines admin readiness and FinOps operating guidance for usage-based billing (UBB) and agentic development at scale. It is general guidance, not invoice analysis or a savings guarantee. Use the [admin track](#admin-and-platform-track) for budgets, reporting, and governance, and the [FinOps track](#finops-track) for the operating model, evidence typing, and showback.
 
 ## Operating Model
 

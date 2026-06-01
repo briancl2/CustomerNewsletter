@@ -18,7 +18,9 @@ If you want to run it, start with:
 5. Phase 2: Events extraction
 6. Phase 3: Content curation
 7. Phase 4: Newsletter assembly
-8. Phase 4.5: Polishing + validation
+8. Phase 4.5: Polishing + deprecation consolidation + validation
+9. Phase 4.6: Video matching (optional enrichment)
+10. Phase 5: Editorial review (human corrections)
 
 ## Phase Gates
 
@@ -40,7 +42,7 @@ The current production-like route starts with a clean cycle, runs the admitted p
 ```bash
 bash tools/prepare_newsletter_cycle.sh 2026-02-14 2026-04-16 --no-reuse
 make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production
-make validate-newsletter FILE=output/2026-04_april_newsletter.md
+make validate-newsletter FILE=output/YYYY-MM_month_newsletter.md
 bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --require-fresh --production-artifacts
 ```
 

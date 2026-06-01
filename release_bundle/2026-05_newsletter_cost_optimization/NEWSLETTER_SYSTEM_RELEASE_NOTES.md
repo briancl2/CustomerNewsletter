@@ -1,8 +1,8 @@
 # Newsletter Generation System Release Notes
 
-> **Bottom line:** I re-engineered this newsletter's generation system to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run -- about $6-12 per run in illustrative API-equivalent terms -- while quality gates stayed in force. **For:** developers and Admin & FinOps owners who want the technical map and the before/after evidence. **Read time:** about 12 minutes.
+> **Bottom line:** I re-engineered this newsletter's generation system to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run -- about $6-12 per run in illustrative API-equivalent terms -- while quality gates stayed in force. This note also doubles as the standard release readout of every system and repository change since the February 2026 release; see [Changes Since the February 2026 Release](#changes-since-the-february-2026-release). **For:** developers and Admin & FinOps owners who want the technical map and the before/after evidence. **Read time:** about 15 minutes.
 
-This note summarizes the customer-safe newsletter generation system changes included with the May 2026 public catch-up. It is about the reusable newsletter pipeline itself, not the May newsletter content.
+This note summarizes the newsletter generation system changes included with the May 2026 update. It is about the reusable newsletter pipeline itself, not the May newsletter content. The cost-optimization work is the headline; the [Changes Since the February 2026 Release](#changes-since-the-february-2026-release) section is the full, grouped readout of everything else that changed in the same window.
 
 Use this file when you want the technical map: what changed, where it changed, what each change does, what it cost, and how to operate the updated system. For developer/admin cost guidance, start with [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md). For product-source inventory, use [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md).
 
@@ -57,19 +57,21 @@ The strongest levers were source/candidate discipline, compact synthesis inputs,
 | Validate retained artifacts | [validate_pipeline_strict.sh](../../tools/validate_pipeline_strict.sh) | You need source, scope, freshness, and production-artifact gates. |
 | Score editorial quality | [score-v2-rubric.sh](../../tools/score-v2-rubric.sh) | You need rubric-level quality evidence. |
 
-Production-like path for the admitted April range:
+Production-like path (the prompt renderer pins `production` to its admitted range):
 
 ```bash
-bash tools/prepare_newsletter_cycle.sh 2026-02-14 2026-04-16 --no-reuse
-make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production
-make validate-newsletter FILE=output/2026-04_april_newsletter.md
-bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --require-fresh --production-artifacts
+bash tools/prepare_newsletter_cycle.sh <START> <END> --no-reuse
+make newsletter-gen START=<START> END=<END> MODE=production
+make validate-newsletter FILE=output/YYYY-MM_month_newsletter.md
+bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --production-artifacts
 ```
 
 The prompt renderer currently pins `production` mode to `2026-02-14` through
-`2026-04-16` and `benchmark` mode to `2025-12-05` through `2026-02-13`. For other
-date ranges, treat the commands above as the workflow pattern, then extend and
-validate the admitted prompt-rendered mode before using `MODE=production`.
+`2026-04-16` and `benchmark` mode to `2025-12-05` through `2026-02-13`. Substitute
+the pinned `<START>`/`<END>` and the matching `output/YYYY-MM_month_newsletter.md`
+for the mode you run. For other date ranges, treat the commands above as the
+workflow pattern, then extend and validate the admitted prompt-rendered mode
+before using `MODE=production`.
 
 Diagnostic path:
 
@@ -80,22 +82,22 @@ bash tools/score-v2-rubric.sh output/YYYY-MM_month_newsletter.md
 
 The diagnostic path is for localizing failures and measuring candidate route changes. It is not the default production authority.
 
-### Safer Public Publishing
+### Safer Publication
 
-- Added an allowlist-and-prune publication flow so public snapshots copy only approved surfaces and remove stale target-only files before validation. See [publish_public_snapshot.sh](../../tools/publish_public_snapshot.sh), [public_snapshot_allowlist.txt](../../tools/public_snapshot_allowlist.txt), and [public_snapshot_prune.txt](../../tools/public_snapshot_prune.txt).
-- Made the publisher pull-request safe by default. It now leaves changes uncommitted unless `--commit` is explicitly provided. This helps reviewers inspect the public diff before publishing.
-- Added target safety checks so the publisher refuses to run against the source repo, refuses nested source/target layouts, validates relative allowlist and prune entries, and treats sensitive-scan errors as hard failures.
-- Expanded sensitive-pattern scanning for local paths, non-public source links, proof markers, stale release-bundle internals, and other non-public terms.
+- Added an allowlist-and-prune publication flow so a published snapshot copies only approved surfaces and removes stale target-only files before validation.
+- Made the publication step pull-request safe by default. It now leaves changes uncommitted unless `--commit` is explicitly provided, so reviewers can inspect the diff before publishing.
+- Added safety checks so publication refuses unsafe target layouts, validates relative allowlist and prune entries, and treats sensitive-scan errors as hard failures.
+- Expanded sensitive-pattern scanning for local paths, restricted source links, proof markers, stale release-bundle internals, and other non-shippable terms.
 
-### Public Snapshot Boundary
+### Published Surface Boundary
 
-- Removed raw public copies of non-public `planning/`, `workspace/`, `runs/`, February source notes, and stale output variants from the public snapshot boundary.
-- Replaced broad `config/` publication with the public benchmark-mode config only: [feb2026_consistency.json](../../config/benchmark_modes/feb2026_consistency.json). Experiment policies, feature flags, fixture packs, and retained-run benchmark lanes stay out of the public bundle.
-- Kept customer-safe release material selective: February public launch assets, April launch command notes, and May customer-facing cost guidance. See [February public launch](../2026-02_newsletter_launch/public/START_HERE.md), [April launch notes](../2026-04_newsletter_launch/START_HERE.md), and [May customer companion](CUSTOMER_COMPANION.md).
+- Excluded raw copies of `planning/`, `workspace/`, `runs/`, February source notes, and stale output variants from the published surface.
+- Replaced broad `config/` publication with the public benchmark-mode config only: [feb2026_consistency.json](../../config/benchmark_modes/feb2026_consistency.json). Experiment policies, feature flags, fixture packs, and retained-run benchmark lanes stay out of the published bundle.
+- Kept release material selective: February public launch assets and May customer-facing cost guidance. See [February public launch](../2026-02_newsletter_launch/public/START_HERE.md) and [May customer companion](CUSTOMER_COMPANION.md).
 
 ### Stronger Validation Gates
 
-- Updated the all-suite test runner to distinguish required public-safe suites from retained-fixture suites. When non-public fixtures are absent from the public snapshot, those suites are skipped with an explicit reason rather than failing the public build. See [test_all.sh](../../tools/test_all.sh).
+- Updated the all-suite test runner to distinguish required suites from retained-fixture suites. When retained fixtures are absent, those suites are skipped with an explicit reason rather than failing the build. See [test_all.sh](../../tools/test_all.sh).
 - Added targeted validator coverage for May root-cause drift classes in [validate_newsletter.sh](../../.github/skills/newsletter-validation/scripts/validate_newsletter.sh) and its self-test harness [test_validator.sh](../../tools/test_validator.sh).
 - Added or synced regression coverage for phase contracts, product prompt rendering, scope alignment, public newsletter validation, external critique fixtures, source-pruning receipts, output-shape receipts, and route-lock telemetry under [tools/](../../tools/) and [tests/](../../tests/).
 
@@ -153,25 +155,110 @@ For another agentic workflow, copy the pattern rather than the numbers:
 
 ### Broader System Changes Beyond Cost Optimization
 
-- The public/non-public boundary is now a first-class release surface. Snapshot allowlists, prune lists, and sensitive scans define what can leave the source repo.
-- The newsletter validator now carries more product-specific drift checks, so public output quality does not depend only on human review.
+- The publication boundary is now a first-class release surface. Allowlists, prune lists, and sensitive scans define what is included in the published repository.
+- The newsletter validator now carries more product-specific drift checks, so published output quality does not depend only on human review.
 - The source-intelligence layer was refreshed for Copilot CLI and Copilot app surfaces so future newsletters can reason over current product areas.
 - The `upgrade-advisor` agent makes system-improvement recommendations bounded by workflow, harness, validation, and execution-surface evidence.
-- Public tests now distinguish required public-safe suites from retained-fixture suites, which makes the public repo runnable without non-public run logs.
+- Tests now distinguish required suites from retained-fixture suites, which keeps the published repository runnable without retained run logs.
 - The release bundle itself now acts as a handoff artifact: it pairs user guidance, technical change mapping, source inventory, validation evidence, and claim boundaries.
 
 ### Published Outputs
 
-- Added the April 2026 generated newsletter alongside the existing February and May outputs. See [2026-04_april_newsletter.md](../../output/2026-04_april_newsletter.md).
-- Refreshed the May newsletter body and May public cost companion links so customer-facing cost guidance points to public-safe material. See [2026-05_may_newsletter.md](../../output/2026-05_may_newsletter.md) and [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md).
+- Refreshed the May newsletter body and May cost companion links so customer-facing cost guidance points to the published companion material. See [2026-05_may_newsletter.md](../../output/2026-05_may_newsletter.md) and [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md).
+
+## Changes Since the February 2026 Release
+
+This section is the standard release readout for the whole system: everything that
+changed between the February 2026 newsletter release and this May/June publication,
+grouped by area. The cost-optimization work above is the headline of this window;
+the items below place it alongside the other system, tooling, and repository
+changes from the same period. Where a change is detailed earlier in this note, the
+entry links to that subsection instead of repeating it.
+
+### Current System At A Glance
+
+This is the state the changes below add up to, so a reader can anchor the deltas
+against the current system:
+
+- **Pipeline:** six core phases (1A URL manifest, 1B retrieval, 1C consolidation,
+  2 events, 3 curation, 4 assembly) plus optional phase 4.5 (polishing and
+  deprecation consolidation), 4.6 (video matching), and 5 (editorial review). See
+  [run_pipeline.prompt.md](../../.github/prompts/run_pipeline.prompt.md).
+- **Skills:** 18 pipeline and operations skills under
+  [.github/skills/](../../.github/skills/).
+- **Agents:** 4 agents (`customer_newsletter`, `editorial-analyst`,
+  `skill-builder`, `upgrade-advisor`) under
+  [.github/agents/](../../.github/agents/).
+- **Docs site:** a source-owned MkDocs site under [docs/](../../docs/) describing
+  how the system works and its architecture.
+
+### March-April: Benchmark Recovery And Phase Repair
+
+- Added benchmark-recovery surfaces and bounded two phases that had been
+  over-running their scope: phase 0/1 scope-contract generation and phase 3
+  curation working-set construction now stay within explicit bounds, which set up
+  the May cost-optimization route.
+- Added strict closure and contract-replay test coverage so a production-like run
+  proves its phase contracts and retained artifacts rather than trusting
+  self-reports.
+- Produced and validated an April production cycle as an internal benchmark. It
+  was used to harden the pipeline and was not published as an official monthly
+  newsletter.
+
+### May: Cost Optimization, Publishing, And Operator Surfaces
+
+- **Cost-optimization route.** The integrated source-pruning, compact working-set,
+  artifact-reuse, tool-suppression, and route-telemetry stack landed this cycle and
+  is the headline of this note. See [Cost Optimization
+  Mechanisms](#cost-optimization-mechanisms) and [How The Cost Mechanisms Fit
+  Together](#how-the-cost-mechanisms-fit-together).
+- **Safer publication.** The allowlist-and-prune publication flow,
+  pull-request-safe defaults, target safety checks, and expanded sensitive
+  scanning. See [Safer Publication](#safer-publication) and [Published
+  Surface Boundary](#published-surface-boundary).
+- **Stronger validation gates.** Required-vs-retained suite separation, May
+  drift-class validator coverage, and synced regression suites. See [Stronger
+  Validation Gates](#stronger-validation-gates).
+- **Operator surfaces.** The `upgrade-advisor` agent, refreshed pipeline prompts and
+  phase skills, prompt-rendered production and proof-run helpers, and refreshed
+  Copilot app and CLI source intelligence. See [Pipeline And Operator
+  Surfaces](#pipeline-and-operator-surfaces).
+
+### June: Finalization And Documentation
+
+- **Source-owned documentation site.** The MkDocs site (`docs/` + `mkdocs.yml`) is
+  now maintained alongside the pipeline and propagated on publish, with
+  `how-it-works` and the architecture diagram covering the optional phases. See
+  [docs/how-it-works.md](../../docs/how-it-works.md) and
+  [docs/architecture.md](../../docs/architecture.md).
+- **Full-pipeline framing in the entry docs.** `README.md` and `AGENTS.md` now
+  describe the complete pipeline including the optional 4.5/4.6/5 stages and the
+  full skill and agent inventory.
+- **Hardened repository hygiene checks.** The sensitive-pattern scan now also
+  covers hidden directories (so dotfile surfaces are no longer skipped), with the
+  scan split so a small set of legitimate domains is exempted narrowly rather than
+  excluding whole files. Local absolute paths in a research prompt were sanitized
+  in the same pass.
+- **May newsletter content refresh.** The shipped May newsletter's Microsoft Build
+  session guide was updated to current sessions, and broken cross-links and pinned
+  command examples in this bundle were genericized. See
+  [2026-05_may_newsletter.md](../../output/2026-05_may_newsletter.md).
+
+### Knowledge Base And Source Intelligence
+
+- Refreshed the source-intelligence layer for the GitHub Copilot app and Copilot
+  CLI so future newsletters reason over current product areas. See
+  [copilot-app.md](../../reference/source-intelligence/copilot-app.md) and
+  [copilot-cli.md](../../reference/source-intelligence/copilot-cli.md).
+- Maintained the canonical source knowledge base and its change log. See
+  [kb/CHANGELOG.md](../../kb/CHANGELOG.md).
 
 ## Validation Summary
 
-- Public sensitive-pattern scan: pass.
-- Public `make test-all`: required public suites pass; retained-fixture suites skip when non-public fixtures are absent.
-- April newsletter validation: pass, 0 warnings.
+- Sensitive-pattern scan: pass.
+- `make test-all`: required suites pass; retained-fixture suites skip when their fixtures are absent.
 - May newsletter validation: pass, 0 warnings.
-- Source full-suite validation before public sync: required suites pass, with only the expected retained workspace fixture skip.
+- Full-suite validation before publication: required suites pass, with only the expected retained workspace fixture skip.
 
 Recommended validation when adapting this release:
 
@@ -185,4 +272,4 @@ bash tools/score-v2-rubric.sh output/YYYY-MM_month_newsletter.md
 
 ## Publication Boundary
 
-This release note intentionally excludes non-public run logs, planning bursts, raw evidence, local machine paths, retained-run benchmark artifacts, and non-public source notes. Those materials are represented here only as public-safe workflow descriptions.
+This release note describes the published newsletter generation system. Detailed run logs, planning bursts, raw evidence, local machine paths, and retained benchmark artifacts are out of scope and are represented here only as workflow descriptions.

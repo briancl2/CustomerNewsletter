@@ -46,14 +46,13 @@ Experiment-only optimization helpers:
 regression diagnosis. `newsletter-orchestrated-proof` packages that diagnostic
 path as retained evidence with phase-session telemetry for cost experiments.
 
-Retained production authority lives in the private source repository. The public
-snapshot keeps the runnable pipeline, selected outputs, and customer-safe bundle
-material, but not raw run logs or session evidence.
+This repository keeps the runnable pipeline, selected outputs, and release bundle
+material. Raw run logs and session evidence are not tracked here.
 
 VS Code flow: open the repo, select the `customer_newsletter` agent, then run:
 
 ```text
-please generate the april newsletter from scratch for the dates Feb 14 2026 to Apr 16 2026
+please generate the newsletter from scratch for the dates <START> to <END>
 ```
 
 Benchmark command on the same prompt-rendered surface:
@@ -87,7 +86,6 @@ Rule:
   validation commands shown in the release bundles
 
 More context:
-- [release_bundle/2026-04_newsletter_launch/START_HERE.md](release_bundle/2026-04_newsletter_launch/START_HERE.md)
 - [release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md)
 - [release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md)
 - [release_bundle/2026-02_newsletter_launch/public/START_HERE.md](release_bundle/2026-02_newsletter_launch/public/START_HERE.md)
@@ -109,12 +107,12 @@ Start here:
 - [Customer companion](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical landing page with developer and admin guidance for cost-aware Copilot usage.
 - [System release notes](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -- technical deep dive with exact before/after token counts, code links, and an illustrative cost translation.
 - [Admin and FinOps guide](release_bundle/2026-05_newsletter_cost_optimization/ADMIN_FINOPS_GUIDE.md) -- budgets, reporting, governance, attribution, baseline, and showback guidance.
-- [Developer guide](release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_GUIDE.md) -- cost-aware agentic workflows with public-safe worked examples.
+- [Developer guide](release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_GUIDE.md) -- cost-aware agentic workflows with worked examples.
 - [Product feature quick hits](release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md) -- first-party source inventory for billing, budgets, observability, routing, and token-mechanics references.
 
-Public wording intentionally uses rounded aggregate/proxy metrics and caveats.
-Exact retained-run logs, private paths, raw token tables, and internal source
-notes stay in the private source repository.
+Published wording intentionally uses rounded aggregate/proxy metrics and caveats.
+Exact retained-run logs, raw token tables, and detailed source notes are not
+tracked here.
 
 ## Lower-Token Newsletter Workflow
 
@@ -131,7 +129,7 @@ bash tools/prepare_newsletter_cycle.sh 2026-02-14 2026-04-16 --no-reuse
 make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production
 
 # 3. Validate the generated newsletter.
-make validate-newsletter FILE=output/2026-04_april_newsletter.md
+make validate-newsletter FILE=output/YYYY-MM_month_newsletter.md
 bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --require-fresh --production-artifacts
 ```
 
@@ -167,7 +165,10 @@ superiority, or universal percentages.
 | **KB sources** | 72 | `kb/SOURCES.yaml` |
 | **Reference docs** | 20 | `reference/` |
 
-## 6-Phase Pipeline
+## Pipeline Phases
+
+Six core phases (1A-4) produce the newsletter, followed by optional polish,
+enrichment, and editorial stages (4.5-5).
 
 | Phase | Skill | Input | Output |
 |-------|-------|-------|--------|
@@ -177,6 +178,8 @@ superiority, or universal percentages.
 | 2 | events-extraction | Event URLs | Event tables |
 | 3 | content-curation | Discoveries | 15-20 curated sections |
 | 4 | newsletter-assembly | Curated + Events | Final newsletter |
+| 4.5 | newsletter-polishing, deprecation-consolidation | Assembled newsletter | Polished newsletter |
+| 4.6 | video-matching | Polished newsletter | Video-enriched newsletter |
 | 5 | editorial-review | Human corrections | Updated newsletter |
 
 ## Target Audience
@@ -194,7 +197,7 @@ Engineering Managers, DevOps Leads, and IT Leadership at large regulated enterpr
 | `tools/` | Scoring, build automation, archival scripts |
 | `output/` | Final newsletter files |
 | `archive/` | Historical newsletters by year |
-| `workspace/` | Pipeline intermediates during local runs; public snapshot keeps only `.gitkeep` |
+| `workspace/` | Pipeline intermediates during local runs; only `.gitkeep` is tracked |
 | `benchmark/` | Gitignored benchmark scratch space, created on demand |
 
 ## Methodology
@@ -226,7 +229,5 @@ bash tools/score-v2-rubric.sh output/YYYY-MM_month_newsletter.md
 
 ## Documentation
 
-- [Public repo guide](reference/public_repo_guide.md) -- publication boundary and review checklist
 - [May cost optimization bundle](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical shipped-newsletter companion, persona paths, playbooks, examples, and system release notes
-- [April launch bundle](release_bundle/2026-04_newsletter_launch/START_HERE.md) -- production command and validation gates
 - [February public launch bundle](release_bundle/2026-02_newsletter_launch/public/START_HERE.md) -- public case study and runnable example

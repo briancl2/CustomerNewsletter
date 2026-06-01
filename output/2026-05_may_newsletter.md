@@ -154,9 +154,10 @@ Microsoft Build runs June 2-3 in San Francisco and online. The GitHub-filtered o
 
 | Date | Time (CT) | Session | Categories |
 |---|---|---|---|
+| Jun 2 | 11:30 AM - 2:00 PM | [Microsoft Build opening keynote](https://build.microsoft.com/en-US/sessions/KEY01?source=sessions) | Keynote, AI |
 | Jun 2 | 4:30 PM - 5:15 PM | [Your agent, anywhere: MultiClient, MultiDevice with GitHub Copilot SDK](https://build.microsoft.com/en-US/sessions/BRK206?source=sessions) | Copilot, Developer Experience |
-| Jun 2 | 5:45 PM - 6:30 PM | [From prototype to production: build and run agents at scale](https://build.microsoft.com/en-US/sessions/BRK241?source=sessions) | Developer Experience, Enterprise |
 | Jun 3 | 11:00 AM - 11:45 AM | [From CLI to PR: Automating the path to merged code](https://build.microsoft.com/en-US/sessions/BRK203?source=sessions) | Copilot, Developer Experience |
+| Jun 3 | 12:55 PM - 1:15 PM | [New coding models optimized for GitHub Copilot](https://build.microsoft.com/en-US/sessions/LIVE158?source=sessions) | Copilot, Developer Experience |
 | Jun 3 | 2:30 PM - 2:45 PM | [From issue to merge in one loop: the GitHub Copilot app](https://build.microsoft.com/en-US/sessions/LIVE162?source=sessions) | Copilot, Developer Experience |
 | Jun 3 | 6:00 PM - 6:45 PM | [GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test](https://build.microsoft.com/en-US/sessions/BRK207?source=sessions) | Copilot, Developer Experience |
 
