@@ -46,6 +46,18 @@ The [validate_newsletter.sh](scripts/validate_newsletter.sh) script checks:
 - Legal/CCC content outside the active Enterprise/Security/Governance/Legal/Compliance heading path unless the issue is explicitly legal-led
 - VS Code body-prose sequences with 3+ `1.xxx` version numbers
 - Under-linked release-inventory bullets for Copilot App and high-volume Copilot CLI, using generic release-count/release-stream triggers rather than one month-specific count
+- Specific-labeled inline links that point to a generic landing page instead of the deep/anchored source (WARN; see Link Specificity)
+
+### Link Specificity (Inline Deep-Link Policy)
+
+Applies to **inline contextual links in prose** -- a link whose label names a specific feature, capability, or claim. Such a link must point to the most specific source that documents that exact thing: a section anchor, a dated changelog post, or a deep doc page. It must not point to a generic landing page, a bare version page, or a blog root.
+
+- Correct: a sentence about OpenTelemetry signals for agents links to `code.visualstudio.com/updates/v1_122#_richer-opentelemetry-signals-for-agents`, not to `code.visualstudio.com/updates/v1_122` or a blog index.
+- Duplicate inline links to the same deep URL are allowed when each use is the direct, specific source for its surrounding claim.
+- Exemption: aggregated reference/source-list sections (for example a `Source Links` section or a consolidated public-sources file) and generically labeled pointers (`[Release Notes]`, `[Changelog]`, `[Docs]`, `[GitHub Blog]`) may use stable canonical landing pages. The label-to-URL mapping in the manual rubric still applies there.
+- If no deep source exists for a specific claim, narrow the link label so it accurately describes the landing page, and record the exception.
+
+The `validate_newsletter.sh` check is WARN-level: it flags specific-labeled inline links to bare VS Code version pages (no `#` anchor) and to blog roots. Generic labels are exempt. WARN does not block, but each flag must be resolved or justified before publication.
 
 ### Strict Pipeline Artifact Contract
 

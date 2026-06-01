@@ -31,10 +31,10 @@ All links in this bundle are customer-accessible public sources.
 ## Observability And Workflow Controls
 
 - [OpenTelemetry instrumentation for Copilot SDK](https://docs.github.com/en/copilot/how-tos/copilot-sdk/observability/opentelemetry)
-- [VS Code token efficiency notes](https://code.visualstudio.com/updates/v1_118)
-- [VS Code OpenTelemetry and agent observability notes](https://code.visualstudio.com/updates/v1_119)
-- [VS Code terminal controls notes](https://code.visualstudio.com/updates/v1_121)
-- [VS Code Tool Search source](https://code.visualstudio.com/updates/v1_119)
+- [VS Code token efficiency notes](https://code.visualstudio.com/updates/v1_118#_improving-token-efficiency)
+- [VS Code OpenTelemetry and agent observability notes](https://code.visualstudio.com/updates/v1_119#_opentelemetry-tracing-for-agent-sessions)
+- [VS Code terminal controls notes](https://code.visualstudio.com/updates/v1_121#_broader-compression-for-terminal-tool-output)
+- [VS Code Tool Search source](https://code.visualstudio.com/updates/v1_118#_tool-search-tool)
 - [Agent harnesses with GitHub Copilot in VS Code](https://code.visualstudio.com/blogs/2026/05/15/agent-harnesses-github-copilot-vscode)
 - [VS Code release notes](https://code.visualstudio.com/updates)
 

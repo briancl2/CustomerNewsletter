@@ -124,7 +124,8 @@ Inclusion criteria
 
 Dedupe policy
 - One “source record” per logical source stream. Multiple URLs for the same stream belong in one record.
-- Prefer stable URLs over deep anchors.
+- Prefer stable URLs over deep anchors for KB source records and aggregated source lists (the canonical entry per stream).
+- Inline contextual links in published prose follow the opposite rule: a link whose label names a specific feature or claim must point to the most specific deep/anchored source (a section anchor, dated changelog post, or deep doc page), not a generic landing page, bare version page, or blog root. See `.github/skills/newsletter-validation/SKILL.md` (Link Specificity). Generic labels (Release Notes, Changelog, Docs, GitHub Blog) may still use the stable canonical URL.
 
 Deprecation handling
 - If official guidance moves, mark the old source as deprecated in SOURCES.yaml and document the migration path.
