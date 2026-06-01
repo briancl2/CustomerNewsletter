@@ -334,12 +334,12 @@ cat runs/$RUN_ID/quality/B-T4/heuristic-scores.md
 One command to run the entire Phase 0-7 cycle with zero human intervention:
 
 ```bash
-cd <path-to-autonomous-loop-repo>
+cd ~/repos/<workflow-repo>
 RUN_ID=$(date -u '+%Y%m%dT%H%M%SZ')
 mkdir -p runs/$RUN_ID/{diagnostics,scores,data,quality}
 echo "$RUN_ID" > runs/$RUN_ID/.run_id
 
-copilot --model claude-opus-4.6 \
+copilot --model gpt-5.5 \
   -p "Your run ID is $RUN_ID. $(cat .github/agents/outer-loop-orchestrator.agent.md)" \
   --allow-all --no-ask-user \
   2>&1 | tee runs/$RUN_ID/orchestrator-stdout.txt

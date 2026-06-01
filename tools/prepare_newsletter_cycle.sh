@@ -72,6 +72,84 @@ marker="workspace/newsletter_run_marker_${cycle}.json"
 
 mkdir -p workspace workspace/archived/preflight
 
+is_current_cycle_workspace_file() {
+  local name="$1"
+  case "$name" in
+    "newsletter_phase1a_url_manifest_${START}_to_${END}.md"|\
+    "newsletter_phase1a_discoveries_${START}_to_${END}.md"|\
+    "newsletter_phase1b_interim_github_${START}_to_${END}.md"|\
+    "newsletter_phase1b_interim_vscode_${START}_to_${END}.md"|\
+    "newsletter_phase1b_vscode_theme_summary_${START}_to_${END}.md"|\
+    "newsletter_phase1b_interim_visualstudio_${START}_to_${END}.md"|\
+    "newsletter_phase1b_interim_jetbrains_${START}_to_${END}.md"|\
+    "newsletter_phase1b_interim_xcode_${START}_to_${END}.md"|\
+    "newsletter_phase2_event_sources_${END}.json"|\
+    "newsletter_phase2_events_${END}.md"|\
+    "newsletter_phase2_selected_source_ids_${END}.json"|\
+    "newsletter_phase2_fetch_attempt_ledger_${END}.json"|\
+    "newsletter_phase2_no_refetch_compliance_${END}.json"|\
+    "newsletter_phase3_curated_sections_${END}.md"|\
+    "newsletter_phase3_working_set_${END}.md"|\
+    "newsletter_phase3_capability_map_${START}_to_${END}.json"|\
+    "copilot_cli_release_inventory_${START}_to_${END}.md"|\
+    "copilot_app_release_inventory_${START}_to_${END}.md"|\
+    "${cycle_ym}_cli_release_inventory.md"|\
+    "${cycle_ym}_copilot_app_release_inventory.md"|\
+    "${cycle_ym}_cli_app_capability_map.md"|\
+    "newsletter_scope_contract_${END}.json"|\
+    "newsletter_scope_results_${END}.md"|\
+    "newsletter_pipeline_contract_${END}.md"|\
+    "newsletter_phase_receipts_${END}.json"|\
+    "newsletter_phase4_5_polishing_${END}.md"|\
+    "newsletter_phase4_6_video_matches_${END}.md"|\
+    "newsletter_run_marker_${START}_to_${END}.json"|\
+    "${cycle_ym}_editorial_review.md"|\
+    "${cycle_ym}_editorial_corrections.md"|\
+    "curator_notes_processed_${year}-${month}.md"|\
+    "curator_notes_editorial_signals_${year}-${month}.md")
+      return 0
+      ;;
+  esac
+  return 1
+}
+
+is_cycle_scoped_workspace_file() {
+  local name="$1"
+  case "$name" in
+    newsletter_phase1a_url_manifest_*_to_*.md|\
+    newsletter_phase1a_discoveries_*_to_*.md|\
+    newsletter_phase1b_interim_*.md|\
+    newsletter_phase1b_vscode_theme_summary_*_to_*.md|\
+    newsletter_phase2_event_sources_*.json|\
+    newsletter_phase2_events_*.md|\
+    newsletter_phase2_selected_source_ids_*.json|\
+    newsletter_phase2_fetch_attempt_ledger_*.json|\
+    newsletter_phase2_no_refetch_compliance_*.json|\
+    newsletter_phase3_curated_sections_*.md|\
+    newsletter_phase3_working_set_*.md|\
+    newsletter_phase3_capability_map_*_to_*.json|\
+    copilot_cli_release_inventory_*_to_*.md|\
+    copilot_app_release_inventory_*_to_*.md|\
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]_cli_release_inventory.md|\
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]_copilot_app_release_inventory.md|\
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]_cli_app_capability_map.md|\
+    newsletter_scope_contract_*.json|\
+    newsletter_scope_results_*.md|\
+    newsletter_pipeline_contract_*.md|\
+    newsletter_phase_receipts_*.json|\
+    newsletter_phase4_5_polishing_*.md|\
+    newsletter_phase4_6_video_matches_*.md|\
+    newsletter_run_marker_*_to_*.json|\
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]_editorial_review.md|\
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]_editorial_corrections.md|\
+    curator_notes_processed_*.md|\
+    curator_notes_editorial_signals_*.md)
+      return 0
+      ;;
+  esac
+  return 1
+}
+
 if [ "$NO_REUSE" -eq 1 ]; then
   archive_dir="workspace/archived/preflight/${cycle}_${timestamp}"
   mkdir -p "$archive_dir"
@@ -84,18 +162,31 @@ if [ "$NO_REUSE" -eq 1 ]; then
     "workspace/newsletter_phase1a_discoveries_${START}_to_${END}.md"
     "workspace/newsletter_phase1b_interim_github_${START}_to_${END}.md"
     "workspace/newsletter_phase1b_interim_vscode_${START}_to_${END}.md"
+    "workspace/newsletter_phase1b_vscode_theme_summary_${START}_to_${END}.md"
     "workspace/newsletter_phase1b_interim_visualstudio_${START}_to_${END}.md"
     "workspace/newsletter_phase1b_interim_jetbrains_${START}_to_${END}.md"
     "workspace/newsletter_phase1b_interim_xcode_${START}_to_${END}.md"
     "workspace/newsletter_phase2_event_sources_${END}.json"
     "workspace/newsletter_phase2_events_${END}.md"
+    "workspace/newsletter_phase2_selected_source_ids_${END}.json"
+    "workspace/newsletter_phase2_fetch_attempt_ledger_${END}.json"
+    "workspace/newsletter_phase2_no_refetch_compliance_${END}.json"
     "workspace/newsletter_phase3_curated_sections_${END}.md"
+    "workspace/newsletter_phase3_working_set_${END}.md"
+    "workspace/newsletter_phase3_capability_map_${START}_to_${END}.json"
+    "workspace/copilot_cli_release_inventory_${START}_to_${END}.md"
+    "workspace/copilot_app_release_inventory_${START}_to_${END}.md"
+    "workspace/${cycle_ym}_cli_release_inventory.md"
+    "workspace/${cycle_ym}_copilot_app_release_inventory.md"
+    "workspace/${cycle_ym}_cli_app_capability_map.md"
     "workspace/curator_notes_processed_${year}-${month}.md"
     "workspace/curator_notes_editorial_signals_${year}-${month}.md"
     "workspace/newsletter_scope_contract_${END}.json"
     "workspace/newsletter_scope_results_${END}.md"
     "workspace/newsletter_pipeline_contract_${END}.md"
     "workspace/newsletter_phase_receipts_${END}.json"
+    "workspace/newsletter_phase4_5_polishing_${END}.md"
+    "workspace/newsletter_phase4_6_video_matches_${END}.md"
     "workspace/fresh_phase1a_url_manifest_${START}_to_${END}.md"
     "workspace/fresh_phase1c_discoveries_${START}_to_${END}.md"
     "workspace/${cycle_ym}_editorial_review.md"
@@ -117,6 +208,24 @@ if [ "$NO_REUSE" -eq 1 ]; then
   fi
 
   echo "Archived ${moved} cycle artifact(s)."
+
+  foreign_dir="${archive_dir}/foreign_range_workspace"
+  foreign=0
+  while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    base="$(basename "$file")"
+    if is_cycle_scoped_workspace_file "$base" && ! is_current_cycle_workspace_file "$base"; then
+      mkdir -p "$foreign_dir"
+      mv "$file" "$foreign_dir/"
+      foreign=$((foreign + 1))
+    fi
+  done < <(find workspace -maxdepth 1 -type f | sort)
+
+  if [ "$foreign" -gt 0 ]; then
+    echo "Quarantined ${foreign} foreign-range workspace artifact(s)."
+  else
+    echo "No foreign-range workspace artifacts found."
+  fi
 else
   echo "Preparing cycle marker only (reuse allowed): $cycle"
 fi

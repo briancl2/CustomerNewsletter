@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-04-20T18:16:00Z",
+  "schema_version": "1.0.0",
+  "artifact": "CRITIQUE_RESULT",
+  "subject": "newsletter external-critique proving ground",
+  "review_scope": "bounded advisor decisions plus transfer-oracle receipt on the newsletter harness",
+  "capability_state": "bounded_calibrated",
+  "provider_scope": "briancl2-customer-newsletter:external_critique_proving_ground",
+  "calibration_basis": "external_critique_mixed_gate_v1",
+  "evidence_provenance": [
+    "tests/fixtures/external_critique_proving_ground/agentic-root-cause-briefs.json#prompt_family:external_critique",
+    "tests/fixtures/external_critique_proving_ground/agentic-root-cause-briefs.json#prompt_family:external_critique_health"
+  ],
+  "downstream_admission": "bounded",
+  "verdict": "partial",
+  "findings": [
+    {
+      "severity": "Info",
+      "message": "The newsletter proving ground preserves the helper-only row as blocked and the bounded non-helper row as non-remediating.",
+      "evidence": "ADVISORY_DECISIONS.json and TRANSFER_ORACLE_RECEIPT.json",
+      "recommendation": "Keep the shared gate fail-closed unless a later owner-side proof upgrades the bounded row without clearing the helper-only row."
+    }
+  ],
+  "repair_guidance": null,
+  "bounded_non_claims": [
+    "This proving-ground critique result does not claim publication readiness.",
+    "This proving-ground critique result does not claim a ready optimizer mutation."
+  ]
+}

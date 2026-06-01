@@ -100,6 +100,21 @@ In months with >=25 discoveries and a strong lead section, exclude incremental i
 
 Only include quantitative metrics directly stated in source material. Remove derived calculations and per-unit cost extrapolations. Example: "~10 hours saved per user per month" (directly stated at VA.gov) is fine. "~$1.25 per user" (calculated, not directly stated) must be removed.
 
+### Claim Discipline For Risky Topics
+
+Billing, pricing, model availability, legal/preview, BYOK, OpenTelemetry, and cost-optimization claims need source and evidence labels before publication.
+
+| Claim type | Rule |
+|---|---|
+| **Copilot billing/pricing** | Use GitHub Copilot billing docs, budget docs, or GitHub Blog/changelog sources as authority. Provider API docs can explain general token economics, caching, context windows, or reasoning controls, but they are not Copilot billing proof. |
+| **Model status and availability** | Re-check current GitHub supported-models docs or a GitHub Changelog source at publication time. Add rollout, plan, policy, client, or minimum-version caveats when the source includes them. |
+| **Legal, DPA, preview terms, CCC, indemnity** | Use exact-source wording or cautious paraphrase in Enterprise/Security/Governance/Legal context. If legal comfort is unknown, move to a Legal/Compliance appendix or mark for account/legal verification. |
+| **Cost optimization** | Label evidence type: official product behavior, GitHub usage report/export, internal telemetry, workflow experiment, anecdote, recommendation, or inference. Do not turn internal telemetry into billing proof, durable savings, model superiority, or fleet-readiness claims. |
+| **BYOK** | Specify the surface and billing/reporting context: VS Code BYOK, Copilot CLI external/local provider, Copilot SDK/custom workflow, direct provider billing, model availability, or GitHub AI Credits impact. Do not say `BYOK token usage` generically. |
+| **OpenTelemetry** | Scope to the actual telemetry surface. SDK-backed or instrumented workflows can use Copilot SDK/OpenTelemetry traces; standard VS Code and Copilot CLI usage should start with GitHub usage reports, dashboards, and available IDE/CLI telemetry. |
+
+For customer-facing optimization claims, prefer this pattern: `Claim - Evidence type - What it proves - What it does not prove`.
+
 ### Status Label Accuracy (from Polishing Data)
 
 NEVER assume a feature is GA in one IDE because it is GA in another. For JetBrains, Eclipse, and Xcode features, check each IDE's specific changelog independently. **Only apply GA/PREVIEW labels when the source text contains exact status language** ("generally available", "public preview", "technical preview", "experimental", "beta"). If the source says "now available", "now supports", or uses RELEASE tagging without an explicit status qualifier, **omit the label entirely**. Common over-claims to guard against: BYOK was labeled GA but was actually public preview; OpenCode support had no status label but was given GA; VS Code features often lack explicit labels. Use qualified labels when status varies by IDE: `` (`GA` in VS Code, `PREVIEW` elsewhere) ``. Add policy notes when features require admin enablement.

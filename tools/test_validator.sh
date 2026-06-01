@@ -50,6 +50,32 @@ assert_passes "archive/2025/December.md" "December 2025"
 # They legitimately fail validation. Only test agentic-era newsletters.
 assert_passes "output/2026-02_february_newsletter.md" "February 2026 V2"
 
+cp "output/2026-02_february_newsletter.md" "$TMPDIR/good_legal_nested.md"
+python3 - "$TMPDIR/good_legal_nested.md" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+insert = "\n## Enterprise Legal and Compliance\n\n- **Legal note** -- Customer Copyright Commitment coverage remains routed with enterprise legal readiness when it is nested below the Enterprise and Security section. - [Docs](https://docs.github.com/en/site-policy/github-terms/github-pre-release-license-terms)\n"
+text = text.replace("# Enterprise and Security Updates\n", "# Enterprise and Security Updates\n" + insert, 1)
+path.write_text(text, encoding="utf-8")
+PY
+assert_passes "$TMPDIR/good_legal_nested.md" "nested legal content under Enterprise and Security"
+
+cp "output/2026-02_february_newsletter.md" "$TMPDIR/good_app_technical_preview.md"
+python3 - "$TMPDIR/good_app_technical_preview.md" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+insert = "- **GitHub Copilot App (`TECHNICAL PREVIEW`)** -- The App preview gives early adopters a customer-visible path to try the new agent workspace without making release-volume claims. - [Changelog](https://github.blog/changelog/2026-05-14-github-copilot-app-is-now-available-in-technical-preview) | [Docs](https://docs.github.com/en/copilot)\n\n"
+text = text.replace("## Latest Releases\n\n", "## Latest Releases\n\n" + insert, 1)
+path.write_text(text, encoding="utf-8")
+PY
+assert_passes "$TMPDIR/good_app_technical_preview.md" "App technical preview without release inventory"
+
 echo "  $PASS passed so far"
 echo ""
 
@@ -249,6 +275,76 @@ If you have any questions, feel free to reach out.
 EOF
 assert_fails "$TMPDIR/bad_wikilink.md" "wikilinks"
 
+# Bad 10: Legal/CCC note appears before Enterprise and Security
+cp "output/2026-02_february_newsletter.md" "$TMPDIR/bad_legal_venue.md"
+python3 - "$TMPDIR/bad_legal_venue.md" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+insert = "- **Legal note** -- Customer Copyright Commitment coverage changed and Duplicate Detection is no longer required for that coverage. - [Docs](https://docs.github.com/en/site-policy/github-terms/github-pre-release-license-terms)\n\n"
+text = text.replace("# Copilot\n", insert + "# Copilot\n", 1)
+path.write_text(text, encoding="utf-8")
+PY
+assert_fails "$TMPDIR/bad_legal_venue.md" "legal/CCC content before Enterprise and Security"
+
+# Bad 11: VS Code version inventory leaks into body prose
+cp "output/2026-02_february_newsletter.md" "$TMPDIR/bad_vscode_versions.md"
+python3 - "$TMPDIR/bad_vscode_versions.md" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+insert = "The VS Code cycle included public release signals for 1.110, 1.111, and 1.112 before the feature themes were summarized.\n\n"
+text = text.replace("# Copilot\n", insert + "# Copilot\n", 1)
+path.write_text(text, encoding="utf-8")
+PY
+assert_fails "$TMPDIR/bad_vscode_versions.md" "VS Code version sequence in body prose"
+
+# Bad 12: App release-inventory prose is under-linked
+cp "output/2026-02_february_newsletter.md" "$TMPDIR/bad_app_underlinked.md"
+python3 - "$TMPDIR/bad_app_underlinked.md" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+insert = "- **New agent workspace (`TECHNICAL PREVIEW`)** -- I reviewed the **GitHub Copilot App** release inventory for a later cycle with **23 releases** and a broad release stream. The App now includes My work, focused sessions, plan and diff review, Agent Merge, terminal and browser validation, workflows, skills, prompts, MCP, and enterprise readiness. - [Changelog](https://github.blog/changelog/2026-05-14-github-copilot-app-is-now-available-in-technical-preview) | [Docs](https://docs.github.com/en/copilot) | [GitHub Blog](https://github.blog/) | [Release Notes](https://github.com/github/copilot-cli/releases) | [Preview Terms](https://docs.github.com/en/site-policy/github-terms/github-pre-release-license-terms)\n\n"
+text = text.replace("## Latest Releases\n\n", "## Latest Releases\n\n" + insert, 1)
+path.write_text(text, encoding="utf-8")
+PY
+assert_fails "$TMPDIR/bad_app_underlinked.md" "App release-inventory bullet under-linked"
+
+# Bad 13: App release discovery process leaks into customer-facing prose
+cp "output/2026-02_february_newsletter.md" "$TMPDIR/bad_app_process_leak.md"
+python3 - "$TMPDIR/bad_app_process_leak.md" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+insert = "The Copilot App anonymous fetch returned 404 for github/github-app releases, but authenticated release access exposed a private tag.\n\n"
+text = text.replace("# Copilot\n", insert + "# Copilot\n", 1)
+path.write_text(text, encoding="utf-8")
+PY
+assert_fails "$TMPDIR/bad_app_process_leak.md" "App authenticated release-process leakage"
+
+# Bad 14: High-volume CLI release prose lacks representative inline links
+cp "output/2026-02_february_newsletter.md" "$TMPDIR/bad_cli_underlinked.md"
+python3 - "$TMPDIR/bad_cli_underlinked.md" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+insert = "- **Agentic command-line platform** -- I reviewed **18 GitHub Copilot CLI releases** in scope, including **12 stable releases**. Major capabilities include plan, autopilot, remote sessions, plugins, skills, hooks, MCP, ACP, SDK, Chronicle, memory, BYOK, permissions, approvals, sandboxing, and cost visibility. - [Releases](https://github.com/github/copilot-cli/releases) | [Docs](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli) | [GitHub Blog](https://github.blog/changelog/label/copilot/) | [Release Notes](https://github.com/github/copilot-cli/releases) | [Preview Terms](https://docs.github.com/en/site-policy/github-terms/github-pre-release-license-terms) | [GitHub Previews](https://github.com/features/preview)\n\n"
+text = text.replace("## Latest Releases\n\n", "## Latest Releases\n\n" + insert, 1)
+path.write_text(text, encoding="utf-8")
+PY
+assert_fails "$TMPDIR/bad_cli_underlinked.md" "CLI high-volume release bullet under-linked"
+
 echo "  $PASS passed total (of $((PASS + FAIL)))"
 echo ""
 
@@ -256,7 +352,8 @@ echo ""
 TOTAL=$((PASS + FAIL))
 echo "==================================="
 echo "Results: $PASS/$TOTAL passed, $FAIL failed"
-distinct_bad=$((TOTAL - 3))  # minus 3 known-good
+known_good=3
+distinct_bad=$((TOTAL - known_good))
 echo "Distinct bad-input checks: $distinct_bad"
 if [ "$FAIL" -eq 0 ]; then
   echo "** ALL TESTS PASS **"

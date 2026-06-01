@@ -8,7 +8,7 @@ post_date: "2026-02-03"
 
 ## Purpose
 
-This document defines the operating model for running Copilot CLI in GitHub Actions for this repository. The model treats Actions runs as a first-class surface with evidence artifacts, tight tool boundaries, and repeatable proof workflows.
+This document defines the operating model for running Copilot CLI in GitHub Actions for this vault. The model treats Actions runs as a first-class surface with evidence artifacts, tight tool boundaries, and repeatable proof workflows.
 
 ## Definition: First-Class Citizen
 

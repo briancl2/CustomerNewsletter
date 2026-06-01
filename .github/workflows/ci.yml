@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -30,11 +34,14 @@ jobs:
       - name: Structure validation
         run: make validate-structure
 
-      - name: Skill validation (all skills)
+      - name: Skill validation (12 skills)
         run: make validate-all-skills
 
       - name: Newsletter validator self-test
         run: make test-validator
+
+      - name: Phase 3 contract tests
+        run: make test-phase3
 
       - name: Archive workspace tests
         run: make test-archive
@@ -45,11 +52,24 @@ jobs:
       - name: Heuristic scoring (41pt)
         run: bash tools/score-heuristic.sh
 
-      - name: Validate shipped sample newsletter
-        run: make validate-newsletter FILE=output/2026-02_february_newsletter.md
+      - name: Newsletter validation (all outputs)
+        run: |
+          for f in output/*.md; do
+            echo "Validating: $f"
+            make validate-newsletter FILE="$f"
+          done
 
-      - name: Build docs
-        run: mkdocs build --strict
+      - name: Benchmark regression (3 cycles)
+        run: make test-benchmark
+
+      - name: Intelligence sync check
+        run: make check-intel-sync
+
+      - name: Intelligence effectiveness test
+        run: make test-intel-effectiveness
+
+      - name: Polishing rules test
+        run: make test-polishing
 
       - name: Full test suite summary
         if: always()

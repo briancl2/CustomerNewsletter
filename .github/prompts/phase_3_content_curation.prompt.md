@@ -25,7 +25,8 @@ This newsletter is personally curated to provide **awareness, engagement, educat
 
 <phase name="discovery">
 <thinking>
-Parse Phase 1C input and inventory candidates by relevance, recency, enterprise impact, and thematic clusters that could drive a lead section.
+Parse `workspace/newsletter_phase3_working_set_YYYY-MM-DD.md` first and inventory candidates by relevance, recency, enterprise impact, and thematic clusters that could drive a lead section.
+Only if the working set flags missing data should you consult Phase 1C discoveries.
 Identify overlapping/duplicate items and potential consolidations.
 </thinking>
 </phase>
@@ -36,7 +37,7 @@ Map candidates to sections: Optional lead section (theme-driven), Copilot (Lates
 Establish link selections per priority order; decide where nested bullets or short sub-blocks are justified under Latest Releases.
 </analysis>
 <decision>
-Lead Section Rule: Prefer a content-driven lead section when Phase 1C shows a clear theme. When in doubt, use the first section in the discoveries file as the lead section title/topic.
+Lead Section Rule: Prefer a content-driven lead section when the working set bundles show a clear theme. If you must fall back to discoveries, use the dominant section cluster rather than a generic title.
 IDE Parity Rule: Always group parity under a single parent bullet with nested bullets and include the rollout note.
 Labeling Rule: If release type is ambiguous, omit `(GA)/(PREVIEW)` rather than guessing.
 Link Priority Rule: Always enforce link label priority: [Announcement] > [Docs] > [Release Notes] > [Changelog]. Use single bracket markdown `[Text](URL)` only (never `[[Text]](URL)`).
@@ -68,15 +69,28 @@ If any gate fails, revise before producing output.
 
 ## Required Actions
 **YOU MUST:**
-1. **Review and analyze** the provided raw content list from Phase 1C
-2. **Select the most relevant items** based on the content selection criteria (no strict item or link counts; typical curated total ≈15–20 items but quality > quantity)
-3. **Create finalized core sections** mirroring the June newsletter style (see below)
-4. **Write enterprise-focused descriptions** emphasizing business value
-5. **Apply proper formatting** including release type labels and link embedding
-6. **Follow IDE rollout patterns** for Copilot features
-7. **Create section groupings** when multiple related items warrant dedicated subsections
-8. **Strip raw metadata** (dates, relevance scores, IDE support fields) from the final output; use them only for selection and ordering
-9. **Merge duplicates/overlaps** into a single consolidated entry with prioritized links
+1. **Review and analyze** `workspace/newsletter_phase3_working_set_YYYY-MM-DD.md` first, and read Phase 1C discoveries only if the working set flags missing data
+2. **Initialize the canonical curated artifact first** with `python3 tools/init_phase3_curated_sections.py START END` when `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md` does not exist yet
+3. **Edit the canonical curated artifact in place** after initialization; do not use a generic create-file action for this phase output
+4. **Select the most relevant items** based on the content selection criteria (no strict item or link counts; typical curated total ≈15–20 items but quality > quantity)
+5. **Create finalized core sections** mirroring the June newsletter style (see below)
+6. **Write enterprise-focused descriptions** emphasizing business value
+7. **Apply proper formatting** including release type labels and link embedding
+8. **Follow IDE rollout patterns** for Copilot features
+9. **Create section groupings** when multiple related items warrant dedicated subsections
+10. **Strip raw metadata** (dates, relevance scores, IDE support fields) from the final output; use them only for selection and ordering
+11. **Merge duplicates/overlaps** into a single consolidated entry with prioritized links
+
+## Phase 3 Artifact Preflight
+
+Before drafting content:
+
+1. Read `workspace/newsletter_phase3_working_set_YYYY-MM-DD.md` before any broad reread of discoveries or reference docs.
+2. Check whether `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md` already exists.
+3. If it does not exist, run `python3 tools/init_phase3_curated_sections.py START END`.
+4. Treat the resulting scaffold as the only valid Phase 3 output path.
+5. Replace all TODO markers and HTML comment placeholders in that scaffold before validation.
+6. Before finalizing, run `python3 tools/validate_phase3_curated.py START END workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md --working-set workspace/newsletter_phase3_working_set_YYYY-MM-DD.md`.
 
 ## Content Selection Criteria
 **Prioritize by this exact order:**
@@ -99,7 +113,7 @@ If any gate fails, revise before producing output.
 ## Required Newsletter Sections
 
 ### 1. Content-Driven Lead Section (optional)
-Show a top section only if the Phase 1C discoveries indicate a clear theme that merits lead placement, for example a major launch or vision update. Derive a concise, content-driven title from the cluster of top items (examples: "GitHub Coding Agent Launch", "Security Updates", "Platform Governance").
+Show a top section only if the working set indicates a clear theme that merits lead placement, for example a major launch or vision update. If you fall back to Phase 1C discoveries, derive the same concise, content-driven title from that dominant cluster (examples: "GitHub Coding Agent Launch", "Security Updates", "Platform Governance").
 
 Selection cues:
 - Platform-wide announcements with broad enterprise impact
@@ -224,7 +238,7 @@ Ambiguity handling:
 
 ## Quality Checklist
 Before submitting, ensure:
-- [ ] Content-driven lead section included only when warranted by Phase 1A
+- [ ] Content-driven lead section included only when warranted by the working set bundles or an explicit missing-data fallback to Phase 1C
 - [ ] Copilot section present with Latest Releases and IDE Parity grouping when applicable
 - [ ] Copilot at Scale always included with relevant enterprise items and changelog links
 - [ ] GA features prioritized over PREVIEW, GA listed before PREVIEW when both exist
@@ -239,7 +253,9 @@ Before submitting, ensure:
 - [ ] Link label priority enforced across bullets
 
 ## Input Expected
-Raw content list from Phase 1C with discoveries organized by category, including relevance scores and enterprise impact assessments. Example file: `workspace/newsletter_phase1a_discoveries_YYYY-MM-DD_to_YYYY-MM-DD.md`.
+Primary input: `workspace/newsletter_phase3_working_set_YYYY-MM-DD.md`.
+
+Fallback input only when the working set flags missing data: `workspace/newsletter_phase1a_discoveries_YYYY-MM-DD_to_YYYY-MM-DD.md`.
 
 ## Output Format
 Finalized core newsletter sections in markdown that mirror the June example, ready to paste into the monthly issue. Do not include Events (handled in Phase 2 and assembled in Phase 4).
@@ -271,7 +287,7 @@ Finalized core newsletter sections in markdown that mirror the June example, rea
 **Output File:** `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md`
 
 **Content Summary:**
-- **Lead Section:** Present only when Phase 1C indicates a strong theme
+- **Lead Section:** Present only when the working set indicates a strong theme, or an explicit missing-data fallback to Phase 1C is required
 - **Copilot Latest Releases:** Major features and model updates; consolidated where overlapping
 - **IDE Parity:** Single parent bullet with nested bullets and the rollout note
 - **Copilot at Scale:** Governance, billing, training, plus standard changelog links

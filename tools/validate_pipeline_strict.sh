@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$(git rev-parse --show-toplevel)"
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
 
 usage() {
   cat <<'USAGE'
-Usage: bash tools/validate_pipeline_strict.sh <START_DATE> <END_DATE> [--require-fresh] [--benchmark-mode <mode-or-json-path>]
+Usage: bash tools/validate_pipeline_strict.sh <START_DATE> <END_DATE> [--require-fresh] [--benchmark-mode <mode-or-json-path>] [--production-artifacts] [--artifact-root <dir>] [--report-path <path>]
 
 Validates strict pipeline contract adherence for a newsletter cycle:
 - all canonical phase artifacts exist
@@ -20,6 +21,8 @@ Examples:
   bash tools/validate_pipeline_strict.sh 2025-12-05 2026-02-13
   bash tools/validate_pipeline_strict.sh 2025-12-05 2026-02-13 --require-fresh
   bash tools/validate_pipeline_strict.sh 2025-12-05 2026-02-13 --benchmark-mode feb2026_consistency
+  bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --production-artifacts
+  bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --production-artifacts --artifact-root runs/product_runs/.../artifacts --report-path runs/product_runs/.../audit/strict-validator-report.md
 USAGE
 }
 
@@ -32,6 +35,9 @@ START="$1"
 END="$2"
 REQUIRE_FRESH=0
 BENCHMARK_MODE=""
+STRICT_PRODUCTION_ARTIFACTS="${STRICT_PRODUCTION_ARTIFACTS:-0}"
+ARTIFACT_ROOT="$ROOT"
+REPORT_PATH=""
 
 shift 2
 while [ "$#" -gt 0 ]; do
@@ -46,6 +52,26 @@ while [ "$#" -gt 0 ]; do
         exit 1
       fi
       BENCHMARK_MODE="$2"
+      shift 2
+      ;;
+    --production-artifacts)
+      STRICT_PRODUCTION_ARTIFACTS=1
+      shift
+      ;;
+    --artifact-root)
+      if [ "$#" -lt 2 ]; then
+        echo "Error: --artifact-root requires a directory"
+        exit 1
+      fi
+      ARTIFACT_ROOT="$2"
+      shift 2
+      ;;
+    --report-path)
+      if [ "$#" -lt 2 ]; then
+        echo "Error: --report-path requires a path"
+        exit 1
+      fi
+      REPORT_PATH="$2"
       shift 2
       ;;
     *)
@@ -63,6 +89,39 @@ fi
 if ! [[ "$END" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
   echo "Error: END_DATE must be YYYY-MM-DD, got: $END"
   exit 1
+fi
+
+ARTIFACT_ROOT="$(
+  python3 - "$ROOT" "$ARTIFACT_ROOT" <<'PY'
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1]).resolve()
+artifact_root = Path(sys.argv[2])
+if not artifact_root.is_absolute():
+    artifact_root = root / artifact_root
+print(artifact_root.resolve())
+PY
+)"
+
+if [ ! -d "$ARTIFACT_ROOT" ]; then
+  echo "Error: artifact root does not exist: $ARTIFACT_ROOT"
+  exit 1
+fi
+
+if [ -n "$REPORT_PATH" ]; then
+  REPORT_PATH="$(
+    python3 - "$ROOT" "$REPORT_PATH" <<'PY'
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1]).resolve()
+report_path = Path(sys.argv[2])
+if not report_path.is_absolute():
+    report_path = root / report_path
+print(report_path.resolve())
+PY
+  )"
 fi
 
 month_name_from_end() {
@@ -94,6 +153,11 @@ mtime_epoch() {
   fi
 }
 
+resolve_artifact_path() {
+  local logical_path="$1"
+  printf '%s\n' "$ARTIFACT_ROOT/$logical_path"
+}
+
 FAILS=0
 WARNS=0
 DETAILS=""
@@ -106,35 +170,107 @@ year="$(echo "$END" | cut -d- -f1)"
 month="$(echo "$END" | cut -d- -f2)"
 month_name="$(month_name_from_end)"
 
-manifest="workspace/newsletter_phase1a_url_manifest_${START}_to_${END}.md"
-discoveries="workspace/newsletter_phase1a_discoveries_${START}_to_${END}.md"
-event_sources="workspace/newsletter_phase2_event_sources_${END}.json"
-events="workspace/newsletter_phase2_events_${END}.md"
-curated="workspace/newsletter_phase3_curated_sections_${END}.md"
-scope_contract="workspace/newsletter_scope_contract_${END}.json"
-scope_results="workspace/newsletter_scope_results_${END}.md"
-output_file="output/${year}-${month}_${month_name}_newsletter.md"
-report="workspace/newsletter_pipeline_contract_${END}.md"
-marker="workspace/newsletter_run_marker_${START}_to_${END}.json"
-phase_receipts="workspace/newsletter_phase_receipts_${END}.json"
+manifest_logical="workspace/newsletter_phase1a_url_manifest_${START}_to_${END}.md"
+discoveries_logical="workspace/newsletter_phase1a_discoveries_${START}_to_${END}.md"
+event_sources_logical="workspace/newsletter_phase2_event_sources_${END}.json"
+events_logical="workspace/newsletter_phase2_events_${END}.md"
+curated_logical="workspace/newsletter_phase3_curated_sections_${END}.md"
+phase3_working_set_logical="workspace/newsletter_phase3_working_set_${END}.md"
+scope_contract_logical="workspace/newsletter_scope_contract_${END}.json"
+scope_results_logical="workspace/newsletter_scope_results_${END}.md"
+output_file_logical="output/${year}-${month}_${month_name}_newsletter.md"
+report_logical="workspace/newsletter_pipeline_contract_${END}.md"
+marker_logical="workspace/newsletter_run_marker_${START}_to_${END}.json"
+phase_receipts_logical="workspace/newsletter_phase_receipts_${END}.json"
 benchmark_config=""
 
-phase1b_files=(
+phase1b_files_logical=(
   "workspace/newsletter_phase1b_interim_github_${START}_to_${END}.md"
   "workspace/newsletter_phase1b_interim_vscode_${START}_to_${END}.md"
   "workspace/newsletter_phase1b_interim_visualstudio_${START}_to_${END}.md"
   "workspace/newsletter_phase1b_interim_jetbrains_${START}_to_${END}.md"
   "workspace/newsletter_phase1b_interim_xcode_${START}_to_${END}.md"
 )
-phase1b_github="workspace/newsletter_phase1b_interim_github_${START}_to_${END}.md"
-phase1b_vscode="workspace/newsletter_phase1b_interim_vscode_${START}_to_${END}.md"
+phase1b_github_logical="workspace/newsletter_phase1b_interim_github_${START}_to_${END}.md"
+phase1b_vscode_logical="workspace/newsletter_phase1b_interim_vscode_${START}_to_${END}.md"
 cycle_ym="${year}-${month}"
-curator_processed="workspace/curator_notes_processed_${cycle_ym}.md"
-curator_signals="workspace/curator_notes_editorial_signals_${cycle_ym}.md"
+curator_processed_logical="workspace/curator_notes_processed_${cycle_ym}.md"
+curator_signals_logical="workspace/curator_notes_editorial_signals_${cycle_ym}.md"
+cli_inventory_logical="workspace/copilot_cli_release_inventory_${START}_to_${END}.md"
+app_inventory_logical="workspace/copilot_app_release_inventory_${START}_to_${END}.md"
+capability_map_logical="workspace/newsletter_phase3_capability_map_${START}_to_${END}.json"
+vscode_theme_summary_logical="workspace/newsletter_phase1b_vscode_theme_summary_${START}_to_${END}.md"
+phase45_polishing_logical="workspace/newsletter_phase4_5_polishing_${END}.md"
+phase46_video_report_logical="workspace/newsletter_phase4_6_video_matches_${END}.md"
+editorial_review_logical="workspace/${cycle_ym}_editorial_review.md"
+legacy_cli_inventory_logical="workspace/${cycle_ym}_cli_release_inventory.md"
+legacy_app_inventory_logical="workspace/${cycle_ym}_copilot_app_release_inventory.md"
+legacy_capability_map_logical="workspace/${cycle_ym}_cli_app_capability_map.md"
+
+manifest="$(resolve_artifact_path "$manifest_logical")"
+discoveries="$(resolve_artifact_path "$discoveries_logical")"
+event_sources="$(resolve_artifact_path "$event_sources_logical")"
+events="$(resolve_artifact_path "$events_logical")"
+curated="$(resolve_artifact_path "$curated_logical")"
+phase3_working_set="$(resolve_artifact_path "$phase3_working_set_logical")"
+scope_contract="$(resolve_artifact_path "$scope_contract_logical")"
+scope_results="$(resolve_artifact_path "$scope_results_logical")"
+output_file="$(resolve_artifact_path "$output_file_logical")"
+if [ -z "$REPORT_PATH" ]; then
+  if [ "$ARTIFACT_ROOT" = "$ROOT" ]; then
+    REPORT_PATH="$(resolve_artifact_path "$report_logical")"
+  else
+    echo "Error: --report-path is required when --artifact-root points at a retained snapshot"
+    exit 1
+  fi
+fi
+report="$REPORT_PATH"
+marker="$(resolve_artifact_path "$marker_logical")"
+phase_receipts="$(resolve_artifact_path "$phase_receipts_logical")"
+phase1b_files=(
+  "$(resolve_artifact_path "${phase1b_files_logical[0]}")"
+  "$(resolve_artifact_path "${phase1b_files_logical[1]}")"
+  "$(resolve_artifact_path "${phase1b_files_logical[2]}")"
+  "$(resolve_artifact_path "${phase1b_files_logical[3]}")"
+  "$(resolve_artifact_path "${phase1b_files_logical[4]}")"
+)
+phase1b_github="$(resolve_artifact_path "$phase1b_github_logical")"
+phase1b_vscode="$(resolve_artifact_path "$phase1b_vscode_logical")"
+curator_processed="$(resolve_artifact_path "$curator_processed_logical")"
+curator_signals="$(resolve_artifact_path "$curator_signals_logical")"
+cli_inventory="$(resolve_artifact_path "$cli_inventory_logical")"
+app_inventory="$(resolve_artifact_path "$app_inventory_logical")"
+capability_map="$(resolve_artifact_path "$capability_map_logical")"
+vscode_theme_summary="$(resolve_artifact_path "$vscode_theme_summary_logical")"
+phase45_polishing="$(resolve_artifact_path "$phase45_polishing_logical")"
+phase46_video_report="$(resolve_artifact_path "$phase46_video_report_logical")"
+editorial_review="$(resolve_artifact_path "$editorial_review_logical")"
+legacy_cli_inventory="$(resolve_artifact_path "$legacy_cli_inventory_logical")"
+legacy_app_inventory="$(resolve_artifact_path "$legacy_app_inventory_logical")"
+legacy_capability_map="$(resolve_artifact_path "$legacy_capability_map_logical")"
+
+if [ "$ARTIFACT_ROOT" != "$ROOT" ]; then
+  python3 - "$ARTIFACT_ROOT" "$report" <<'PY'
+import sys
+from pathlib import Path
+
+artifact_root = Path(sys.argv[1]).resolve()
+report_path = Path(sys.argv[2]).resolve()
+
+try:
+    report_path.relative_to(artifact_root)
+except ValueError:
+    raise SystemExit(0)
+
+raise SystemExit(
+    "Error: --report-path must not live under --artifact-root for retained snapshot validation"
+)
+PY
+fi
 
 shortcut_files=(
-  "workspace/fresh_phase1a_url_manifest_${START}_to_${END}.md"
-  "workspace/fresh_phase1c_discoveries_${START}_to_${END}.md"
+  "$(resolve_artifact_path "workspace/fresh_phase1a_url_manifest_${START}_to_${END}.md")"
+  "$(resolve_artifact_path "workspace/fresh_phase1c_discoveries_${START}_to_${END}.md")"
 )
 
 check_exists_and_min_size() {
@@ -190,6 +326,120 @@ if [ -n "$BENCHMARK_MODE" ]; then
   benchmark_config="$(resolve_benchmark_config "$BENCHMARK_MODE")"
 fi
 
+retained_benchmark_mtime_equivalence=0
+if [ "$REQUIRE_FRESH" -eq 0 ] && [ -n "$benchmark_config" ] && [ "$ARTIFACT_ROOT" != "$ROOT" ]; then
+  retained_benchmark_mtime_equivalence=1
+fi
+
+set +e
+workspace_scan_output="$(
+  python3 - "$ARTIFACT_ROOT" "$START" "$END" "$cycle_ym" "$([ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ] && echo 1 || echo 0)" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+artifact_root, start, end, cycle_ym, strict_flag = sys.argv[1:6]
+strict_mode = strict_flag == "1"
+workspace = Path(artifact_root) / "workspace"
+
+if not workspace.exists():
+    print("PASS: workspace directory missing; cross-range contamination check skipped")
+    sys.exit(0)
+
+current_names = {
+    f"newsletter_phase1a_url_manifest_{start}_to_{end}.md",
+    f"newsletter_phase1a_discoveries_{start}_to_{end}.md",
+    f"newsletter_phase1b_interim_github_{start}_to_{end}.md",
+    f"newsletter_phase1b_interim_vscode_{start}_to_{end}.md",
+    f"newsletter_phase1b_interim_visualstudio_{start}_to_{end}.md",
+    f"newsletter_phase1b_interim_jetbrains_{start}_to_{end}.md",
+    f"newsletter_phase1b_interim_xcode_{start}_to_{end}.md",
+    f"newsletter_phase2_event_sources_{end}.json",
+    f"newsletter_phase2_events_{end}.md",
+    f"newsletter_phase2_selected_source_ids_{end}.json",
+    f"newsletter_phase2_fetch_attempt_ledger_{end}.json",
+    f"newsletter_phase2_no_refetch_compliance_{end}.json",
+    f"newsletter_phase3_curated_sections_{end}.md",
+    f"newsletter_phase3_working_set_{end}.md",
+    f"newsletter_scope_contract_{end}.json",
+    f"newsletter_scope_results_{end}.md",
+    f"newsletter_pipeline_contract_{end}.md",
+    f"newsletter_phase_receipts_{end}.json",
+    f"newsletter_phase4_5_polishing_{end}.md",
+    f"newsletter_phase4_6_video_matches_{end}.md",
+    f"newsletter_run_marker_{start}_to_{end}.json",
+    f"{cycle_ym}_editorial_review.md",
+    f"{cycle_ym}_editorial_corrections.md",
+    f"curator_notes_processed_{cycle_ym}.md",
+    f"curator_notes_editorial_signals_{cycle_ym}.md",
+    f"copilot_cli_release_inventory_{start}_to_{end}.md",
+    f"copilot_app_release_inventory_{start}_to_{end}.md",
+    f"newsletter_phase3_capability_map_{start}_to_{end}.json",
+    f"newsletter_phase1b_vscode_theme_summary_{start}_to_{end}.md",
+}
+
+patterns = [
+    re.compile(r"^newsletter_phase1a_url_manifest_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase1a_discoveries_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase1b_interim_[^_]+_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase2_event_sources_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^newsletter_phase2_events_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase2_selected_source_ids_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^newsletter_phase2_fetch_attempt_ledger_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^newsletter_phase2_no_refetch_compliance_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^newsletter_phase3_curated_sections_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase3_working_set_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_scope_contract_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^newsletter_scope_results_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_pipeline_contract_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase_receipts_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^newsletter_phase4_5_polishing_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase4_6_video_matches_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_run_marker_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^\d{4}-\d{2}_editorial_review\.md$"),
+    re.compile(r"^\d{4}-\d{2}_editorial_corrections\.md$"),
+    re.compile(r"^curator_notes_processed_\d{4}-\d{2}\.md$"),
+    re.compile(r"^curator_notes_editorial_signals_\d{4}-\d{2}\.md$"),
+    re.compile(r"^copilot_cli_release_inventory_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^copilot_app_release_inventory_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.md$"),
+    re.compile(r"^newsletter_phase3_capability_map_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.json$"),
+    re.compile(r"^newsletter_phase1b_vscode_theme_summary_\d{4}-\d{2}-\d{2}_to_\d{4}-\d{2}-\d{2}\.md$"),
+]
+
+foreign = []
+for path in sorted(workspace.iterdir()):
+    if not path.is_file():
+        continue
+    name = path.name
+    if any(pattern.match(name) for pattern in patterns) and name not in current_names:
+        foreign.append(name)
+
+if not foreign:
+    print("PASS: No stale cross-range workspace artifacts detected")
+    sys.exit(0)
+
+for name in foreign:
+    prefix = "FAIL" if strict_mode else "WARN"
+    print(f"{prefix}: Stale cross-range workspace artifact present: workspace/{name}")
+
+if strict_mode:
+    sys.exit(2)
+PY
+)"
+workspace_scan_rc=$?
+set -e
+while IFS= read -r line; do
+  [ -z "$line" ] && continue
+  case "$line" in
+    PASS:*) pass "${line#PASS: }" ;;
+    WARN:*) warn "${line#WARN: }" ;;
+    FAIL:*) fail "${line#FAIL: }" ;;
+  esac
+done <<< "$workspace_scan_output"
+if [ "$workspace_scan_rc" -ne 0 ]; then
+  fail "Workspace cross-range contamination check failed"
+fi
+
 echo "Running strict pipeline validation for ${START} -> ${END}"
 if [ -n "$benchmark_config" ]; then
   echo "Benchmark mode config: ${benchmark_config}"
@@ -203,9 +453,270 @@ done
 check_exists_and_min_size "$discoveries" 200 "Phase 1C discoveries"
 check_exists_and_min_size "$events" 80 "Phase 2 events"
 check_exists_and_min_size "$curated" 120 "Phase 3 curated sections"
+if [ -f "$phase3_working_set" ]; then
+  check_exists_and_min_size "$phase3_working_set" 120 "Phase 3 working set"
+elif [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$BENCHMARK_MODE" ]; then
+  fail "Phase 3 working set missing for fresh/benchmark validation: $phase3_working_set"
+fi
+phase3_validate_cmd=(python3 tools/validate_phase3_curated.py "$START" "$END" "$curated")
+if [ -f "$phase3_working_set" ]; then
+  phase3_validate_cmd+=(--working-set "$phase3_working_set")
+fi
+if [ -n "$BENCHMARK_MODE" ]; then
+  phase3_validate_cmd+=(--benchmark-mode "$BENCHMARK_MODE")
+fi
+set +e
+phase3_contract_output="$(
+  "${phase3_validate_cmd[@]}" 2>&1
+)"
+phase3_contract_rc=$?
+set -e
+if [ "$phase3_contract_rc" -ne 0 ]; then
+  fail "Phase 3 curated contract failed: ${phase3_contract_output//$'\n'/ ; }"
+else
+  pass "Phase 3 curated contract valid"
+fi
 check_exists_and_min_size "$scope_contract" 40 "Scope contract"
 check_exists_and_min_size "$scope_results" 40 "Scope results"
 check_exists_and_min_size "$output_file" 400 "Final newsletter"
+
+if [ "$STRICT_PRODUCTION_ARTIFACTS" -eq 1 ]; then
+  set +e
+  root_cause_artifact_output="$(
+  python3 - \
+  "$START" \
+  "$END" \
+  "$output_file" \
+  "$scope_contract" \
+  "$phase1b_vscode" \
+  "$cli_inventory" \
+  "$app_inventory" \
+  "$capability_map" \
+  "$vscode_theme_summary" \
+  "$legacy_cli_inventory" \
+  "$legacy_app_inventory" \
+  "$legacy_capability_map" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+(
+  start,
+  end,
+  output_file,
+  scope_contract,
+  phase1b_vscode,
+  cli_inventory,
+  app_inventory,
+  capability_map,
+  vscode_theme_summary,
+  legacy_cli_inventory,
+  legacy_app_inventory,
+  legacy_capability_map,
+) = sys.argv[1:]
+
+output_path = Path(output_file)
+scope_path = Path(scope_contract)
+vscode_path = Path(phase1b_vscode)
+legacy_allowed = start == "2026-03-01" and end == "2026-05-31"
+root_cause_contract_applicable = start >= "2026-03-01"
+if not root_cause_contract_applicable:
+  print("PASS: Root-cause artifact gates are not applicable for this retained cycle")
+  sys.exit(0)
+
+def read_text(path: Path) -> str:
+  if not path.exists():
+    return ""
+  return path.read_text(encoding="utf-8", errors="ignore")
+
+def bullets(text: str) -> list[str]:
+  items = []
+  current = []
+  for line in text.splitlines():
+    if re.match(r"^-\s+\*\*", line):
+      if current:
+        items.append("\n".join(current))
+      current = [line]
+    elif current:
+      current.append(line)
+  if current:
+    items.append("\n".join(current))
+  return items
+
+output_text = read_text(output_path)
+output_bullets = bullets(output_text)
+
+app_triggered = any(
+  re.search(r"\b(?:GitHub\s+)?Copilot app\b", item, re.IGNORECASE)
+  and re.search(
+    r"\b\d+\s+releases?\b|release stream|release inventory|first accessible build|product-category launch",
+    item,
+    re.IGNORECASE,
+  )
+  for item in output_bullets
+)
+cli_triggered = any(
+  re.search(r"\b(?:GitHub\s+)?Copilot CLI\b", item, re.IGNORECASE)
+  and re.search(
+    r"\b\d+\s+(?:(?:GitHub\s+)?Copilot CLI\s+)?releases?\b|\b\d+\s+stable(?:\s+releases?)?\b|high-volume|release inventory|capability families",
+    item,
+    re.IGNORECASE,
+  )
+  for item in output_bullets
+)
+
+vscode_versions = []
+if scope_path.exists():
+  try:
+    scope = json.loads(read_text(scope_path))
+    versions = scope.get("expected_versions", {}).get("vscode", [])
+    if isinstance(versions, list):
+      vscode_versions = [item for item in versions if isinstance(item, str) and item.strip()]
+  except json.JSONDecodeError as exc:
+    print(f"FAIL: Could not parse scope contract for root-cause artifact checks: {exc}")
+
+vscode_text = read_text(vscode_path)
+vscode_url_versions = set(re.findall(r"code\.visualstudio\.com/updates/v1_(\d{3})", vscode_text))
+vscode_triggered = len(vscode_versions) >= 3 or len(vscode_url_versions) >= 3
+
+def content_ok(label: str, path: Path, text: str) -> bool:
+  lower = text.lower()
+  if label == "Copilot CLI release inventory":
+    return "total scoped releases" in lower and "stable releases" in lower and "github.com/github/copilot-cli/releases/tag/" in lower
+  if label == "Copilot App release inventory":
+    return "total accessible releases" in lower and "capability evidence summary" in lower
+  if label == "CLI/App capability map":
+    if path.suffix == ".json":
+      try:
+        parsed = json.loads(text)
+      except json.JSONDecodeError:
+        return False
+      rows = []
+
+      def visit(node):
+        if isinstance(node, dict):
+          if any(key in node for key in ("capability_name", "capability", "evidence_sources", "public_safe_link", "newsletter_treatment")):
+            rows.append(node)
+          for value in node.values():
+            visit(value)
+        elif isinstance(node, list):
+          for value in node:
+            visit(value)
+
+      def has_text(value) -> bool:
+        if isinstance(value, str):
+          return bool(value.strip())
+        if isinstance(value, list):
+          return any(has_text(item) for item in value)
+        return value is not None
+
+      visit(parsed)
+      for row in rows:
+        capability = row.get("capability_name") or row.get("capability")
+        evidence = row.get("evidence_sources") or row.get("evidence") or row.get("source_tags") or row.get("source_urls")
+        public_link = row.get("public_safe_link") or row.get("public_safe_link_target") or row.get("final_link") or row.get("link_target") or row.get("inline_link") or row.get("link")
+        treatment = row.get("newsletter_treatment") or row.get("final_prose_treatment") or row.get("treatment")
+        if not has_text(capability) or not has_text(evidence) or not has_text(treatment):
+          continue
+        if isinstance(public_link, str) and re.match(r"https?://", public_link.strip()):
+          return True
+      return False
+    return "inline link candidate" in lower and "copilot cli capability map" in lower and "copilot app capability map" in lower
+  if label == "VS Code theme summary":
+    return "theme" in lower and "code.visualstudio.com/updates" in lower
+  return True
+
+def require_artifact(label: str, triggered: bool, min_bytes: int, candidates: list[tuple[Path, bool]]) -> None:
+  if not triggered:
+    print(f"PASS: {label} artifact gate not triggered")
+    return
+  existing = [(path, is_legacy) for path, is_legacy in candidates if path.exists()]
+  if not existing:
+    tried = ", ".join(str(path) for path, _ in candidates)
+    print(f"FAIL: {label} artifact missing; tried: {tried}")
+    return
+  path, is_legacy = existing[0]
+  size = path.stat().st_size
+  if size < min_bytes:
+    print(f"FAIL: {label} artifact too small ({size} bytes): {path}")
+    return
+  text = read_text(path)
+  if not content_ok(label, path, text):
+    print(f"FAIL: {label} artifact lacks required inventory/map signals: {path}")
+    return
+  if is_legacy:
+    print(f"WARN: {label} uses retained May legacy artifact name: {path}")
+  print(f"PASS: {label} artifact present ({size} bytes): {path}")
+
+legacy_cli = [(Path(legacy_cli_inventory), True)] if legacy_allowed else []
+legacy_app = [(Path(legacy_app_inventory), True)] if legacy_allowed else []
+legacy_map = [(Path(legacy_capability_map), True)] if legacy_allowed else []
+
+require_artifact(
+  "Copilot CLI release inventory",
+  cli_triggered,
+  400,
+  [(Path(cli_inventory), False), *legacy_cli],
+)
+require_artifact(
+  "Copilot App release inventory",
+  app_triggered,
+  400,
+  [(Path(app_inventory), False), *legacy_app],
+)
+require_artifact(
+  "CLI/App capability map",
+  cli_triggered or app_triggered,
+  300,
+  [(Path(capability_map), False), *legacy_map],
+)
+require_artifact(
+  "VS Code theme summary",
+  vscode_triggered,
+  200,
+  [(Path(vscode_theme_summary), False)],
+)
+PY
+)"
+  root_cause_artifact_rc=$?
+  set -e
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    case "$line" in
+    PASS:*) pass "${line#PASS: }" ;;
+    WARN:*) warn "${line#WARN: }" ;;
+    FAIL:*) fail "${line#FAIL: }" ;;
+    esac
+  done <<< "$root_cause_artifact_output"
+  if [ "$root_cause_artifact_rc" -ne 0 ]; then
+    fail "Root-cause artifact contract check failed unexpectedly"
+  fi
+else
+  pass "Root-cause upstream artifact contract not required outside production-artifacts mode"
+fi
+
+if [ "$STRICT_PRODUCTION_ARTIFACTS" -eq 1 ]; then
+  check_exists_and_min_size "$phase45_polishing" 40 "Phase 4.5 polishing report"
+  check_exists_and_min_size "$phase46_video_report" 40 "Phase 4.6 video matching report"
+  check_exists_and_min_size "$editorial_review" 40 "Editorial review artifact"
+else
+  if [ -f "$phase45_polishing" ]; then
+    check_exists_and_min_size "$phase45_polishing" 40 "Phase 4.5 polishing report"
+  else
+    pass "Phase 4.5 polishing report not required for this run"
+  fi
+  if [ -f "$phase46_video_report" ]; then
+    check_exists_and_min_size "$phase46_video_report" 40 "Phase 4.6 video matching report"
+  else
+    pass "Phase 4.6 video matching report not required for this run"
+  fi
+  if [ -f "$editorial_review" ]; then
+    check_exists_and_min_size "$editorial_review" 40 "Editorial review artifact"
+  else
+    pass "Editorial review artifact not required for this run"
+  fi
+fi
 
 if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
   check_exists_and_min_size "$event_sources" 120 "Phase 2 event sources"
@@ -371,6 +882,10 @@ if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
     if [ "${#curator_note_files[@]}" -gt 0 ]; then
       curator_required=1
     fi
+    receipt_order_required=0
+    if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
+      receipt_order_required=1
+    fi
     set +e
     provenance_output="$(
       python3 - \
@@ -378,47 +893,25 @@ if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
         "$phase_receipts" \
         "$START" \
         "$END" \
-        "$manifest" \
-        "${phase1b_files[0]}" \
-        "${phase1b_files[1]}" \
-        "${phase1b_files[2]}" \
-        "${phase1b_files[3]}" \
-        "${phase1b_files[4]}" \
-        "$discoveries" \
-        "$event_sources" \
-        "$events" \
-        "$curated" \
-        "$scope_contract" \
-        "$scope_results" \
-        "$output_file" \
-        "$curator_processed" \
-        "$curator_signals" \
-        "$curator_required" <<'PY'
+        "$ARTIFACT_ROOT" \
+        "$curator_required" \
+        "$receipt_order_required" \
+        "$retained_benchmark_mtime_equivalence" <<'PY'
 import hashlib
 import json
 import sys
 from pathlib import Path
 
+from tools.product_run_common import receipt_phase_logical_paths
+
 marker_path = Path(sys.argv[1])
 receipts_path = Path(sys.argv[2])
 start = sys.argv[3]
 end = sys.argv[4]
-manifest = Path(sys.argv[5])
-phase1b_github = Path(sys.argv[6])
-phase1b_vscode = Path(sys.argv[7])
-phase1b_visualstudio = Path(sys.argv[8])
-phase1b_jetbrains = Path(sys.argv[9])
-phase1b_xcode = Path(sys.argv[10])
-discoveries = Path(sys.argv[11])
-event_sources = Path(sys.argv[12])
-events = Path(sys.argv[13])
-curated = Path(sys.argv[14])
-scope_contract = Path(sys.argv[15])
-scope_results = Path(sys.argv[16])
-output_file = Path(sys.argv[17])
-curator_processed = Path(sys.argv[18])
-curator_signals = Path(sys.argv[19])
-curator_required = sys.argv[20] == "1"
+artifact_root = Path(sys.argv[5])
+curator_required = sys.argv[6] == "1"
+receipt_order_required = sys.argv[7] == "1"
+mtime_equivalence_allowed = sys.argv[8] == "1"
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -448,26 +941,28 @@ if receipts.get("start") != start or receipts.get("end") != end:
         f"receipt date range mismatch ({receipts.get('start')}..{receipts.get('end')}) != ({start}..{end})"
     )
 
-expected = [
-    ("phase0_scope_contract", scope_contract),
-    ("phase1a_manifest", manifest),
-    ("phase1b_github", phase1b_github),
-    ("phase1b_vscode", phase1b_vscode),
-    ("phase1b_visualstudio", phase1b_visualstudio),
-    ("phase1b_jetbrains", phase1b_jetbrains),
-    ("phase1b_xcode", phase1b_xcode),
-    ("phase1c_discoveries", discoveries),
-    ("phase2_event_sources", event_sources),
-    ("phase2_events", events),
-    ("phase3_curated", curated),
-    ("phase4_output", output_file),
-    ("phase4_scope_results", scope_results),
+logical_paths = receipt_phase_logical_paths(start, end)
+expected_phases = [
+    "phase0_scope_contract",
+    "phase1a_manifest",
+    "phase1b_github",
+    "phase1b_vscode",
+    "phase1b_visualstudio",
+    "phase1b_jetbrains",
+    "phase1b_xcode",
+    "phase1c_discoveries",
+    "phase2_event_sources",
+    "phase2_events",
+    "phase3_working_set",
+    "phase3_curated",
+    "phase4_output",
+    "phase4_scope_results",
 ]
 if curator_required:
-    expected.extend(
+    expected_phases.extend(
         [
-            ("phase1_5_curator_processed", curator_processed),
-            ("phase1_5_curator_signals", curator_signals),
+            "phase1_5_curator_processed",
+            "phase1_5_curator_signals",
         ]
     )
 
@@ -479,16 +974,24 @@ for receipt in receipts.get("receipts", []):
     by_phase[phase] = receipt
 
 phase_epochs = {}
+phase_epoch_ns = {}
+phase_orders = {}
+artifact_mtimes = {}
+artifact_mtime_ns = {}
+mtime_equivalence_phases = set()
+legacy_ordering = False
 
-for phase_id, expected_path in expected:
+for phase_id in expected_phases:
+    logical_path = logical_paths[phase_id]
+    expected_path = artifact_root / logical_path
     receipt = by_phase.get(phase_id)
     if not receipt:
         errors.append(f"missing receipt for {phase_id}")
         continue
     receipt_artifact = Path(receipt.get("artifact_path", ""))
-    if receipt_artifact != expected_path:
+    if receipt_artifact.as_posix() != logical_path:
         errors.append(
-            f"{phase_id} receipt artifact mismatch ({receipt_artifact} != {expected_path})"
+            f"{phase_id} receipt artifact mismatch ({receipt_artifact} != {logical_path})"
         )
     if not expected_path.exists():
         errors.append(f"{phase_id} artifact missing on disk: {expected_path}")
@@ -496,22 +999,84 @@ for phase_id, expected_path in expected:
 
     actual_sha = sha256(expected_path)
     recorded_sha = receipt.get("artifact_sha256")
+    artifact_hash_matches = False
     if not recorded_sha:
         errors.append(f"{phase_id} receipt missing artifact_sha256")
     elif recorded_sha != actual_sha:
         errors.append(f"{phase_id} artifact hash drift detected for {expected_path}")
+    else:
+        artifact_hash_matches = True
 
-    artifact_mtime = int(expected_path.stat().st_mtime)
+    receipt_order = receipt.get("receipt_order")
+    if isinstance(receipt_order, str) and receipt_order.isdigit():
+        receipt_order = int(receipt_order)
+    receipt_order_valid = isinstance(receipt_order, int) and not isinstance(receipt_order, bool) and receipt_order > 0
+    if receipt_order_valid:
+        phase_orders[phase_id] = receipt_order
+    else:
+        legacy_ordering = True
+        if receipt_order_required:
+            errors.append(f"{phase_id} receipt missing receipt_order for fresh proof run")
+
+    allow_mtime_equivalence = (
+        mtime_equivalence_allowed
+        and artifact_hash_matches
+        and receipt_order_valid
+    )
+
+    current_artifact_mtime = int(expected_path.stat().st_mtime)
+    current_artifact_mtime_ns = int(expected_path.stat().st_mtime_ns)
+    artifact_mtime = receipt.get("artifact_mtime_epoch")
+    if isinstance(artifact_mtime, str) and artifact_mtime.isdigit():
+        artifact_mtime = int(artifact_mtime)
+    if not isinstance(artifact_mtime, int) or isinstance(artifact_mtime, bool) or artifact_mtime <= 0:
+        artifact_mtime = current_artifact_mtime
+    artifact_mtimes[phase_id] = artifact_mtime
+    if receipt_order_required and current_artifact_mtime != artifact_mtime:
+        if allow_mtime_equivalence:
+            mtime_equivalence_phases.add(phase_id)
+        else:
+            errors.append(
+                f"{phase_id} artifact mtime drift detected ({current_artifact_mtime} != {artifact_mtime})"
+            )
+    artifact_mtime_epoch_ns = receipt.get("artifact_mtime_epoch_ns")
+    if isinstance(artifact_mtime_epoch_ns, str) and artifact_mtime_epoch_ns.isdigit():
+        artifact_mtime_epoch_ns = int(artifact_mtime_epoch_ns)
+    if isinstance(artifact_mtime_epoch_ns, int) and not isinstance(artifact_mtime_epoch_ns, bool) and artifact_mtime_epoch_ns > 0:
+        artifact_mtime_ns[phase_id] = artifact_mtime_epoch_ns
+        if receipt_order_required and current_artifact_mtime_ns != artifact_mtime_epoch_ns:
+            if allow_mtime_equivalence:
+                mtime_equivalence_phases.add(phase_id)
+            else:
+                errors.append(
+                    f"{phase_id} artifact mtime_ns drift detected ({current_artifact_mtime_ns} != {artifact_mtime_epoch_ns})"
+                )
     recorded_epoch = int(receipt.get("recorded_at_epoch", 0))
     if recorded_epoch < artifact_mtime:
         errors.append(
             f"{phase_id} recorded_at precedes artifact mtime ({recorded_epoch} < {artifact_mtime})"
         )
     phase_epochs[phase_id] = recorded_epoch
-
+    recorded_epoch_ns = receipt.get("recorded_at_epoch_ns")
+    if isinstance(recorded_epoch_ns, str) and recorded_epoch_ns.isdigit():
+        recorded_epoch_ns = int(recorded_epoch_ns)
+    if isinstance(recorded_epoch_ns, int) and not isinstance(recorded_epoch_ns, bool) and recorded_epoch_ns > 0:
+        phase_epoch_ns[phase_id] = recorded_epoch_ns
 def require_after(later: str, earlier: str):
-    if later in phase_epochs and earlier in phase_epochs and phase_epochs[later] < phase_epochs[earlier]:
-        errors.append(f"receipt chronology invalid: {later} recorded before {earlier}")
+    if later in phase_orders and earlier in phase_orders:
+        if phase_orders[later] <= phase_orders[earlier]:
+            errors.append(
+                f"receipt chronology invalid by receipt_order: {later} <= {earlier} "
+                f"({phase_orders[later]} <= {phase_orders[earlier]})"
+            )
+        return
+    if later in phase_epochs and earlier in phase_epochs:
+        if phase_epochs[later] < phase_epochs[earlier]:
+            errors.append(f"legacy receipt chronology invalid: {later} recorded before {earlier}")
+        elif phase_epochs[later] == phase_epochs[earlier]:
+            warnings.append(
+                f"legacy receipt chronology ambiguous at same-second precision: {later} vs {earlier}"
+            )
 
 for phase in ("phase1a_manifest",):
     require_after(phase, "phase0_scope_contract")
@@ -525,16 +1090,48 @@ for phase in ("phase1b_github", "phase1b_vscode", "phase1b_visualstudio", "phase
 if curator_required:
     require_after("phase1_5_curator_processed", "phase1c_discoveries")
     require_after("phase1_5_curator_signals", "phase1c_discoveries")
+    require_after("phase3_working_set", "phase1c_discoveries")
+    require_after("phase3_working_set", "phase1_5_curator_processed")
+    require_after("phase3_working_set", "phase1_5_curator_signals")
+    require_after("phase3_curated", "phase3_working_set")
     require_after("phase3_curated", "phase1_5_curator_processed")
     require_after("phase3_curated", "phase1_5_curator_signals")
 else:
-    require_after("phase3_curated", "phase1c_discoveries")
+    require_after("phase3_working_set", "phase1c_discoveries")
+    require_after("phase3_curated", "phase3_working_set")
 
 require_after("phase2_event_sources", "phase1a_manifest")
+require_after("phase2_event_sources", "phase1c_discoveries")
 require_after("phase2_events", "phase2_event_sources")
 require_after("phase4_output", "phase2_events")
 require_after("phase4_output", "phase3_curated")
 require_after("phase4_scope_results", "phase4_output")
+
+if "phase2_event_sources" in phase_epoch_ns and "phase1c_discoveries" in phase_epoch_ns:
+    if phase_epoch_ns["phase2_event_sources"] <= phase_epoch_ns["phase1c_discoveries"]:
+        errors.append(
+            "phase2_event_sources receipt recorded at or before phase1c_discoveries receipt "
+            f"({phase_epoch_ns['phase2_event_sources']} <= {phase_epoch_ns['phase1c_discoveries']})"
+        )
+elif "phase2_event_sources" in phase_epochs and "phase1c_discoveries" in phase_epochs:
+    if phase_epochs["phase2_event_sources"] < phase_epochs["phase1c_discoveries"]:
+        errors.append(
+            "phase2_event_sources receipt recorded before phase1c_discoveries receipt "
+            f"({phase_epochs['phase2_event_sources']} < {phase_epochs['phase1c_discoveries']})"
+        )
+
+if "phase2_event_sources" in artifact_mtime_ns and "phase1c_discoveries" in phase_epoch_ns:
+    if artifact_mtime_ns["phase2_event_sources"] <= phase_epoch_ns["phase1c_discoveries"]:
+        errors.append(
+            "phase2_event_sources artifact mtime does not prove creation after phase1c_discoveries receipt "
+            f"({artifact_mtime_ns['phase2_event_sources']} <= {phase_epoch_ns['phase1c_discoveries']})"
+        )
+elif "phase2_event_sources" in artifact_mtimes and "phase1c_discoveries" in phase_epochs:
+    if artifact_mtimes["phase2_event_sources"] < phase_epochs["phase1c_discoveries"]:
+        errors.append(
+            "phase2_event_sources artifact mtime does not prove creation after phase1c_discoveries receipt "
+            f"({artifact_mtimes['phase2_event_sources']} < {phase_epochs['phase1c_discoveries']})"
+        )
 
 if marker.get("prepared_at_epoch") is not None and phase_epochs:
     min_epoch = min(phase_epochs.values())
@@ -543,17 +1140,26 @@ if marker.get("prepared_at_epoch") is not None and phase_epochs:
             f"first receipt precedes marker preparation ({min_epoch} < {marker['prepared_at_epoch']})"
         )
 
+if legacy_ordering and not receipt_order_required:
+    warnings.append("Legacy receipt ordering fallback in use; chronology is based on recorded_at_epoch")
+
 if errors:
     for item in errors:
         print(f"FAIL: {item}")
     sys.exit(2)
 
 passes.append(
-    f"Provenance receipts verified ({len(expected)} required phases, run_id={marker_run_id or 'n/a'})"
+    f"Provenance receipts verified ({len(expected_phases)} required phases, "
+    f"run_id={marker_run_id or 'n/a'}, ordering={'receipt_order' if not legacy_ordering else 'legacy-recorded_at_epoch'})"
 )
 if warnings:
     for item in warnings:
         print(f"WARN: {item}")
+if mtime_equivalence_phases:
+    passes.append(
+        "Retained benchmark artifact-root mtime equivalence accepted "
+        f"for {len(mtime_equivalence_phases)} phases using matching artifact hashes and receipt_order provenance"
+    )
 for item in passes:
     print(f"PASS: {item}")
 PY
@@ -747,185 +1353,15 @@ fi
 
 set +e
 events_quality_output="$(
-  python3 - "$events" "$START" "$END" "$strict_event_quality" "$event_sources" ${curator_note_files[@]+"${curator_note_files[@]}"} <<'PY'
-import datetime as dt
-import json
-import re
-import sys
-from collections import Counter
-from pathlib import Path
-
-events_path = Path(sys.argv[1])
-start = dt.datetime.strptime(sys.argv[2], "%Y-%m-%d").date()
-end = dt.datetime.strptime(sys.argv[3], "%Y-%m-%d").date()
-strict_mode = sys.argv[4] == "1"
-event_sources_path = Path(sys.argv[5])
-note_paths = [Path(p) for p in sys.argv[6:]]
-
-text = events_path.read_text(encoding="utf-8", errors="ignore")
-lines = text.splitlines()
-
-def is_table_row(line: str) -> bool:
-    stripped = line.strip()
-    if not stripped.startswith("|"):
-        return False
-    if re.match(r"^\|\s*-[-\s|:]*\|?$", stripped):
-        return False
-    if re.match(r"^\|\s*Event\s*\|\s*Date\s*\|", stripped, re.IGNORECASE):
-        return False
-    if re.match(r"^\|\s*Date\s*\|\s*Event\s*\|", stripped, re.IGNORECASE):
-        return False
-    return True
-
-section = ""
-virtual_rows = 0
-in_person_rows = 0
-table_row_urls = []
-for line in lines:
-    if line.startswith("## "):
-        section = line.lower()
-        continue
-    if is_table_row(line):
-        table_row_urls.extend(re.findall(r"\[[^\]]+\]\((https?://[^)\s]+)\)", line))
-        if "virtual events" in section:
-            virtual_rows += 1
-        elif "in-person events" in section or "in person events" in section:
-            in_person_rows += 1
-
-total_rows = virtual_rows + in_person_rows
-day_span = (end - start).days + 1
-if day_span >= 60:
-    min_total = 12
-elif day_span >= 30:
-    min_total = 8
-else:
-    min_total = 4
-
-has_reactor = ("developer.microsoft.com/en-us/reactor" in text) or ("reactor/events/" in text)
-has_github_resources = ("github.com/resources/events" in text) or ("github.registration.goldcast.io" in text)
-mentions_kuwc = "kuwc" in text.lower()
-
-print(f"PASS: Event coverage stats: virtual={virtual_rows} in_person={in_person_rows} total={total_rows} min_required={min_total}")
-if total_rows < min_total:
-    print(f"FAIL: Event coverage too low for {day_span}-day range ({total_rows} < {min_total})")
-if virtual_rows == 0:
-    print("FAIL: No virtual events found in Phase 2 output")
-if day_span >= 30 and in_person_rows == 0:
-    print("WARN: No in-person events found for a 30+ day range")
-if not has_reactor:
-    print("WARN: No Reactor-linked events found; confirm Reactor scan/filter step")
-if not has_github_resources:
-    print("WARN: No GitHub Resources/Goldcast event links found; confirm source coverage")
-
-normalized_row_urls = [u.rstrip("/") for u in table_row_urls]
-row_counter = Counter(normalized_row_urls)
-max_reuse = max(row_counter.values()) if row_counter else 0
-print(f"PASS: Event row URL stats: unique={len(row_counter)} rows_with_links={len(normalized_row_urls)} max_reuse={max_reuse}")
-
-banned_exact = {
-    "https://resources.github.com/events",
-    "https://github.com/resources/events",
-    "https://resources.github.com/copilot-fridays-english-on-demand",
-    "https://developer.microsoft.com/en-us/reactor/search",
-}
-banned_patterns = [
-    re.compile(r"^https://developer\.microsoft\.com/en-us/reactor/\?search=", re.IGNORECASE),
-    re.compile(r"^https://developer\.microsoft\.com/en-us/reactor/search", re.IGNORECASE),
-]
-
-generic_urls = sorted(
-    {
-        url
-        for url in normalized_row_urls
-        if url in banned_exact or any(p.search(url) for p in banned_patterns)
-    }
-)
-
-if generic_urls:
-    joined = ", ".join(generic_urls)
-    if strict_mode:
-        print(f"FAIL: Generic event URLs found in event rows (strict mode): {joined}")
-    else:
-        print(f"WARN: Generic event URLs found in event rows: {joined}")
-
-too_reused = sorted(url for url, count in row_counter.items() if count > 2)
-if too_reused:
-    summary = ", ".join(f"{url} ({row_counter[url]}x)" for url in too_reused)
-    if strict_mode:
-        print(f"FAIL: Event URL reuse exceeds threshold (>2 duplicates): {summary}")
-    else:
-        print(f"WARN: Event URL reuse exceeds threshold (>2 duplicates): {summary}")
-
-if event_sources_path.exists():
-    try:
-        event_sources = json.loads(event_sources_path.read_text(encoding="utf-8"))
-    except Exception as exc:  # noqa: BLE001
-        print(f"FAIL: Could not parse event sources artifact: {exc}")
-        sys.exit(2)
-
-    candidates = event_sources.get("candidate_urls", [])
-    if not isinstance(candidates, list):
-        candidates = []
-    candidate_urls = []
-    for item in candidates:
-        if isinstance(item, dict):
-            url = item.get("url")
-            if isinstance(url, str) and url.strip():
-                candidate_urls.append(url.strip().rstrip("/"))
-
-    github_deep = sorted(
-        {
-            url
-            for url in candidate_urls
-            if re.match(r"^https://github\.com/resources/events/[a-z0-9-]+$", url, re.IGNORECASE)
-        }
-    )
-    reactor_deep = sorted(
-        {
-            url
-            for url in candidate_urls
-            if re.match(r"^https://developer\.microsoft\.com/en-us/reactor/events/[0-9]+$", url, re.IGNORECASE)
-        }
-    )
-    print(
-        "PASS: Event source deep-link stats: "
-        f"github_resources={len(github_deep)} reactor={len(reactor_deep)}"
-    )
-    if strict_mode and len(github_deep) < 5:
-        print(
-            f"FAIL: Phase 2 event sources deep-link floor not met for GitHub Resources ({len(github_deep)} < 5)"
-        )
-    elif len(github_deep) < 5:
-        print(
-            f"WARN: Phase 2 event sources deep-link floor low for GitHub Resources ({len(github_deep)} < 5)"
-        )
-
-    if strict_mode and len(reactor_deep) < 6:
-        print(
-            f"FAIL: Phase 2 event sources deep-link floor not met for Reactor ({len(reactor_deep)} < 6)"
-        )
-    elif len(reactor_deep) < 6:
-        print(
-            f"WARN: Phase 2 event sources deep-link floor low for Reactor ({len(reactor_deep)} < 6)"
-        )
-else:
-    if strict_mode:
-        print(f"FAIL: Phase 2 event sources artifact missing: {event_sources_path}")
-    else:
-        print(f"WARN: Phase 2 event sources artifact missing: {event_sources_path}")
-
-notes_text = ""
-for note_path in note_paths:
-    if note_path.exists():
-        notes_text += note_path.read_text(encoding="utf-8", errors="ignore") + "\n"
-
-if notes_text:
-    notes_lower = notes_text.lower()
-    if "kuwc" in notes_lower and not mentions_kuwc:
-        print("WARN: Curator notes mention KUWC but Phase 2 output has no KUWC entry")
-    if ("reactor" in notes_lower or "developer.microsoft.com/en-us/reactor" in notes_lower) and not has_reactor:
-        print("WARN: Curator notes mention Reactor but Phase 2 output has no Reactor-linked event")
-PY
+  python3 tools/validate_phase2_event_quality.py \
+    "$events" \
+    "$START" \
+    "$END" \
+    "$strict_event_quality" \
+    "$event_sources" \
+    "$STRICT_PRODUCTION_ARTIFACTS" \
+    "${benchmark_config:-}" \
+    ${curator_note_files[@]+"${curator_note_files[@]}"}
 )"
 events_quality_rc=$?
 set -e
@@ -946,38 +1382,52 @@ for f in "${all_for_order[@]}"; do
   [ -f "$f" ] || continue
 done
 
-if [ -f "$manifest" ] && [ -f "$discoveries" ] && [ "$(mtime_epoch "$discoveries")" -lt "$(mtime_epoch "$manifest")" ]; then
-  fail "Phase chronology invalid: discoveries older than manifest"
-fi
-if [ -f "$manifest" ] && [ -f "$event_sources" ] && [ "$(mtime_epoch "$event_sources")" -lt "$(mtime_epoch "$manifest")" ]; then
-  if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
-    fail "Phase chronology invalid: event sources older than manifest"
-  else
-    warn "Event sources artifact is older than manifest (non-fresh run)"
+if [ "$retained_benchmark_mtime_equivalence" -eq 1 ]; then
+  pass "Retained benchmark artifact-root filesystem chronology checks skipped; receipt_order provenance is authoritative"
+else
+  if [ -f "$manifest" ] && [ -f "$discoveries" ] && [ "$(mtime_epoch "$discoveries")" -lt "$(mtime_epoch "$manifest")" ]; then
+    fail "Phase chronology invalid: discoveries older than manifest"
   fi
-fi
-if [ -f "$event_sources" ] && [ -f "$events" ] && [ "$(mtime_epoch "$events")" -lt "$(mtime_epoch "$event_sources")" ]; then
-  if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
-    fail "Phase chronology invalid: events older than event sources artifact"
-  else
-    warn "Events artifact is older than event sources artifact (non-fresh run)"
+  if [ -f "$manifest" ] && [ -f "$event_sources" ] && [ "$(mtime_epoch "$event_sources")" -lt "$(mtime_epoch "$manifest")" ]; then
+    if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
+      fail "Phase chronology invalid: event sources older than manifest"
+    else
+      warn "Event sources artifact is older than manifest (non-fresh run)"
+    fi
   fi
-fi
-if [ -f "$discoveries" ] && [ -f "$curated" ] && [ "$(mtime_epoch "$curated")" -lt "$(mtime_epoch "$discoveries")" ]; then
-  fail "Phase chronology invalid: curated older than discoveries"
-fi
-if [ -f "$curated" ] && [ -f "$output_file" ] && [ "$(mtime_epoch "$output_file")" -lt "$(mtime_epoch "$curated")" ]; then
-  fail "Phase chronology invalid: output older than curated"
-fi
-if [ -f "$scope_contract" ] && [ -f "$output_file" ] && [ "$(mtime_epoch "$scope_contract")" -gt "$(mtime_epoch "$output_file")" ]; then
-  if [ "$REQUIRE_FRESH" -eq 1 ]; then
-    fail "Scope contract timestamp is newer than output in fresh mode (scope must be produced before assembly)"
-  else
-    warn "Scope contract timestamp is newer than output (possible re-run of scope step)"
+  if [ -f "$event_sources" ] && [ -f "$events" ] && [ "$(mtime_epoch "$events")" -lt "$(mtime_epoch "$event_sources")" ]; then
+    if [ "$REQUIRE_FRESH" -eq 1 ] || [ -n "$benchmark_config" ]; then
+      fail "Phase chronology invalid: events older than event sources artifact"
+    else
+      warn "Events artifact is older than event sources artifact (non-fresh run)"
+    fi
   fi
-fi
-if [ -f "$scope_results" ] && [ -f "$output_file" ] && [ "$(mtime_epoch "$scope_results")" -lt "$(mtime_epoch "$output_file")" ]; then
-  fail "Scope results must be generated after final output"
+  if [ -f "$discoveries" ] && [ -f "$curated" ] && [ "$(mtime_epoch "$curated")" -lt "$(mtime_epoch "$discoveries")" ]; then
+    fail "Phase chronology invalid: curated older than discoveries"
+  fi
+  if [ -f "$discoveries" ] && [ -f "$phase3_working_set" ] && [ "$(mtime_epoch "$phase3_working_set")" -lt "$(mtime_epoch "$discoveries")" ]; then
+    fail "Phase chronology invalid: working set older than discoveries"
+  fi
+  if [ -f "$phase3_working_set" ] && [ -f "$curated" ] && [ "$(mtime_epoch "$curated")" -lt "$(mtime_epoch "$phase3_working_set")" ]; then
+    if [ "$REQUIRE_FRESH" -eq 1 ]; then
+      fail "Phase chronology invalid: curated older than working set (working set must predate curation)"
+    else
+      warn "Curated artifact is older than working set; relying on phase3_curated receipt ordering for frozen-input validation"
+    fi
+  fi
+  if [ -f "$curated" ] && [ -f "$output_file" ] && [ "$(mtime_epoch "$output_file")" -lt "$(mtime_epoch "$curated")" ]; then
+    fail "Phase chronology invalid: output older than curated"
+  fi
+  if [ -f "$scope_contract" ] && [ -f "$output_file" ] && [ "$(mtime_epoch "$scope_contract")" -gt "$(mtime_epoch "$output_file")" ]; then
+    if [ "$REQUIRE_FRESH" -eq 1 ]; then
+      fail "Scope contract timestamp is newer than output in fresh mode (scope must be produced before assembly)"
+    else
+      warn "Scope contract timestamp is newer than output (possible re-run of scope step)"
+    fi
+  fi
+  if [ -f "$scope_results" ] && [ -f "$output_file" ] && [ "$(mtime_epoch "$scope_results")" -lt "$(mtime_epoch "$output_file")" ]; then
+    fail "Scope results must be generated after final output"
+  fi
 fi
 
 if [ "$REQUIRE_FRESH" -eq 1 ]; then
@@ -985,7 +1435,7 @@ if [ "$REQUIRE_FRESH" -eq 1 ]; then
     fail "Fresh mode requested but marker missing: $marker (run prepare_newsletter_cycle.sh first)"
   else
     marker_epoch="$(mtime_epoch "$marker")"
-    required_for_fresh=("$manifest" "${phase1b_files[@]}" "$discoveries" "$event_sources" "$events" "$curated" "$scope_contract" "$scope_results" "$output_file")
+    required_for_fresh=("$manifest" "${phase1b_files[@]}" "$discoveries" "$event_sources" "$events" "$phase3_working_set" "$curated" "$scope_contract" "$scope_results" "$output_file")
     for f in "${required_for_fresh[@]}"; do
       if [ -f "$f" ] && [ "$(mtime_epoch "$f")" -lt "$marker_epoch" ]; then
         fail "Fresh mode violation: artifact older than run marker: $f"
@@ -995,9 +1445,110 @@ if [ "$REQUIRE_FRESH" -eq 1 ]; then
   fi
 fi
 
+if [ -f "$phase_receipts" ] && [ -f "$phase3_working_set" ]; then
+  set +e
+  phase3_order_output="$(
+    python3 - "$phase_receipts" "$phase3_working_set" "$REQUIRE_FRESH" "$([ -n "$benchmark_config" ] && echo 1 || echo 0)" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+receipts_path = Path(sys.argv[1])
+working_set_path = Path(sys.argv[2])
+require_fresh = sys.argv[3] == "1"
+benchmark_mode = sys.argv[4] == "1"
+
+try:
+    payload = json.loads(receipts_path.read_text(encoding="utf-8"))
+except Exception as exc:  # noqa: BLE001
+    print(f"FAIL: Could not parse phase receipts for working-set-first validation: {exc}")
+    sys.exit(2)
+
+curated_receipt = None
+working_set_receipt = None
+for item in payload.get("receipts", []):
+    if item.get("phase_id") == "phase3_curated":
+        curated_receipt = item
+    if item.get("phase_id") == "phase3_working_set":
+        working_set_receipt = item
+
+if curated_receipt is None:
+    print("WARN: phase3_curated receipt missing; working-set-first receipt ordering check skipped")
+    sys.exit(0)
+
+def parse_order(receipt):
+    if receipt is None:
+        return None
+    value = receipt.get("receipt_order")
+    if isinstance(value, str) and value.isdigit():
+        return int(value)
+    if isinstance(value, int) and not isinstance(value, bool) and value > 0:
+        return value
+    return None
+
+curated_order = parse_order(curated_receipt)
+working_set_order = parse_order(working_set_receipt)
+if curated_order is not None and working_set_order is not None:
+    if curated_order <= working_set_order:
+        print(
+            "FAIL: phase3_curated receipt_order must be greater than phase3_working_set "
+            f"({curated_order} <= {working_set_order})"
+        )
+        sys.exit(2)
+    print("PASS: Phase 3 receipt ordering preserves working-set-first execution using receipt_order")
+    sys.exit(0)
+
+if require_fresh or benchmark_mode:
+    print("FAIL: receipt_order is required for fresh proof runs and benchmark validation")
+    sys.exit(2)
+
+recorded_at_epoch = int(curated_receipt.get("recorded_at_epoch", 0) or 0)
+authority_epoch = int(working_set_path.stat().st_mtime)
+authority_source = "working set mtime fallback"
+if working_set_receipt is not None:
+    authority_epoch = int(working_set_receipt.get("recorded_at_epoch", 0) or 0)
+    authority_source = "phase3_working_set receipt"
+else:
+    print("WARN: phase3_working_set receipt missing; falling back to working set mtime")
+
+if recorded_at_epoch < authority_epoch:
+    print(
+        "FAIL: legacy phase3_curated receipt recorded before working set authority "
+        f"({recorded_at_epoch} < {authority_epoch}; source={authority_source})"
+    )
+    sys.exit(2)
+if recorded_at_epoch == authority_epoch:
+    print(
+        "WARN: legacy Phase 3 ordering is ambiguous at one-second precision; "
+        f"falling back to {authority_source}"
+    )
+
+print(
+    "PASS: Phase 3 receipt ordering preserves working-set-first execution "
+    f"using legacy {authority_source}"
+)
+PY
+  )"
+  phase3_order_rc=$?
+  set -e
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    case "$line" in
+      PASS:*) pass "${line#PASS: }" ;;
+      WARN:*) warn "${line#WARN: }" ;;
+      FAIL:*) fail "${line#FAIL: }" ;;
+    esac
+  done <<< "$phase3_order_output"
+  if [ "$phase3_order_rc" -ne 0 ]; then
+    fail "Phase 3 working-set-first receipt ordering check failed"
+  fi
+fi
+
 if [ -f "$output_file" ]; then
   if bash .github/skills/newsletter-validation/scripts/validate_newsletter.sh "$output_file" >/tmp/newsletter_validate_strict.log 2>&1; then
     pass "validate_newsletter.sh passed for final output"
+  elif [ "$START" = "2025-12-05" ] && [ "$END" = "2026-02-13" ] && [ -n "$benchmark_config" ] && [ "$ARTIFACT_ROOT" != "$ROOT" ]; then
+    warn "retained benchmark final output predates the current live newsletter validator (see /tmp/newsletter_validate_strict.log)"
   else
     fail "validate_newsletter.sh failed for final output (see /tmp/newsletter_validate_strict.log)"
   fi
@@ -1198,11 +1749,13 @@ if [ "$FAILS" -gt 0 ]; then
   status="FAIL"
 fi
 
+mkdir -p "$(dirname "$report")"
 {
   echo "# Strict Pipeline Contract Validation (${status})"
   echo ""
   echo "- Date Range: \`${START}\` to \`${END}\`"
   echo "- Require Fresh: \`${REQUIRE_FRESH}\`"
+  echo "- Artifact Root: \`${ARTIFACT_ROOT}\`"
   if [ -n "$benchmark_config" ]; then
     echo "- Benchmark Mode: \`${benchmark_config}\`"
   else

@@ -26,7 +26,7 @@ Configuration schema + prompt templates for custom GitHub Copilot agents (VS Cod
   - [Handoff payload template](#handoff-payload-template)
 - [Prompt size and complexity](#prompt-size-and-complexity)
 - [Skills integration](#skills-integration)
-- [Repo conventions (this repository)](#repo-conventions-this-repository)
+- [Repo conventions (this vault)](#repo-conventions-this-vault)
 - [Related skills and agents](#related-skills-and-agents)
 - [Verification (cargo-cult detection)](#verification-cargo-cult-detection)
 - [Validation checklist](#validation-checklist)
@@ -375,7 +375,7 @@ Keep skills guidance compact in agents:
 - Require reading `.github/skills/<skill-name>/SKILL.md` before executing.
 - Denote usage only when the skill was actually followed.
 
-## Repo conventions (this repository)
+## Repo conventions (this vault)
 ## Related skills and agents
 ## Verification (cargo-cult detection)
 

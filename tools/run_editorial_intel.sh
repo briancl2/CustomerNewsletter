@@ -14,11 +14,7 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 COPILOT="copilot"
-MODEL="${MODEL:-}"
-COPILOT_MODEL_ARGS=()
-if [ -n "$MODEL" ]; then
-  COPILOT_MODEL_ARGS=(--model "$MODEL")
-fi
+MODEL="gpt-5.5"
 INTEL_DIR="runs/editorial-intelligence"
 CLI_TIMEOUT=600
 
@@ -32,6 +28,7 @@ phase_analyze() {
   log "Phase A: Structural Analysis (deterministic)"
   bash tools/analyze-newsletters.sh "$INTEL_DIR/phase-a"
 
+  # Disk verification
   if [ -f "$INTEL_DIR/phase-a/analysis.md" ] && [ -f "$INTEL_DIR/phase-a/metrics.csv" ]; then
     pass "Phase A complete: $(wc -l < "$INTEL_DIR/phase-a/analysis.md" | tr -d ' ') lines of analysis"
   else
@@ -49,12 +46,12 @@ phase_mine() {
   info "Dispatching fleet with 6 editorial analysts..."
   info "This runs 6 parallel LLM agents analyzing different aspects of editorial history."
 
-  "$COPILOT" "${COPILOT_MODEL_ARGS[@]}" \
+  $COPILOT --model "$MODEL" \
     -p "/fleet $(cat tools/fleet_editorial_mining.md)" \
     --allow-all --no-ask-user \
     2>&1 | tee "$INTEL_DIR/fleet-mining.log"
 
-  log "Fleet complete - disk verification"
+  log "Fleet complete — disk verification"
 
   local ok=0
   local missing=""
@@ -81,7 +78,7 @@ phase_mine() {
   info "Complete: $ok/6"
   if [ -n "$missing" ]; then
     fail "Missing or thin:$missing"
-    fail "Fleet mining insufficient (${ok}/6 reports) - re-run or dispatch individual agents"
+    fail "Fleet mining insufficient (${ok}/6 reports) — re-run or dispatch individual agents"
     return 1
   fi
 
@@ -134,12 +131,12 @@ After writing all 3 files:
 - Report what you changed and key findings"
 
   info "Dispatching synthesis agent..."
-  timeout "${CLI_TIMEOUT}" "$COPILOT" "${COPILOT_MODEL_ARGS[@]}" \
+  timeout "${CLI_TIMEOUT}" $COPILOT --model "$MODEL" \
     -p "$SYNTH_PROMPT" \
     --allow-all --no-ask-user \
     2>&1 | tee "$INTEL_DIR/synthesis.log"
 
-  log "Synthesis complete - disk verification"
+  log "Synthesis complete — disk verification"
 
   local missing=0
   for f in reference/editorial-intelligence.md \
@@ -153,7 +150,20 @@ After writing all 3 files:
   done
 
   if [ "$missing" -ne 0 ]; then
-    fail "Synthesis deliverables missing - failing pipeline"
+    fail "Synthesis deliverables missing — failing pipeline"
+    exit 1
+  fi
+    fi
+  done
+
+  if [ "$missing" -ne 0 ]; then
+    exit 1
+  fi
+    fi
+  done
+
+  if [ "$missing" -ne 0 ]; then
+    fail "Phase C synthesis incomplete: required deliverables missing"
     exit 1
   fi
 }
@@ -180,7 +190,7 @@ case "$PHASE" in
     echo "  Theme patterns:      $INTEL_DIR/themes/theme-detection.md"
     echo "  Selection funnels:   $INTEL_DIR/selection/"
     echo "  Era evolution:       $INTEL_DIR/evolution/era-evolution.md"
-    echo "  Exp/compression:     $INTEL_DIR/patterns/expansion-compression.md"
+    echo "  Exp/compression:    $INTEL_DIR/patterns/expansion-compression.md"
     echo "  Audience weights:    $INTEL_DIR/weights/audience-calibration.md"
     echo "  Editorial intel:     reference/editorial-intelligence.md"
     echo "  Curator questions:   reference/editorial-questions.md"

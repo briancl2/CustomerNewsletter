@@ -20,7 +20,7 @@ Generate a detailed, evidence-based report documenting how this automated newsle
 
 1. **Read the git log** to understand the full build timeline:
    ```bash
-   cd <path-to-private-working-repo>
+   cd /Users/briancl2/repos/briancl2-customer-newsletter
    git --no-pager log --oneline --reverse
    ```
 
@@ -49,6 +49,7 @@ Generate a detailed, evidence-based report documenting how this automated newsle
    - `.github/skills/*/SKILL.md` — all 16 skills (these ARE the agent instructions)
    - `tools/*.sh` — scoring and validation scripts
    - `Makefile` — automation targets
+   - `.github/skills/reviewing-code-locally/scripts/local_review.sh` — the code review integration
 
 ### What to Cover
 
@@ -144,8 +145,8 @@ Also show:
 
 1. **Discover and analyze VS Code session logs** for this workspace:
    ```bash
-   python3 <path-to-session-analysis-tools>/parse_session.py \
-     --vscode-workspace <workspace-name>
+   python3 /Users/briancl2/repos/build-meta-analysis/.agents/skills/session-log-analysis/scripts/parse_session.py \
+     --vscode-workspace briancl2-customer-newsletter
    ```
 
 2. **If the above doesn't find sessions, search manually**:
@@ -157,8 +158,8 @@ Also show:
 
 3. **Search session history for key patterns**:
    ```bash
-   python3 <path-to-session-analysis-tools>/search_sessions.py \
-     "newsletter" --workspace <workspace-name> --last 48h
+   python3 /Users/briancl2/repos/build-meta-analysis/.agents/skills/session-log-analysis/scripts/search_sessions.py \
+     "newsletter" --workspace briancl2-customer-newsletter --last 48h
    ```
 
 4. **Analyze tool usage patterns**:

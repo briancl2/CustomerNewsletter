@@ -32,8 +32,9 @@ Generate a monthly customer newsletter by executing the skills-based pipeline en
    - `bash tools/validate_pipeline_strict.sh {{startDate}} {{endDate}} --require-fresh --benchmark-mode feb2026_consistency`
 14. If benchmark mode fails, keep iterating until it passes.
 15. Phase 2 must emit both artifacts in this order:
-   - `workspace/newsletter_phase2_event_sources_{{endDate}}.json`
-   - `workspace/newsletter_phase2_events_{{endDate}}.md`
+    - `workspace/newsletter_phase2_event_sources_{{endDate}}.json`
+    - `workspace/newsletter_phase2_events_{{endDate}}.md`
+16. If `{{endDate}}` is still in the future at run time, treat the issue as a provisional pre-close edition and explicitly note that a final rerun is recommended after the window closes.
 
 ## Required Inputs
 
@@ -50,10 +51,13 @@ Execute each phase in order. After each phase, verify the output file exists and
 1. Read `LEARNINGS.md` for feed-forward lessons from previous runs
 2. Note any lessons relevant to the current date range and content cycle
 3. Apply relevant lessons throughout the pipeline (e.g., source gaps, bundling rules, deep-read requirements)
-4. Read `.github/skills/scope-contract/SKILL.md` and generate the pre-pipeline scope manifest
-5. Output: `workspace/newsletter_scope_contract_{{endDate}}.json`
-6. **Gate**: Scope manifest exists, date range gap flagged if any, expected versions listed
-7. Record receipt:
+4. Read `.github/skills/scope-contract/SKILL.md`
+5. First run `python3 tools/generate_scope_contract.py {{startDate}} {{endDate}}`
+6. If the helper succeeds, use that manifest as the Phase 0 artifact and do not spend extra time on broad manual archive/source reads
+7. Only fall back to manual source inspection if the helper cannot resolve the range
+8. Output: `workspace/newsletter_scope_contract_{{endDate}}.json`
+9. **Gate**: Scope manifest exists, date range gap flagged if any, expected versions listed
+10. Record receipt:
    - `bash tools/record_phase_receipt.sh {{startDate}} {{endDate}} phase0_scope_contract workspace/newsletter_scope_contract_{{endDate}}.json`
 
 ### Phase 1A: URL Manifest
@@ -176,7 +180,10 @@ Execute each phase in order. After each phase, verify the output file exists and
 5. Apply Tier 2 content-aware fixes (product names, status labels, link validation, event sorting)
 6. Apply Tier 3 editorial guidelines (intro accuracy, enterprise context, wording scan)
 7. Re-validate with validate_newsletter.sh
-8. **Gate**: 0 errors, polishing report produced
+8. Output: `workspace/newsletter_phase4_5_polishing_{{endDate}}.md`
+9. Record receipt:
+   - `bash tools/record_phase_receipt.sh {{startDate}} {{endDate}} phase4_5_polishing workspace/newsletter_phase4_5_polishing_{{endDate}}.md`
+10. **Gate**: 0 errors, polishing report produced
 
 ### Phase 4.6: Video Matching
 
@@ -185,6 +192,9 @@ Execute each phase in order. After each phase, verify the output file exists and
 3. Match videos to newsletter entries by topic (HIGH confidence only)
 4. Add `[Video (Xm)](URL)` links to matched entries with estimated duration
 5. **Gate**: At least 3 video links added (typical range: 3-8 per newsletter)
+6. Output: `workspace/newsletter_phase4_6_video_matches_{{endDate}}.md`
+7. Record receipt:
+   - `bash tools/record_phase_receipt.sh {{startDate}} {{endDate}} phase4_6_video workspace/newsletter_phase4_6_video_matches_{{endDate}}.md`
 
 ### Post-Assembly: Scope Contract Validation
 
@@ -201,17 +211,21 @@ Execute each phase in order. After each phase, verify the output file exists and
 1. Produce `workspace/YYYY-MM_editorial_review.md` with per-item ratings
 2. Format: table with columns (Item, Include/Borderline/Exclude, Expand/Standard/Compress, Lead/Body/Back, Rationale)
 3. This artifact enables the human to provide corrections
+4. Record receipt:
+   - `bash tools/record_phase_receipt.sh {{startDate}} {{endDate}} phase4_editorial_review workspace/YYYY-MM_editorial_review.md`
 
 ### Final Gate: Strict Pipeline Contract
 
 1. Run strict contract validator:
-   - `bash tools/validate_pipeline_strict.sh {{startDate}} {{endDate}}`
+   - `bash tools/validate_pipeline_strict.sh {{startDate}} {{endDate}} --production-artifacts`
 2. For from-scratch requests, require fresh marker enforcement:
-   - `bash tools/validate_pipeline_strict.sh {{startDate}} {{endDate}} --require-fresh`
+   - `bash tools/validate_pipeline_strict.sh {{startDate}} {{endDate}} --require-fresh --production-artifacts`
 3. For benchmark consistency runs, enforce benchmark mode:
-   - `bash tools/validate_pipeline_strict.sh {{startDate}} {{endDate}} --require-fresh --benchmark-mode feb2026_consistency`
+   - `bash tools/validate_pipeline_strict.sh {{startDate}} {{endDate}} --require-fresh --production-artifacts --benchmark-mode feb2026_consistency`
 4. For `2025-12-05` to `2026-02-13`, benchmark mode is mandatory (not optional).
 5. Do not report success if this gate fails.
+6. Run the rubric in production-aware mode before final completion:
+   - `bash tools/score-v2-rubric.sh --mode auto output/YYYY-MM_month_newsletter.md`
 
 ## Phase 5: Editorial Review Loop (After Human Feedback)
 

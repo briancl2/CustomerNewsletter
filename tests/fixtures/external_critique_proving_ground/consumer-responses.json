@@ -1,0 +1,16 @@
+{
+  "responses": [
+    {
+      "hotspot_id": "prompt_family:external_critique",
+      "verdict": "insufficient_evidence",
+      "rationale": "Helper-only critique evidence in the newsletter proving ground must stay blocked.",
+      "confidence": "low"
+    },
+    {
+      "hotspot_id": "prompt_family:external_critique_health",
+      "verdict": "protect",
+      "rationale": "The newsletter proving-ground calibration anchor is useful, but it stays bounded and non-remediating.",
+      "confidence": "medium"
+    }
+  ]
+}

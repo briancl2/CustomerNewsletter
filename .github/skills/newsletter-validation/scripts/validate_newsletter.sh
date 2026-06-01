@@ -176,6 +176,231 @@ if [ "$role_labels" -eq 0 ]; then
 else
   warn "Internal role titles in link labels ($role_labels); use [GitHub Blog] instead"
 fi
+
+# Customer-facing process leakage from authenticated/internal release discovery.
+app_process_leaks="$(
+  python3 - "$FILE" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+text = Path(sys.argv[1]).read_text(encoding="utf-8", errors="ignore")
+patterns = [
+    r"github/github-app",
+    r"github\.com/github/github-app/releases",
+    r"private tag",
+    r"anonymous fetch",
+    r"authenticated release",
+    r"\[truncated\]",
+    r"returned\s+404",
+    r"HTTP\s+404",
+    r"404\s+(?:for|from|on)\s+github",
+]
+hits = []
+for pattern in patterns:
+    if re.search(pattern, text, re.IGNORECASE):
+        hits.append(pattern)
+print("|".join(hits))
+PY
+)"
+app_process_leaks="${app_process_leaks# }"
+if [ -z "$app_process_leaks" ]; then
+  pass "No Copilot App release-process leakage"
+else
+  fail "Copilot App release-process leakage found ($app_process_leaks)"
+fi
+
+# Legal protection content belongs in Enterprise and Security unless the issue is explicitly legal-led.
+legal_venue_lines="$(
+  python3 - "$FILE" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+lines = Path(sys.argv[1]).read_text(encoding="utf-8", errors="ignore").splitlines()
+first_h1 = next((line for line in lines if re.match(r"^#\s+", line)), "")
+legal_lead = bool(re.search(r"legal|copyright|commitment|indemnity|dpa|terms|compliance", first_h1, re.IGNORECASE))
+legal_pattern = re.compile(r"\b(Customer Copyright(?: Commitment)?|CCC|Duplicate Detection|IP indemnity|indemnification)\b", re.IGNORECASE)
+allowed_heading = re.compile(r"enterprise|security|governance|legal|compliance", re.IGNORECASE)
+bad_lines = []
+heading_stack = []
+if not legal_lead:
+    for idx, line in enumerate(lines):
+        heading_match = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if heading_match:
+            level = len(heading_match.group(1))
+            heading_stack = heading_stack[: level - 1]
+            heading_stack.append(heading_match.group(2))
+        active_path = " > ".join(heading_stack)
+        if legal_pattern.search(line) and not allowed_heading.search(active_path):
+            bad_lines.append(str(idx + 1))
+print(",".join(bad_lines))
+PY
+)"
+legal_venue_lines="${legal_venue_lines# }"
+if [ -z "$legal_venue_lines" ]; then
+  pass "Legal/CCC content routed to Enterprise and Security"
+else
+  fail "Legal/CCC content appears before Enterprise and Security (lines $legal_venue_lines)"
+fi
+
+# VS Code version coverage must stay in URLs/scope artifacts, not customer-facing prose sequences.
+vscode_version_sequences="$(
+  python3 - "$FILE" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+text = Path(sys.argv[1]).read_text(encoding="utf-8", errors="ignore")
+text_without_urls = re.sub(r"https?://\S+", "", text)
+hits = []
+for line_no, line in enumerate(text_without_urls.splitlines(), 1):
+  versions = re.findall(r"\b1\.\d{3}\b", line)
+  if len(versions) >= 3:
+    hits.append(f"line {line_no}: {', '.join(versions[:5])}")
+print("|".join(hits[:5]))
+PY
+)"
+vscode_version_sequences="${vscode_version_sequences# }"
+if [ -z "$vscode_version_sequences" ]; then
+  pass "No VS Code version sequences in body prose"
+else
+  fail "VS Code version sequence found in body prose ($vscode_version_sequences)"
+fi
+
+# Release-inventory-backed App prose must preserve inline capability links.
+app_link_count="$(
+  python3 - "$FILE" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+lines = Path(sys.argv[1]).read_text(encoding="utf-8", errors="ignore").splitlines()
+triggered = []
+current = []
+
+GENERIC_LABELS = {
+    "announcement", "article", "blog", "changelog", "docs", "documentation",
+    "feature matrix", "github blog", "github previews", "preview terms",
+    "preview terms changelog", "release notes", "releases", "supported models",
+    "terms", "dpa", "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+}
+
+def inline_capability_link_count(bullet):
+  trailing_sources = re.search(
+      r"\s+-\s+\[[^\]]+\]\([^)]+\)(?:\s*\|\s*\[[^\]]+\]\([^)]+\))*\s*$",
+      bullet,
+      re.DOTALL,
+  )
+  body = bullet[:trailing_sources.start()] if trailing_sources else bullet
+  count = 0
+  for label, _url in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", body):
+    clean = re.sub(r"[*_]", "", label.replace(chr(96), "")).strip().lower()
+    clean = re.sub(r"\s+", " ", clean)
+    if clean in GENERIC_LABELS:
+      continue
+    if re.search(r"[a-z0-9/+.-]", clean):
+      count += 1
+  return count
+
+def flush():
+  if not current:
+    return
+  bullet = "\n".join(current)
+  if re.search(r"\b(?:GitHub\s+)?Copilot app\b", bullet, re.IGNORECASE) and re.search(r"\b\d+\s+releases?\b|release stream|release inventory|first accessible build|product-category launch", bullet, re.IGNORECASE):
+    triggered.append(inline_capability_link_count(bullet))
+
+for line in lines:
+  if re.match(r"^-\s+\*\*", line):
+    flush()
+    current = [line]
+    continue
+  if current:
+    current.append(line)
+flush()
+
+if not triggered:
+  print("SKIP")
+else:
+  print(str(min(triggered)))
+PY
+)"
+app_link_count="${app_link_count# }"
+if [ "$app_link_count" = "SKIP" ]; then
+  pass "Copilot App release-inventory link gate not triggered"
+elif [ "$app_link_count" -ge 5 ] 2>/dev/null; then
+  pass "Copilot App release-inventory inline capability links ($app_link_count >= 5)"
+else
+  fail "Copilot App release-inventory bullet under-linked ($app_link_count inline capability links < 5)"
+fi
+
+# High-volume CLI release summaries need enough representative inline links to stay inspectable.
+cli_link_count="$(
+  python3 - "$FILE" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+lines = Path(sys.argv[1]).read_text(encoding="utf-8", errors="ignore").splitlines()
+triggered = []
+current = []
+
+GENERIC_LABELS = {
+    "announcement", "article", "blog", "changelog", "docs", "documentation",
+    "feature matrix", "github blog", "github previews", "preview terms",
+    "preview terms changelog", "release notes", "releases", "supported models",
+    "terms", "dpa", "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+}
+
+def inline_capability_link_count(bullet):
+  trailing_sources = re.search(
+      r"\s+-\s+\[[^\]]+\]\([^)]+\)(?:\s*\|\s*\[[^\]]+\]\([^)]+\))*\s*$",
+      bullet,
+      re.DOTALL,
+  )
+  body = bullet[:trailing_sources.start()] if trailing_sources else bullet
+  count = 0
+  for label, _url in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", body):
+    clean = re.sub(r"[*_]", "", label.replace(chr(96), "")).strip().lower()
+    clean = re.sub(r"\s+", " ", clean)
+    if clean in GENERIC_LABELS:
+      continue
+    if re.search(r"[a-z0-9/+.-]", clean):
+      count += 1
+  return count
+
+def flush():
+  if not current:
+    return
+  bullet = "\n".join(current)
+  if re.search(r"\b(?:GitHub\s+)?Copilot CLI\b", bullet, re.IGNORECASE) and re.search(r"\b\d+\s+(?:(?:GitHub\s+)?Copilot CLI\s+)?releases?\b|\b\d+\s+stable(?:\s+releases?)?\b|high-volume|release inventory|capability families", bullet, re.IGNORECASE):
+    triggered.append(inline_capability_link_count(bullet))
+
+for line in lines:
+  if re.match(r"^-\s+\*\*", line):
+    flush()
+    current = [line]
+    continue
+  if current:
+    current.append(line)
+flush()
+
+if not triggered:
+  print("SKIP")
+else:
+  print(str(min(triggered)))
+PY
+)"
+cli_link_count="${cli_link_count# }"
+if [ "$cli_link_count" = "SKIP" ]; then
+  pass "Copilot CLI high-volume link gate not triggered"
+elif [ "$cli_link_count" -ge 6 ] 2>/dev/null; then
+  pass "Copilot CLI high-volume inline capability links ($cli_link_count >= 6)"
+else
+  fail "Copilot CLI high-volume bullet under-linked ($cli_link_count inline capability links < 6)"
+fi
 echo ""
 
 # ── Format Checks ──

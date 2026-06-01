@@ -7,7 +7,7 @@ You are orchestrating the parallel construction of 8 newsletter pipeline skills.
 1. **Trust disk, not self-reports.** After all agents complete, verify every file exists with `wc -l`. Do not accept agent claims of completion without checking.
 2. **Partition files strictly.** Each agent writes ONLY to its assigned `.github/skills/<name>/` directory. Zero overlap.
 3. **Stop rules per agent:** SKILL.md must be 80-300 lines. Each reference file must be 20-150 lines. No agent should produce more than 500 total lines.
-4. **Named agent execution.** All sub-agents use `@skill-builder`. If you need explicit model control, pass it through the CLI (`MODEL=...`) rather than hardcoding it in agent files.
+4. **Named agent with model field.** All sub-agents use @skill-builder (which specifies `model: gpt-5.5`). Do NOT let agents default to a lighter model.
 
 ## Instructions
 

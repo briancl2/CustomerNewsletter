@@ -1,8 +1,9 @@
-# Workspace intermediates
+# Workspace intermediates (tracked for reproducibility)
 !workspace/.gitkeep
 
-# Build artifacts
+# Build and local environment artifacts
 site/
+.venv/
 
 # Benchmark data (large, not tracked)
 benchmark/
@@ -15,7 +16,6 @@ benchmark/
 # Python artifacts
 __pycache__/
 *.py[cod]
-.venv/
 
 # Verification report (generated)
 MIGRATION_VERIFICATION_REPORT.md

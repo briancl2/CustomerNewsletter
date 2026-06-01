@@ -13,7 +13,17 @@
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-RUN_DIR="${1:-}"
+TARGET_PATH="${1:-}"
+REPORT_DIR=""
+if [ -n "$TARGET_PATH" ]; then
+  if [ -d "$TARGET_PATH" ]; then
+    REPORT_DIR="$TARGET_PATH/scores"
+  elif [ -f "$TARGET_PATH" ] || [[ "$TARGET_PATH" == *.md ]]; then
+    REPORT_DIR="$(dirname "$TARGET_PATH")/scores"
+  else
+    REPORT_DIR="$TARGET_PATH/scores"
+  fi
+fi
 SKILLS=(url-manifest content-retrieval content-consolidation events-extraction content-curation newsletter-assembly newsletter-validation kb-maintenance)
 
 T1=0; T1_MAX=26
@@ -237,10 +247,10 @@ else echo "All tiers pass. Proceed to benchmark testing."; fi)
 
 echo "$REPORT"
 
-if [ -n "$RUN_DIR" ]; then
-  mkdir -p "$RUN_DIR/scores"
-  echo "$REPORT" > "$RUN_DIR/scores/heuristic-scores.md"
-  echo "(Written to $RUN_DIR/scores/heuristic-scores.md)"
+if [ -n "$TARGET_PATH" ]; then
+  mkdir -p "$REPORT_DIR"
+  echo "$REPORT" > "$REPORT_DIR/heuristic-scores.md"
+  echo "(Written to $REPORT_DIR/heuristic-scores.md)"
 fi
 
 # Exit: all three tiers must pass

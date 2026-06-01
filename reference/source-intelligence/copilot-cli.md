@@ -1,58 +1,140 @@
 # Copilot CLI Source Intelligence
 
-> Calibrated from February 2026 cycle. CLI releases v0.0.399–v0.0.408.
+> Refreshed on 2026-04-16 against the official GitHub Copilot CLI docs and
+> releases stream. Current local applicability receipt: `GitHub Copilot CLI
+> 1.0.28`
 
 ## Extraction Profile
 
-- **Primary source URL**: `https://github.com/github/copilot-cli/releases`
+- **Primary release stream**: [github/copilot-cli releases](https://github.com/github/copilot-cli/releases)
 - **Atom feed**: `https://github.com/github/copilot-cli/releases.atom`
-- **Content model**: GitHub Releases with bullet-point changelogs per version
-- **Release cadence**: Daily (sometimes multiple per day). Pre-releases have `-N` build suffixes (e.g., `v0.0.404-0`, `v0.0.404-1`); stable releases have no suffix after the final digit (e.g., `v0.0.408`).
-- **CRITICAL**: The GitHub blog changelog (`github.blog/changelog/`) only publishes occasional summary posts (2-3 per month) that aggregate multiple releases. These blog posts lag behind by days/weeks and miss many features. **The releases page is the source of truth for feature discovery.** Blog posts are useful as supplementary links for narrative context on major features.
-- **Items per release**: ~3-8 items per stable release (mix of Added, Improved, Fixed) (initial calibration — refine after 2-3 cycles)
-- **Newsletter period volume**: A 30-day period includes ~30 stable releases; a 60-day period includes ~60. Feature aggregation across releases is essential. (initial calibration — refine after 2-3 cycles)
-- **Feature matrix**: CLI is NOT represented in the [Copilot feature matrix](https://docs.github.com/en/copilot/reference/copilot-feature-matrix). Features must be tracked via the releases page.
+- **Primary docs set**:
+  - [Copilot CLI overview](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli)
+  - [CLI best practices](https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices)
+  - [CLI programmatic reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-programmatic-reference)
+  - [Autopilot](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/autopilot)
+  - [`/fleet`](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/fleet)
+  - [Custom agents](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli)
+  - [Skills](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills)
+  - [Hooks](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks)
+  - [Plugins](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-cli-plugins)
+  - [Context management](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/context-management)
+  - [Copilot Memory](https://docs.github.com/en/copilot/concepts/agents/copilot-memory)
+  - [Remote access](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-remote-access)
+  - [BYOK and local providers](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-byok-models)
+- **Content model**: fast-moving GitHub Releases stream plus documentation pages
+  that describe which capability families are current, supported, and broadly
+  usable.
+- **Current release framing**: treat the `1.0.x` train as the current surface.
+  Older `0.0.x` calibration is historical only.
+- **Critical rule**: the releases page is still the primary source for what
+  changed; docs are the primary source for whether a capability family is
+  supported and how it is expected to work.
 
 ## Extraction Strategy
 
-1. Fetch the releases page and identify all **stable releases** (no `-0`, `-1` suffix) within DATE_RANGE
-2. Aggregate all features into a **single feature-centric list** — never produce per-version bullets
-3. Categorize by type:
-   - **Major capabilities**: Plan mode, background agents/delegate, plugins/marketplace, autopilot, ACP protocol
-   - **Platform integrations**: MCP server support, SDK, workspace-local config, ACP
-   - **Customization**: Skills, hooks, custom agents, instructions, slash commands
-   - **Quality-of-life**: Themes, permissions, keyboard shortcuts, diff mode
-   - **Bug fixes**: Skip unless security-related
-4. Cross-reference blog changelog for richer narrative descriptions of major features
-5. Output is one consolidated bullet in the newsletter, not per-release entries
+1. Fetch the releases stream and collect stable releases within `DATE_RANGE`.
+2. Cross-check the official docs to determine whether the release items belong
+   to an active capability family or are one-off implementation details.
+3. Aggregate features into one consolidated CLI narrative, never per-version
+   bullets.
+4. Prioritize features in these groups:
+   - **Major modes**: plan mode, autopilot, review mode
+   - **Agent orchestration**: `/fleet`, delegate, background agents, subagents
+   - **Customization**: custom agents, skills, hooks, instructions, slash
+     commands, plugins
+   - **Context and memory**: repository memory, context management, chronicle,
+     session behavior
+   - **Connectivity and extensibility**: MCP, remote access, BYOK or local
+     providers, SDK or protocol surfaces
+   - **Operational quality-of-life**: permissions, diff mode, approval flow,
+     tool UX
+5. Skip version-by-version bugfix recaps unless they materially affect
+   enterprise governance, blocked workflows, or a major feature family.
 
 ## What Survives (High Signal)
 
-These CLI feature types consistently make the newsletter:
-- **Agent orchestration**: Background agents, delegate, subagents, custom agents (100% survival)
-- **Major new modes**: Plan mode, autopilot mode, review mode (100% survival)
-- **Protocol/SDK**: ACP, MCP, Copilot SDK (100% survival)
-- **Plugin ecosystem**: Marketplace, plugin hooks, skills integration (high survival)
-- **Memory/context**: Repository memory, auto-compaction, sessions (high survival)
+These Copilot CLI feature types consistently matter for newsletter-quality
+coverage:
+
+- **Major new modes**: plan mode, autopilot, review-oriented flows
+- **Parallel or delegated execution**: `/fleet`, delegate, subagents, task
+  distribution
+- **Customization surface**: custom agents, skills, hooks, instructions,
+  slash-command ergonomics, plugins
+- **Memory and context**: repository memory, context controls, session history,
+  chronicle or similar session-data surfaces
+- **Integration surfaces**: MCP, remote access, BYOK or local providers,
+  protocol or SDK surfaces
+- **Operational controls**: approval, permissions, mode flags, repo-local
+  configuration, and other workflow-shaping controls
 
 ## What Gets Cut (Low Signal)
 
-- **Keyboard shortcuts and bindings**: Ctrl+X, Ctrl+P remaps (0% survival)
-- **Theme/visual polish**: Color themes, styling (0% survival)
-- **Bug fixes**: Crash fixes, rendering issues (0% survival unless security-related)
-- **ACP implementation details**: Client protocol internals (0% survival)
-- **Windows-specific fixes**: Path handling, MSI improvements (0% survival)
+- **Minor keybindings and UI polish** unless they materially change workflow
+- **Theme and styling changes**
+- **Routine bug fixes** unless security-related or tied to a major feature
+- **Deep protocol internals** that do not change what operators can actually do
+- **Platform-specific fixes** that are too narrow to matter to enterprise
+  readers
 
 ## Treatment Patterns
 
-- **Single bullet**: CLI always appears as one consolidated bullet in the "Copilot Everywhere" section
-- **Velocity narrative**: The bullet should convey the daily shipping cadence as part of the platform story
-- **SDK separate**: The Copilot SDK is included in the same bullet but could be broken out if it grows
-- **Legal notice**: MUST include DPA and Pre-Release License Terms links per editorial-intelligence rules
-- **Cross-references**: Blog posts used as links for major features; releases page as the primary "See also" link
+- **Single consolidated bullet**: Copilot CLI should still usually appear as
+  one bundled item in the broader Copilot tooling story, not as a per-release
+  changelog dump.
+- **High-volume does not mean short**: when a cycle has >=10 stable CLI releases
+  or >=5 major capability families, write one dense February-style treatment
+  with concrete command/feature names and representative inline release/docs
+  links. A generic family summary is a failure.
+- **Artifact contract**: high-volume CLI windows require
+  `workspace/copilot_cli_release_inventory_START_to_END.md` before synthesis and
+  `workspace/newsletter_phase3_capability_map_START_to_END.json` before final
+  prose. Final bullets must carry at least six inline capability links; trailing
+  generic source links do not satisfy the gate.
+- **Capability-family framing**: describe what the CLI can now do for operators
+  and teams, not just what flags were added.
+- **Enterprise signal first**: prefer changes that affect governance,
+  orchestration, context control, extensibility, or production workflow shape.
+- **Docs plus release link pairing**: use one official doc link for behavior
+  context and one releases link for current change velocity.
+- **Current-host awareness**: when the repo itself relies on `copilot -p`,
+  prioritize features that matter to headless or repo-driven use even if the
+  broader product surface is larger.
+
+## Capability Families For High-Volume Windows
+
+Use these families when deciding whether the `>=5 major capability families`
+trigger fires. Do not count synonyms or alternate entry points as separate
+families.
+
+| Family | Examples |
+|---|---|
+| Command/control modes | `--mode`, `--autopilot`, `--plan`, `/autopilot`, `/review` |
+| Remote and multi-device continuity | `/remote on`, `--remote`, `/keep-alive`, mobile/web/VS Code steering |
+| Session management | `--session-id`, `--resume`, `--continue`, named sessions |
+| Plugin/extensibility | plugin marketplace, deterministic plugin dirs, `/skills`, custom agents |
+| Integration ecosystem | MCP, ACP, SDK, OpenTelemetry, hooks |
+| Observability/cost | AI Credits, token display, `/chronicle`, memory controls |
+| Provider/model choice | BYOK, local providers, model picker, auto model, reasoning effort |
+| Security/policy | permissions, approvals, sandboxing, secure prompt mode, RCE protection |
 
 ## Cross-Referencing
 
-- Blog changelog posts: Use as supplementary narrative links for major features
-- VS Code terminal features: Some overlap with CLI features (terminal sandboxing, auto-approve rules)
-- OpenCode: Competitive framing context (CLI vs Claude Code vs OpenCode)
+- Use the releases page as the main feature-discovery source.
+- Use the docs pages above to validate whether a capability family is current
+  and broadly supported.
+- Cross-reference `reference/editorial-intelligence.md` when deciding whether
+  a CLI change is strong enough for the newsletter.
+- Cross-reference `reference/deep-research-report.md` when portability,
+  instructions, skills, or prompt-surface governance are central to the story.
+
+## Repo-Operator Notes
+
+- The local execution surface on this machine is currently `GitHub Copilot CLI
+  1.0.28`, which is the minimum baseline this repo should assume for current
+  operating guidance.
+- The repo's production path remains a single-shot `copilot -p` oracle plus a
+  retained proof wrapper. Do not treat autopilot or `/fleet` as the live
+  production path for this repo unless a later owner-side batch explicitly
+  changes that contract.
