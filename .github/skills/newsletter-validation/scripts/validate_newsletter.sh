@@ -441,6 +441,13 @@ def is_shallow(url):
     return True
   if re.search(r"code\.visualstudio\.com/(updates|blogs)/?$", u):
     return True
+  # Bare docs.github.com section indices (no specific article), e.g.
+  # .../copilot or .../copilot/reference. Specific articles under a section
+  # (tutorials/<slug>, reference/<slug>, how-tos/<slug>) are deep enough.
+  if re.search(r"docs\.github\.com/[a-z-]+/copilot/?$", u):
+    return True
+  if re.search(r"docs\.github\.com/[a-z-]+/copilot/(reference|tutorials|how-tos|concepts|using-github-copilot|get-started)/?$", u):
+    return True
   return False
 
 hits = []
@@ -468,6 +475,48 @@ else
   shallow_count=$(printf '%s\n' "$shallow_links" | grep -c '^line ' || true)
   warn "Specific-labeled inline links point to generic pages ($shallow_count); use a deep/anchored source or a generic label:"
   printf '%s\n' "$shallow_links" | sed 's/^/      /'
+fi
+echo ""
+
+# Repeated generic page in one line: a non-anchored URL (no "#" anchor) that
+# appears 3+ times on a single line is the low-value duplication pattern (the
+# same tutorial/landing/version page linked from several phrases in one breath).
+# One inline use plus one trailing/source pointer (2x) is allowed. Deep,
+# anchored URLs are exempt -- repeating a specific anchor per distinct claim is
+# fine. WARN-level (does not block). Aggregated source-list sections are exempt.
+repeated_links="$(
+  python3 - "$FILE" <<'PY'
+import re
+import sys
+from collections import Counter
+from pathlib import Path
+
+lines = Path(sys.argv[1]).read_text(encoding="utf-8", errors="ignore").splitlines()
+AGG_HEADING = re.compile(r"source links|sources|further reading|references|see also", re.IGNORECASE)
+
+hits = []
+in_agg = False
+for line_no, line in enumerate(lines, 1):
+  h = re.match(r"^#{1,6}\s+(.+?)\s*$", line)
+  if h:
+    in_agg = bool(AGG_HEADING.search(h.group(1)))
+    continue
+  if in_agg:
+    continue
+  urls = [u for _, u in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", line)]
+  counts = Counter(u for u in urls if "#" not in u)
+  for url, n in counts.items():
+    if n >= 3:
+      hits.append(f"line {line_no}: x{n} {url}")
+print("\n".join(hits[:10]))
+PY
+)"
+if [ -z "$repeated_links" ]; then
+  pass "No generic page repeated 3+ times in a single line"
+else
+  repeated_count=$(printf '%s\n' "$repeated_links" | grep -c '^line ' || true)
+  warn "A non-anchored page is linked 3+ times in one line ($repeated_count); link it once and keep a single source pointer:"
+  printf '%s\n' "$repeated_links" | sed 's/^/      /'
 fi
 echo ""
 
