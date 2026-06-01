@@ -1,5 +1,7 @@
 # Public Sources
 
+> **Bottom line:** Every link in this bundle gathered in one place, grouped by topic. **For:** anyone who wants the canonical source list. **Read time:** reference only.
+
 All links in this bundle are customer-accessible public sources.
 
 ## Billing, Budgets, And Usage

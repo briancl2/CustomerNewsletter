@@ -105,11 +105,11 @@ questions:
 
 Start here:
 
-- [Start here](release_bundle/2026-05_newsletter_cost_optimization/START_HERE.md) -- same landing guidance as the top of the customer companion.
-- [Customer companion](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- developer and admin guidance for cost-aware Copilot usage.
-- [System release notes](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -- technical map of what changed, where it changed, and how to use the changes.
-- [FinOps playbook](release_bundle/2026-05_newsletter_cost_optimization/FINOPS_PLAYBOOK.md) -- budget-layer, attribution, baseline, and showback guidance.
-- [Worked examples](release_bundle/2026-05_newsletter_cost_optimization/WORKED_EXAMPLES.md) -- public-safe scenarios for reducing repeated agent work.
+- [Start here](release_bundle/2026-05_newsletter_cost_optimization/START_HERE.md) -- thin pointer to the customer companion.
+- [Customer companion](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical landing page with developer and admin guidance for cost-aware Copilot usage.
+- [System release notes](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -- technical deep dive with exact before/after token counts, code links, and an illustrative cost translation.
+- [Admin and FinOps guide](release_bundle/2026-05_newsletter_cost_optimization/ADMIN_FINOPS_GUIDE.md) -- budgets, reporting, governance, attribution, baseline, and showback guidance.
+- [Developer guide](release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_GUIDE.md) -- cost-aware agentic workflows with public-safe worked examples.
 - [Product feature quick hits](release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md) -- first-party source inventory for billing, budgets, observability, routing, and token-mechanics references.
 
 Public wording intentionally uses rounded aggregate/proxy metrics and caveats.

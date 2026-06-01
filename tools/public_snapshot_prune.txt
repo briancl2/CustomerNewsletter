@@ -48,6 +48,16 @@ release_bundle/2026-02_newsletter_launch/SOURCE_NOTES/
 release_bundle/2026-04_newsletter_launch/SOURCE_NOTES/
 release_bundle/2026-05_newsletter_cost_optimization/SOURCE_NOTES/
 
+# May cost bundle files retired during the Phase 2 consolidation (13 -> 9).
+# Their content was merged into ADMIN_FINOPS_GUIDE.md, DEVELOPER_GUIDE.md, and
+# the CUSTOMER_COMPANION executive-summary section. Prune the old target copies.
+release_bundle/2026-05_newsletter_cost_optimization/EXECUTIVE_SUMMARY.md
+release_bundle/2026-05_newsletter_cost_optimization/ADMIN_READINESS_GUIDE.md
+release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_WORKFLOW_GUIDE.md
+release_bundle/2026-05_newsletter_cost_optimization/FINOPS_PLAYBOOK.md
+release_bundle/2026-05_newsletter_cost_optimization/WORKED_EXAMPLES.md
+release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURES_FOR_COST_MANAGEMENT.md
+
 # Internal cost/proof helper surfaces are retained in the private source repo.
 tools/adjudicate_guard_replayability.py
 tools/build_phase3_compact_working_set_gate_packet.py

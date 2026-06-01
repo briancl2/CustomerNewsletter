@@ -1,22 +1,46 @@
 # Newsletter Generation System Release Notes
 
+> **Bottom line:** The newsletter generation system was re-engineered to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run while quality gates stayed in force. **For:** developers, platform owners, and architects who want the technical map and the before/after evidence. **Read time:** about 12 minutes.
+
 This note summarizes the customer-safe newsletter generation system changes included with the May 2026 public catch-up. It is about the reusable newsletter pipeline itself, not the May newsletter content.
 
-Use this file when you want the technical map: what changed, where it changed, what each change does, and how to operate the updated system. For developer/admin cost guidance, start with [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md). For product-source inventory, use [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md).
+Use this file when you want the technical map: what changed, where it changed, what each change does, what it cost, and how to operate the updated system. For developer/admin cost guidance, start with [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md). For product-source inventory, use [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md).
 
 ## Measured Impact
 
-The cost optimization work produced measurable aggregate/proxy movement in retained comparisons. These are not billing claims, but they are meaningful workflow measurements:
+The cost optimization work produced measurable aggregate/proxy movement in retained comparison runs. These are workflow-engineering measurements of direct provider token totals, not GitHub Copilot billing claims.
 
-| Signal | Rounded public-safe metric | Quality status |
-|---|---:|---|
-| Integrated fixed-corpus comparison | About 27% lower aggregate token total | Quality gates passed. |
-| Integrated current-cycle comparison | About 45% lower aggregate token total | Newsletter validation passed; corpus caveats apply. |
-| Phase 3 compact working-set example | About 89% lower Phase 3 curation token load | Source coverage and curation checks passed. |
-| Cheaper but blocked route | About 22% lower aggregate token total | Rejected because quality fell below threshold. |
-| Repaired optimized route | V2 `48/50` and newsletter validation passed | Accepted as the safer route shape. |
+| Comparison run | Before (tokens) | After (tokens) | Change | Quality status |
+|---|---:|---:|---:|---|
+| Integrated fixed-corpus | 7,846,260 | 5,699,291 | about -27% | Quality gates passed. |
+| Integrated current-cycle | 9,001,070 | 4,957,442 | about -45% | Newsletter validation passed; corpus caveats apply. |
+| Phase 3 compact working-set example | 284,862 | 31,333 | about -89% | Source coverage and curation checks passed. |
+| Cheaper but blocked route | 5,785,064 | 4,501,184 | about -22% | Rejected: quality fell below threshold (V2 `39/50`). |
+| Repaired optimized route | — | 4,388,338 | — | Accepted: V2 `48/50`, newsletter validation passed. |
 
-The headline: the system got cheaper because it did less repeated work, not because it merely asked for shorter answers. The strongest levers were source/candidate discipline, compact synthesis inputs, accepted-artifact reuse, tool suppression when safe, and quality gates that rejected cheap but weak output.
+On the integrated runs, requests and tool calls dropped alongside tokens: the fixed-corpus run moved from `126` to `102` requests and `212` to `184` tool calls; the current-cycle run moved from `125` to `93` requests and `267` to `149` tool calls. The system got cheaper because it did less repeated work, not because it merely asked for shorter answers.
+
+These totals count direct provider tokens across the full route. They are engineering evidence under bounded workflow conditions; they are not a durable percentage, a universal benchmark, or a Copilot AI Credits invoice.
+
+## Illustrative Cost Translation
+
+These token movements can be translated into an illustrative dollar figure so the "bottom line" is concrete. The translation is engineering math on direct provider tokens, **not** a GitHub Copilot AI Credits bill.
+
+The system's own matched-pair experiments recorded both token deltas and the corresponding API-equivalent cost deltas (see the output-shape negative result below). Two of those matched pairs imply a blended rate of about **$3 per million direct provider tokens** (`+2,091,727` tokens for `+$6.18`; `+2,295,172` tokens for `+$7.05`). That blended rate is consistent with current frontier list pricing such as a `gpt-5.5`-class model; substitute your own current rate from the [OpenAI pricing](https://developers.openai.com/api/docs/pricing) page for your own estimates.
+
+Applying that illustrative `~$3 / million-token` rate:
+
+| Comparison run | Tokens saved | Illustrative API-equivalent saving per run |
+|---|---:|---:|
+| Integrated current-cycle | about 4,043,000 | about **$12** |
+| Integrated fixed-corpus | about 2,147,000 | about **$6** |
+| Phase 3 compact working-set example | about 253,000 | under **$1** |
+
+Read this as: with a `gpt-5.5`-class blended rate, the workflow changes removed roughly `$12` of API-equivalent token cost from a full current-cycle newsletter run. The number is illustrative and route-specific. It is not a billing-savings claim, it does not include tool/runtime/validation side costs, and it does not transfer to other workflows or to GitHub Copilot AI Credit pricing, which uses its own model-specific conversion.
+
+## What The Strongest Levers Were
+
+The strongest levers were source/candidate discipline, compact synthesis inputs, accepted-artifact reuse, tool suppression when safe, and quality gates that rejected cheap but weak output. Each lever, its before/after evidence, and the file that implements it are mapped in [How The Cost Mechanisms Fit Together](#how-the-cost-mechanisms-fit-together) below.
 
 ## What Changed
 
@@ -81,7 +105,7 @@ The diagnostic path is for localizing failures and measuring candidate route cha
 - Added artifact reuse and no-refetch receipts so accepted intermediate artifacts can be consumed without repeated retrieval. See [build_artifact_reuse_admission_receipt.py](../../tools/build_artifact_reuse_admission_receipt.py), [build_artifact_reuse_no_refetch_receipt.py](../../tools/build_artifact_reuse_no_refetch_receipt.py), and [build_artifact_reuse_phase3_proof_receipt.py](../../tools/build_artifact_reuse_phase3_proof_receipt.py).
 - Added compact working-set generation and Phase 3 readiness checks to reduce synthesis load while protecting source coverage. See [build_phase3_working_set.py](../../tools/build_phase3_working_set.py), [validate_phase3_curated.py](../../tools/validate_phase3_curated.py), and [validate_phase3_v2_readiness.py](../../tools/validate_phase3_v2_readiness.py).
 - Added route telemetry and fail-closed proof helpers so token movement is tied to route identity and quality state. See [run_copilot_phase.py](../../tools/run_copilot_phase.py), [build_phase_token_telemetry_receipt.py](../../tools/build_phase_token_telemetry_receipt.py), and [test_phase_route_lock_telemetry.sh](../../tools/test_phase_route_lock_telemetry.sh).
-- Kept failed output-shape work visible as a negative result. The tested shape reduced the wrong thing and amplified total route cost, so it stayed out of the accepted path. See [apply_newsletter_output_shape_policy.py](../../tools/apply_newsletter_output_shape_policy.py) and [build_output_shape_experiment_receipt.py](../../tools/build_output_shape_experiment_receipt.py).
+- Kept failed output-shape work visible as a negative result. The tested shape reduced the wrong thing and amplified total route cost, so it stayed out of the accepted path. Across three matched pairs it increased total direct provider tokens by `2,091,727`, `2,295,172`, and `166,553`, which mapped to API-equivalent cost increases of `+$6.18`, `+$7.05`, and `+$1.09`. See [apply_newsletter_output_shape_policy.py](../../tools/apply_newsletter_output_shape_policy.py) and [build_output_shape_experiment_receipt.py](../../tools/build_output_shape_experiment_receipt.py).
 
 ### How The Cost Mechanisms Fit Together
 
@@ -91,10 +115,12 @@ The accepted route is not one trick. It is a set of controls that reduce repeate
 |---|---|---|---|
 | Source/candidate pruning | [apply_newsletter_source_pruning_policy.py](../../tools/apply_newsletter_source_pruning_policy.py), source-pruning receipts | Narrows downstream material to accepted source sets. | Preserve source floors and measure search/request compensation. |
 | Artifact reuse | [build_artifact_reuse_admission_receipt.py](../../tools/build_artifact_reuse_admission_receipt.py), [build_artifact_reuse_no_refetch_receipt.py](../../tools/build_artifact_reuse_no_refetch_receipt.py) | Lets later phases consume accepted artifacts instead of re-fetching. | Bind identity, freshness, scope, and validation before reuse. |
-| Compact Phase 3 working set | [build_phase3_working_set.py](../../tools/build_phase3_working_set.py), [validate_phase3_curated.py](../../tools/validate_phase3_curated.py) | Reduces expensive curation context while preserving required coverage. | Keep required source classes and fallback to fuller context. |
+| Compact Phase 3 working set | [build_phase3_working_set.py](../../tools/build_phase3_working_set.py), [validate_phase3_curated.py](../../tools/validate_phase3_curated.py) | Reduces expensive curation context while preserving required coverage. One Phase 3 example moved `284,862 -> 31,333` tokens (about -89%). | Keep required source classes and fallback to fuller context. |
 | Tool-suppressed Phase 3 route | [run_phase3_stdout_no_tools_artifact_reuse.py](../../tools/run_phase3_stdout_no_tools_artifact_reuse.py), [validate_phase3_v2_readiness.py](../../tools/validate_phase3_v2_readiness.py) | Prevents tool-heavy reconstruction when accepted artifacts are ready. | Run readiness checks first; fail closed to fallback. |
 | Route telemetry | [run_copilot_phase.py](../../tools/run_copilot_phase.py), [build_phase_token_telemetry_receipt.py](../../tools/build_phase_token_telemetry_receipt.py) | Connects route identity, prompts, token signals, and quality state. | Treat aggregate/proxy data as engineering evidence, not billing proof. |
-| Negative evidence | [apply_newsletter_output_shape_policy.py](../../tools/apply_newsletter_output_shape_policy.py), [build_output_shape_experiment_receipt.py](../../tools/build_output_shape_experiment_receipt.py) | Keeps tempting failed strategies from being repeated. | Promote only route-level wins that pass quality gates. |
+| Negative evidence | [apply_newsletter_output_shape_policy.py](../../tools/apply_newsletter_output_shape_policy.py), [build_output_shape_experiment_receipt.py](../../tools/build_output_shape_experiment_receipt.py) | Keeps tempting failed strategies from being repeated. The output-shape shape added up to `+2,295,172` tokens (`+$7.05`) instead of saving. | Promote only route-level wins that pass quality gates. |
+
+The integrated `-27%` and `-45%` movements are route-level results from the full stack working together. Isolated single-lever movement was often small, so the bundle attributes whole-route gains to the route, not to any one trick. The Phase 3 compact example is the clearest single-lever signal.
 
 ### Generating A Newsletter With Lower Token Pressure
 

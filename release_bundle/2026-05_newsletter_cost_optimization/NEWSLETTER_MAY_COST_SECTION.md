@@ -1,5 +1,7 @@
 # May Newsletter UBB And Cost-Aware Usage Section
 
+> **Bottom line:** The verbatim newsletter section this bundle expands, kept as provenance. **For:** anyone who wants the exact source text. **Read time:** 3 minutes.
+
 Source: May 2026 GitHub Customer Newsletter.
 
 ## UBB Readiness And Cost-Aware Copilot Usage
