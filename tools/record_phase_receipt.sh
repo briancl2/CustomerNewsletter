@@ -51,8 +51,8 @@ python3 - "$marker" "$receipts_file" "$START" "$END" "$PHASE_ID" "$ARTIFACT_PATH
 import datetime as dt
 import hashlib
 import json
-import os
 import sys
+import time
 from pathlib import Path
 
 marker_path = Path(sys.argv[1])
@@ -60,7 +60,17 @@ receipts_path = Path(sys.argv[2])
 start = sys.argv[3]
 end = sys.argv[4]
 phase_id = sys.argv[5]
-artifact_path = Path(sys.argv[6])
+repo_root = Path.cwd().resolve()
+artifact_arg = Path(sys.argv[6])
+artifact_abs = artifact_arg if artifact_arg.is_absolute() else (repo_root / artifact_arg)
+artifact_path = artifact_abs.resolve()
+
+try:
+    logical_artifact_path = artifact_path.relative_to(repo_root).as_posix()
+except ValueError as exc:
+    raise SystemExit(
+        f"artifact path must be inside repo root ({repo_root}), got: {artifact_path}"
+    ) from exc
 
 with marker_path.open("r", encoding="utf-8") as f:
     marker = json.load(f)
@@ -75,9 +85,11 @@ line_count = len(artifact_bytes.splitlines())
 size_bytes = len(artifact_bytes)
 artifact_stat = artifact_path.stat()
 artifact_mtime_epoch = int(artifact_stat.st_mtime)
+artifact_mtime_epoch_ns = int(artifact_stat.st_mtime_ns)
 artifact_mtime_utc = dt.datetime.fromtimestamp(artifact_mtime_epoch, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-recorded_at_epoch = int(dt.datetime.now(tz=dt.timezone.utc).timestamp())
+recorded_at_epoch_ns = time.time_ns()
+recorded_at_epoch = recorded_at_epoch_ns // 1_000_000_000
 recorded_at_utc = dt.datetime.fromtimestamp(recorded_at_epoch, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 if receipts_path.exists():
@@ -85,7 +97,7 @@ if receipts_path.exists():
         receipts = json.load(f)
 else:
     receipts = {
-        "schema_version": 1,
+        "schema_version": 2,
         "run_id": run_id,
         "start": start,
         "end": end,
@@ -104,26 +116,45 @@ if receipts.get("start") != start or receipts.get("end") != end:
     )
 
 updated = []
-for receipt in receipts.get("receipts", []):
+max_receipt_order = 0
+for index, receipt in enumerate(receipts.get("receipts", []), start=1):
     if receipt.get("phase_id") == phase_id:
         continue
-    updated.append(receipt)
+    normalized = dict(receipt)
+    receipt_order = normalized.get("receipt_order")
+    if isinstance(receipt_order, bool):
+        receipt_order = None
+    elif isinstance(receipt_order, str) and receipt_order.isdigit():
+        receipt_order = int(receipt_order)
+    elif not isinstance(receipt_order, int):
+        receipt_order = None
+    if receipt_order is None or receipt_order <= 0:
+        receipt_order = max_receipt_order + 1 if max_receipt_order else index
+    normalized["receipt_order"] = int(receipt_order)
+    max_receipt_order = max(max_receipt_order, int(receipt_order))
+    updated.append(normalized)
+
+new_receipt_order = max_receipt_order + 1
 
 updated.append(
     {
         "phase_id": phase_id,
-        "artifact_path": str(artifact_path),
+        "artifact_path": logical_artifact_path,
         "artifact_sha256": sha256,
         "artifact_bytes": size_bytes,
         "artifact_lines": line_count,
         "artifact_mtime_epoch": artifact_mtime_epoch,
+        "artifact_mtime_epoch_ns": artifact_mtime_epoch_ns,
         "artifact_mtime_utc": artifact_mtime_utc,
         "recorded_at_epoch": recorded_at_epoch,
+        "recorded_at_epoch_ns": recorded_at_epoch_ns,
         "recorded_at_utc": recorded_at_utc,
+        "receipt_order": new_receipt_order,
     }
 )
-updated.sort(key=lambda r: (int(r.get("recorded_at_epoch", 0)), r.get("phase_id", "")))
+updated.sort(key=lambda r: int(r.get("receipt_order", 0)))
 
+receipts["schema_version"] = 2
 receipts["receipts"] = updated
 receipts["updated_at_utc"] = recorded_at_utc
 
@@ -133,8 +164,9 @@ with receipts_path.open("w", encoding="utf-8") as f:
     f.write("\n")
 
 print(
-    f"Recorded receipt: phase={phase_id} artifact={artifact_path} "
-    f"sha256={sha256[:12]}... lines={line_count} bytes={size_bytes}"
+    f"Recorded receipt: phase={phase_id} artifact={logical_artifact_path} "
+    f"receipt_order={new_receipt_order} sha256={sha256[:12]}... "
+    f"lines={line_count} bytes={size_bytes}"
 )
 print(f"Receipts file: {receipts_path}")
 PY

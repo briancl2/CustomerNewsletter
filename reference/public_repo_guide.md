@@ -2,58 +2,63 @@
 
 ## Purpose
 
-This repository is a public template and reference implementation for building a Copilot-powered customer newsletter system.
+This repository is the public-safe mirror of the GitHub customer newsletter
+generation system. It contains the reusable agents, skills, prompts, knowledge
+base, validation tools, selected published newsletters, and customer-safe release
+materials that can be shared without private run logs or internal evidence.
 
-It demonstrates how to move from manual curation and monolithic prompts to:
-- skills-based orchestration
-- deterministic quality gates
-- iterative self-learning improvements
+Edits should start in the private source repository and then be published through
+the allowlist-based snapshot workflow.
 
-## Who This Is For
+## Public Contents
 
-- Developer productivity leaders
-- Platform engineering teams
-- Technical account teams running recurring update communications
-- Builders learning how to design multi-phase Copilot workflows
-
-## Start Here
-
-1. Read `README.md` for quick start.
-2. Review `config/profile.yaml` and customize it.
-3. Walk through `docs/how-it-works.md`.
-4. Run validation gates:
-
-```bash
-make validate-structure
-make validate-all-skills
-make test-validator
-make score-all
-```
-
-5. Run a generation pass:
-
-```bash
-make newsletter START=2026-01-01 END=2026-02-10
-```
-
-## Repo Navigation
-
-| Path | Purpose |
+| Area | What it contains |
 |---|---|
-| `.github/agents/` | Orchestrator and specialist agents |
-| `.github/skills/` | Phase-by-phase workflows and references |
-| `.github/prompts/` | Prompt artifacts for each pipeline phase |
-| `tools/` | Validation, scoring, orchestration, utilities |
-| `kb/` | Source registry and content taxonomy |
-| `docs/` | How-to, architecture, and report content |
-| `legacy/` | Preserved pre-overhaul prompt/chatmode artifacts |
+| `.github/agents/` | Newsletter-focused agent definitions. |
+| `.github/prompts/` | Pipeline and phase prompts. |
+| `.github/skills/` | Reusable newsletter pipeline skills. |
+| `kb/` | Public source catalog, event sources, and taxonomy. |
+| `reference/` | Newsletter editorial, polishing, source, and operating guidance. |
+| `tools/` | Validation, scoring, publishing, and workflow scripts. |
+| `tests/` | Public-safe regression fixtures and script tests. |
+| `output/` | Selected final newsletters approved for publication. |
+| `release_bundle/` | Customer-safe companion material and launch bundles. |
 
-## Notes on Copilot Usage
+## Publication Boundary
 
-This system is Copilot-first but not Copilot-only:
-- Copilot drives orchestration and content generation paths.
-- Deterministic scripts handle structure checks, validation, and scoring.
+Do publish:
 
-## Maintainer Model
+- Final newsletter outputs that passed validation and human review.
+- Customer-safe release bundle files that use public first-party sources.
+- Pipeline skills, prompts, validation tools, tests, and knowledge-base files.
+- Documentation that explains the newsletter workflow and how to run it.
 
-See `docs/how-we-maintain-this.md` for private-to-public sync expectations.
+Do not publish:
+
+- `runs/` proof bundles, session logs, or debug logs.
+- `workspace/` phase intermediates beyond `.gitkeep`.
+- Raw internal evidence, private paths, non-public URLs, or signed-in-only source notes.
+- Unsanitized planning artifacts, experiment logs, or private cost telemetry.
+- Release bundle source notes unless they have been explicitly converted into a customer-safe layer.
+
+## Publishing Workflow
+
+Use the private source repository as the source of truth:
+
+```bash
+bash tools/publish_public_snapshot.sh --no-commit /path/to/briancl2-customer-newsletter-public
+```
+
+Then review the public checkout diff, run validation, commit on a public branch,
+and open a pull request.
+
+The allowlist lives at `tools/public_snapshot_allowlist.txt`. Target-only files
+that should be removed during publication live in `tools/public_snapshot_prune.txt`.
+
+## Review Checklist
+
+- The public checkout has no local machine paths, private URLs, or internal-only evidence markers.
+- Generated newsletters changed by the sync pass `make validate-newsletter FILE=...`.
+- The public checkout passes `make test-all` before the pull request is opened.
+- Release bundle links point only to public sources or customer-safe files.
+- Public docs describe this newsletter generator, not unrelated source repositories.

@@ -189,7 +189,6 @@ This file contains a list of common GitHub-related jargon, acronyms, product nam
 *   Markdown (Markup language for documentation)
 *   Marketplace (GitHub Marketplace)
 *   MCP (Model Context Protocol - Copilot feature for external context)
-*   Metrics framework (General prioritization framework)
 *   Meta (AI Partner, e.g., Llama models)
 *   Metered Billing / Metered Usage (Pricing model)
 *   Metrics API (Copilot API for usage data)

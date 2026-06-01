@@ -2,20 +2,74 @@
 # ══════════════════════════════════════════════════════════════
 # V2 Newsletter Scoring Rubric (50 points max)
 # ══════════════════════════════════════════════════════════════
-# Scores the February V2 newsletter against specific editorial hypotheses.
+# Scores a newsletter against the editorial rubric.
+# Supports both a benchmark-locked February mode and a general production mode.
 # Pass threshold: >=40/50 (80%)
 #
-# Usage: bash tools/score-v2-rubric.sh <newsletter_file>
+# Usage:
+#   bash tools/score-v2-rubric.sh <newsletter_file>
+#   bash tools/score-v2-rubric.sh --mode auto <newsletter_file>
+#   bash tools/score-v2-rubric.sh --mode production <newsletter_file>
+#   bash tools/score-v2-rubric.sh --mode feb2026_consistency <newsletter_file>
 
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-FILE="${1:-output/2026-02_february_newsletter.md}"
+usage() {
+  cat <<'USAGE'
+Usage: bash tools/score-v2-rubric.sh [--mode auto|production|feb2026_consistency] <newsletter_file>
+USAGE
+}
+
+MODE="auto"
+FILE=""
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --mode)
+      if [ "$#" -lt 2 ]; then
+        echo "Error: --mode requires a value"
+        usage
+        exit 1
+      fi
+      MODE="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      FILE="$1"
+      shift
+      ;;
+  esac
+done
+
+FILE="${FILE:-output/2026-02_february_newsletter.md}"
 
 if [ ! -f "$FILE" ]; then
   echo "Error: $FILE not found"
   exit 1
 fi
+
+case "$MODE" in
+  auto)
+    file_base="$(basename "$FILE")"
+    case "$file_base" in
+      2026-02_*newsletter*.md) ACTIVE_MODE="feb2026_consistency" ;;
+      *) ACTIVE_MODE="production" ;;
+    esac
+    ;;
+  production|feb2026_consistency)
+    ACTIVE_MODE="$MODE"
+    ;;
+  *)
+    echo "Error: unsupported mode '$MODE'"
+    usage
+    exit 1
+    ;;
+esac
 
 BODY=$(cat "$FILE")
 BODY_LC=$(echo "$BODY" | tr 'A-Z' 'a-z')
@@ -43,50 +97,91 @@ score() {
 
 echo "═══ V2 Newsletter Scoring Rubric ═══"
 echo "File: $FILE"
+echo "Mode: $ACTIVE_MODE"
 echo ""
 
 # ── Dimension 1: Theme Correctness (10 pts) ──
 echo "Dimension 1: Theme Correctness (10 pts)"
 D1=0
 
-# Lead section has competitive/platform-openness theme (not "Platform Maturation")
-if echo "$BODY" | head -20 | grep -Eqi "everywhere|platform.*open|open.*platform|competitive|your.*agent|pick.*agent|choice"; then
-  score 2 2 "Lead theme is platform-openness/competitive (not abstract maturation)"
-  D1=$((D1 + 2))
-else
-  score 0 2 "Lead theme is platform-openness/competitive (not abstract maturation)"
-fi
+lead_chunk="$(head -40 "$FILE" | tr 'A-Z' 'a-z')"
 
-# Lead includes Agent HQ 3P
-if echo "$BODY_LC" | grep -q "agent hq\|claude.*codex.*agent\|third.party.*agent\|3p.*agent\|codex.*claude"; then
-  score 2 2 "Lead includes Agent HQ 3P (Claude + Codex)"
-  D1=$((D1 + 2))
-else
-  score 0 2 "Lead includes Agent HQ 3P (Claude + Codex)"
-fi
+if [ "$ACTIVE_MODE" = "feb2026_consistency" ]; then
+  if echo "$BODY" | head -20 | grep -Eqi "everywhere|platform.*open|open.*platform|competitive|your.*agent|pick.*agent|choice"; then
+    score 2 2 "Lead theme is platform-openness/competitive (not abstract maturation)"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead theme is platform-openness/competitive (not abstract maturation)"
+  fi
 
-# Lead includes CLI competitive angle
-if echo "$BODY_LC" | grep -q "copilot cli\|cli.*agent\|copilot.*cli"; then
-  score 2 2 "Lead includes Copilot CLI"
-  D1=$((D1 + 2))
-else
-  score 0 2 "Lead includes Copilot CLI"
-fi
+  if echo "$BODY_LC" | grep -q "agent hq\|claude.*codex.*agent\|third.party.*agent\|3p.*agent\|codex.*claude"; then
+    score 2 2 "Lead includes Agent HQ 3P (Claude + Codex)"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead includes Agent HQ 3P (Claude + Codex)"
+  fi
 
-# Lead includes OpenCode
-if echo "$BODY_LC" | grep -q "opencode"; then
-  score 2 2 "Lead includes OpenCode support"
-  D1=$((D1 + 2))
-else
-  score 0 2 "Lead includes OpenCode support"
-fi
+  if echo "$BODY_LC" | grep -q "copilot cli\|cli.*agent\|copilot.*cli"; then
+    score 2 2 "Lead includes Copilot CLI"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead includes Copilot CLI"
+  fi
 
-# Lead includes BYOK
-if echo "$BODY_LC" | grep -q "byok\|bring your own"; then
-  score 2 2 "Lead includes BYOK platform choice"
-  D1=$((D1 + 2))
+  if echo "$BODY_LC" | grep -q "opencode"; then
+    score 2 2 "Lead includes OpenCode support"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead includes OpenCode support"
+  fi
+
+  if echo "$BODY_LC" | grep -q "byok\|bring your own"; then
+    score 2 2 "Lead includes BYOK platform choice"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead includes BYOK platform choice"
+  fi
 else
-  score 0 2 "Lead includes BYOK platform choice"
+  if echo "$lead_chunk" | grep -Eq "copilot|agent|govern|control|rollout|enterprise|platform"; then
+    score 2 2 "Lead theme is concrete and enterprise-relevant"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead theme is concrete and enterprise-relevant"
+  fi
+
+  lead_signals=0
+  echo "$lead_chunk" | grep -Eq "cloud agent|agent control plane|enterprise ai control|byok|bring your own key|metrics|content exclusion|firewall|runner" && lead_signals=$((lead_signals + 1))
+  echo "$lead_chunk" | grep -Eq "signed commit|custom instruction|data residency|security|risk assessment" && lead_signals=$((lead_signals + 1))
+  if [ "$lead_signals" -ge 2 ]; then
+    score 2 2 "Lead names multiple dominant signals ($lead_signals/2 groups)"
+    D1=$((D1 + 2))
+  elif [ "$lead_signals" -eq 1 ]; then
+    score 1 2 "Lead names at least one dominant signal"
+    D1=$((D1 + 1))
+  else
+    score 0 2 "Lead names multiple dominant signals"
+  fi
+
+  if echo "$lead_chunk" | grep -Eq "copilot|agent"; then
+    score 2 2 "Lead includes Copilot/agent surface"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead includes Copilot/agent surface"
+  fi
+
+  if echo "$lead_chunk" | grep -Eq "regulated|enterprise|governance|admin|policy|rollout|provenance|firewall|runner"; then
+    score 2 2 "Lead explains why the changes matter to rollout and governance"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead explains why the changes matter to rollout and governance"
+  fi
+
+  if echo "$lead_chunk" | grep -Eq "choice|byok|controls|practical|deployment|standardize"; then
+    score 2 2 "Lead includes practical deployment or platform-choice framing"
+    D1=$((D1 + 2))
+  else
+    score 0 2 "Lead includes practical deployment or platform-choice framing"
+  fi
 fi
 
 echo ""
@@ -95,81 +190,134 @@ echo ""
 echo "Dimension 2: Content Completeness (15 pts)"
 D2=0
 
-# Agent HQ 3P with meaningful detail (3 pts)
-hq_detail=0
-echo "$BODY_LC" | grep -q "agent hq\|claude.*codex\|codex.*claude" && hq_detail=$((hq_detail + 1))
-echo "$BODY_LC" | grep -q "assign.*agent\|compare.*agent\|multiple.*agent\|issue.*agent\|pull.*request.*agent" && hq_detail=$((hq_detail + 1))
-echo "$BODY_LC" | grep -q "news-insights\|pick-your-agent\|claude-and-codex" && hq_detail=$((hq_detail + 1))
-score $hq_detail 3 "Agent HQ 3P with meaningful detail ($hq_detail/3 signals)"
-D2=$((D2 + hq_detail))
+if [ "$ACTIVE_MODE" = "feb2026_consistency" ]; then
+  hq_detail=0
+  echo "$BODY_LC" | grep -q "agent hq\|claude.*codex\|codex.*claude" && hq_detail=$((hq_detail + 1))
+  echo "$BODY_LC" | grep -q "assign.*agent\|compare.*agent\|multiple.*agent\|issue.*agent\|pull.*request.*agent" && hq_detail=$((hq_detail + 1))
+  echo "$BODY_LC" | grep -q "news-insights\|pick-your-agent\|claude-and-codex" && hq_detail=$((hq_detail + 1))
+  score $hq_detail 3 "Agent HQ 3P with meaningful detail ($hq_detail/3 signals)"
+  D2=$((D2 + hq_detail))
 
-# OpenCode support mentioned (2 pts)
-if echo "$BODY_LC" | grep -q "opencode"; then
-  score 2 2 "OpenCode support mentioned"
-  D2=$((D2 + 2))
+  if echo "$BODY_LC" | grep -q "opencode"; then
+    score 2 2 "OpenCode support mentioned"
+    D2=$((D2 + 2))
+  else
+    score 0 2 "OpenCode support mentioned"
+  fi
+
+  vsc_features=0
+  echo "$BODY_LC" | grep -q "agent skills\|skills.*ga\|skills.*generally" && vsc_features=$((vsc_features + 1))
+  echo "$BODY_LC" | grep -q "claude agent" && vsc_features=$((vsc_features + 1))
+  echo "$BODY_LC" | grep -q "copilot memory\|memory.*preview" && vsc_features=$((vsc_features + 1))
+  echo "$BODY_LC" | grep -q "subagent\|sub-agent\|parallel.*agent" && vsc_features=$((vsc_features + 1))
+  echo "$BODY_LC" | grep -q "terminal sandbox\|sandbox.*terminal" && vsc_features=$((vsc_features + 1))
+  echo "$BODY_LC" | grep -q "organization.wide.*instruction\|org.wide.*instruction\|org.*level.*instruction" && vsc_features=$((vsc_features + 1))
+  echo "$BODY_LC" | grep -q "mcp app" && vsc_features=$((vsc_features + 1))
+  if [ "$vsc_features" -ge 5 ]; then
+    score 3 3 "VS Code v1.109 with >=5 features ($vsc_features found)"
+  elif [ "$vsc_features" -ge 3 ]; then
+    score 2 3 "VS Code v1.109 with 3-4 features ($vsc_features found)"
+  else
+    score 0 3 "VS Code v1.109 with <3 features ($vsc_features found)"
+  fi
+  D2=$((D2 + (vsc_features >= 5 ? 3 : (vsc_features >= 3 ? 2 : 0))))
+
+  cli_depth=0
+  echo "$BODY_LC" | grep -q "plan.*mode\|plan.*first\|plan.*before\|plan.*build" && cli_depth=$((cli_depth + 1))
+  echo "$BODY_LC" | grep -q "acp\|agent context protocol" && cli_depth=$((cli_depth + 1))
+  if [ "$cli_depth" -ge 2 ]; then score 2 2 "CLI expanded with deeper features"; D2=$((D2 + 2))
+  elif [ "$cli_depth" -ge 1 ]; then score 1 2 "CLI partially expanded ($cli_depth/2 features)"; D2=$((D2 + 1))
+  else score 0 2 "CLI not expanded"; fi
+
+  gov_bundle=0
+  echo "$BODY_LC" | grep -q "supply chain\|slsa\|traceability\|artifact" && gov_bundle=$((gov_bundle + 1))
+  echo "$BODY_LC" | grep -q "custom propert\|org.*propert" && gov_bundle=$((gov_bundle + 1))
+  echo "$BODY_LC" | grep -q "dependabot.*oidc\|oidc.*dependabot\|oidc.*auth" && gov_bundle=$((gov_bundle + 1))
+  if [ "$gov_bundle" -ge 3 ]; then score 2 2 "Governance bundle (3/3 items present)"; D2=$((D2 + 2))
+  elif [ "$gov_bundle" -ge 2 ]; then score 1 2 "Governance bundle partial ($gov_bundle/3)"; D2=$((D2 + 1))
+  else score 0 2 "Governance bundle missing ($gov_bundle/3)"; fi
+
+  if echo "$BODY_LC" | grep -q "deprecat\|migration.*notice\|closing down"; then
+    score 1 1 "Deprecation/migration notices present"
+    D2=$((D2 + 1))
+  else
+    score 0 1 "Deprecation notices missing"
+  fi
+
+  if echo "$BODY" | grep -E '^-[[:space:]]+\*\*CodeQL' | grep -qv "bundle\|governance\|consolidat"; then
+    score 0 1 "CodeQL still standalone (should be removed)"
+  else
+    score 1 1 "CodeQL removed or not standalone"
+    D2=$((D2 + 1))
+  fi
+
+  if echo "$BODY" | grep -E '^-[[:space:]]+\*\*Dependabot OIDC' | grep -qv "bundle\|governance\|consolidat"; then
+    score 0 1 "Dependabot OIDC still standalone (should be bundled)"
+  else
+    score 1 1 "Dependabot OIDC bundled or removed"
+    D2=$((D2 + 1))
+  fi
 else
-  score 0 2 "OpenCode support mentioned"
-fi
+  main_bullets=$( (grep -Ec '^-[[:space:]]+\*\*' "$FILE" || true) | tr -d ' ')
+  if [ "$main_bullets" -ge 14 ]; then
+    score 3 3 "Newsletter has strong main-bullet density ($main_bullets)"
+    D2=$((D2 + 3))
+  elif [ "$main_bullets" -ge 10 ]; then
+    score 2 3 "Newsletter has moderate main-bullet density ($main_bullets)"
+    D2=$((D2 + 2))
+  else
+    score 0 3 "Newsletter is too thin on main bullets ($main_bullets)"
+  fi
 
-# VS Code v1.109 with >=5 features (3 pts)
-vsc_features=0
-echo "$BODY_LC" | grep -q "agent skills\|skills.*ga\|skills.*generally" && vsc_features=$((vsc_features + 1))
-echo "$BODY_LC" | grep -q "claude agent" && vsc_features=$((vsc_features + 1))
-echo "$BODY_LC" | grep -q "copilot memory\|memory.*preview" && vsc_features=$((vsc_features + 1))
-echo "$BODY_LC" | grep -q "subagent\|sub-agent\|parallel.*agent" && vsc_features=$((vsc_features + 1))
-echo "$BODY_LC" | grep -q "terminal sandbox\|sandbox.*terminal" && vsc_features=$((vsc_features + 1))
-echo "$BODY_LC" | grep -q "organization.wide.*instruction\|org.wide.*instruction\|org.*level.*instruction" && vsc_features=$((vsc_features + 1))
-echo "$BODY_LC" | grep -q "mcp app" && vsc_features=$((vsc_features + 1))
-if [ "$vsc_features" -ge 5 ]; then
-  score 3 3 "VS Code v1.109 with >=5 features ($vsc_features found)"
-elif [ "$vsc_features" -ge 3 ]; then
-  score 2 3 "VS Code v1.109 with 3-4 features ($vsc_features found)"
-else
-  score 0 3 "VS Code v1.109 with <3 features ($vsc_features found)"
-fi
-D2=$((D2 + (vsc_features >= 5 ? 3 : (vsc_features >= 3 ? 2 : 0))))
+  copilot_section="$(sed -n '/^# Copilot$/,/^# /p' "$FILE" | sed '$d')"
+  copilot_bullets=$(printf '%s\n' "$copilot_section" | grep -Ec '^-[[:space:]]+' || true)
+  if [ "$copilot_bullets" -ge 5 ]; then
+    score 3 3 "Copilot section has sufficient release depth ($copilot_bullets bullets)"
+    D2=$((D2 + 3))
+  elif [ "$copilot_bullets" -ge 3 ]; then
+    score 2 3 "Copilot section has partial release depth ($copilot_bullets bullets)"
+    D2=$((D2 + 2))
+  else
+    score 0 3 "Copilot section lacks release depth ($copilot_bullets bullets)"
+  fi
 
-# CLI expanded with deeper features (2 pts)
-cli_depth=0
-echo "$BODY_LC" | grep -q "plan.*mode\|plan.*first\|plan.*before\|plan.*build" && cli_depth=$((cli_depth + 1))
-echo "$BODY_LC" | grep -q "acp\|agent context protocol" && cli_depth=$((cli_depth + 1))
-if [ "$cli_depth" -ge 2 ]; then score 2 2 "CLI expanded with deeper features"; D2=$((D2 + 2))
-elif [ "$cli_depth" -ge 1 ]; then score 1 2 "CLI partially expanded ($cli_depth/2 features)"; D2=$((D2 + 1))
-else score 0 2 "CLI not expanded"; fi
+  governance_signals=0
+  echo "$BODY_LC" | grep -q "runner control\|firewall\|signed commit\|agent control plane\|enterprise ai control" && governance_signals=$((governance_signals + 1))
+  echo "$BODY_LC" | grep -q "byok\|bring your own key\|content exclusion\|custom instruction" && governance_signals=$((governance_signals + 1))
+  echo "$BODY_LC" | grep -q "metrics\|data residency\|risk assessment\|privacy statement\|terms of service" && governance_signals=$((governance_signals + 1))
+  score $governance_signals 3 "Governance/control coverage ($governance_signals/3 signal groups)"
+  D2=$((D2 + governance_signals))
 
-# Governance bundle (2 pts)
-gov_bundle=0
-echo "$BODY_LC" | grep -q "supply chain\|slsa\|traceability\|artifact" && gov_bundle=$((gov_bundle + 1))
-echo "$BODY_LC" | grep -q "custom propert\|org.*propert" && gov_bundle=$((gov_bundle + 1))
-echo "$BODY_LC" | grep -q "dependabot.*oidc\|oidc.*dependabot\|oidc.*auth" && gov_bundle=$((gov_bundle + 1))
-if [ "$gov_bundle" -ge 3 ]; then score 2 2 "Governance bundle (3/3 items present)"; D2=$((D2 + 2))
-elif [ "$gov_bundle" -ge 2 ]; then score 1 2 "Governance bundle partial ($gov_bundle/3)"; D2=$((D2 + 1))
-else score 0 2 "Governance bundle missing ($gov_bundle/3)"; fi
+  parity_signals=0
+  echo "$BODY_LC" | grep -q "vs code" && parity_signals=$((parity_signals + 1))
+  echo "$BODY_LC" | grep -q "visual studio" && parity_signals=$((parity_signals + 1))
+  echo "$BODY_LC" | grep -q "jetbrains\|xcode\|eclipse" && parity_signals=$((parity_signals + 1))
+  if [ "$parity_signals" -ge 3 ]; then
+    score 2 2 "Cross-IDE parity is materially covered"
+    D2=$((D2 + 2))
+  elif [ "$parity_signals" -ge 2 ]; then
+    score 1 2 "Cross-IDE parity is partially covered"
+    D2=$((D2 + 1))
+  else
+    score 0 2 "Cross-IDE parity is thin"
+  fi
 
-# Deprecation bundle (1 pt)
-if echo "$BODY_LC" | grep -q "deprecat\|migration.*notice\|closing down"; then
-  score 1 1 "Deprecation/migration notices present"
-  D2=$((D2 + 1))
-else
-  score 0 1 "Deprecation notices missing"
-fi
+  if echo "$BODY_LC" | grep -q "code security\|security\|privacy\|data residency\|risk assessment"; then
+    score 2 2 "Security/policy updates are covered"
+    D2=$((D2 + 2))
+  else
+    score 0 2 "Security/policy updates are covered"
+  fi
 
-# CodeQL removed (1 pt) - should NOT be a standalone item
-codeql_standalone=0
-# Look for CodeQL as a bold standalone bullet
-if echo "$BODY" | grep -E '^\-\s+\*\*CodeQL' | grep -qv "bundle\|governance\|consolidat"; then
-  score 0 1 "CodeQL still standalone (should be removed)"
-else
-  score 1 1 "CodeQL removed or not standalone"
-  D2=$((D2 + 1))
-fi
-
-# Standalone Dependabot OIDC removed (1 pt) - should be bundled, not standalone
-if echo "$BODY" | grep -E '^\-\s+\*\*Dependabot OIDC' | grep -qv "bundle\|governance\|consolidat"; then
-  score 0 1 "Dependabot OIDC still standalone (should be bundled)"
-else
-  score 1 1 "Dependabot OIDC bundled or removed"
-  D2=$((D2 + 1))
+  if echo "$BODY" | grep -q "^# Webinars, Events, and Recordings" && echo "$BODY" | grep -q "^# Resources and Best Practices"; then
+    score 2 2 "Resources and events sections are both present"
+    D2=$((D2 + 2))
+  elif echo "$BODY" | grep -q "^# Webinars, Events, and Recordings\|^# Resources and Best Practices"; then
+    score 1 2 "Only one of resources/events sections is present"
+    D2=$((D2 + 1))
+  else
+    score 0 2 "Resources and events sections are missing"
+  fi
 fi
 
 echo ""
@@ -186,16 +334,28 @@ else
   score 0 5 "validate_newsletter.sh FAILS"
 fi
 
-# Line count 120-150 (3 pts)
+# Line count target varies by mode: the February benchmark is tighter than a normal production issue.
 lines=$(wc -l < "$FILE" | tr -d ' ')
-if [ "$lines" -ge 120 ] && [ "$lines" -le 150 ]; then
-  score 3 3 "Line count in target range ($lines lines)"
-  D3=$((D3 + 3))
-elif [ "$lines" -ge 100 ] && [ "$lines" -le 170 ]; then
-  score 1 3 "Line count near target ($lines lines, target 120-150)"
-  D3=$((D3 + 1))
+if [ "$ACTIVE_MODE" = "feb2026_consistency" ]; then
+  if [ "$lines" -ge 120 ] && [ "$lines" -le 150 ]; then
+    score 3 3 "Line count in benchmark target range ($lines lines)"
+    D3=$((D3 + 3))
+  elif [ "$lines" -ge 100 ] && [ "$lines" -le 170 ]; then
+    score 1 3 "Line count near benchmark target ($lines lines, target 120-150)"
+    D3=$((D3 + 1))
+  else
+    score 0 3 "Line count out of benchmark range ($lines lines, target 120-150)"
+  fi
 else
-  score 0 3 "Line count out of range ($lines lines, target 120-150)"
+  if [ "$lines" -ge 90 ] && [ "$lines" -le 180 ]; then
+    score 3 3 "Line count is appropriate for production ($lines lines)"
+    D3=$((D3 + 3))
+  elif [ "$lines" -ge 75 ] && [ "$lines" -le 210 ]; then
+    score 1 3 "Line count is acceptable for production ($lines lines)"
+    D3=$((D3 + 1))
+  else
+    score 0 3 "Line count is out of production range ($lines lines)"
+  fi
 fi
 
 # GA/PREVIEW labels (2 pts) — check both plain and backtick format
@@ -219,7 +379,7 @@ D4=0
 
 # Model availability compressed to 1 bullet (2 pts)
 # Only match bullets whose bold title contains model availability terms
-model_bullets=$( (grep -Ec '^\-\s+\*\*[^*]*(Model availability|model.*update|GPT-[0-9]|Gemini [0-9])' "$FILE" || true) )
+model_bullets=$( (grep -Ec '^-[[:space:]]+\*\*[^*]*(Model availability|model.*update|GPT-[0-9]|Gemini [0-9])' "$FILE" || true) )
 if [ "$model_bullets" -le 1 ]; then
   score 2 2 "Models compressed to <=1 bullet ($model_bullets)"
   D4=$((D4 + 2))
@@ -259,7 +419,7 @@ echo "Dimension 5: Link Quality (5 pts)"
 D5=0
 
 # All items have source URLs (2 pts) — check main bullets and their sub-bullets
-bullet_count=$( (grep -Ec '^\-\s+\*\*' "$FILE" || true) )
+bullet_count=$( (grep -Ec '^-[[:space:]]+\*\*' "$FILE" || true) )
 # Count bullets that have links either inline or in their sub-bullets (next 10 lines)
 bullets_with_links=0
 while IFS= read -r line_num; do
@@ -268,7 +428,7 @@ while IFS= read -r line_num; do
   if echo "$chunk" | grep -q 'https://'; then
     bullets_with_links=$((bullets_with_links + 1))
   fi
-done < <(grep -En '^-\s+\*\*' "$FILE" | cut -d: -f1)
+done < <(grep -En '^-[[:space:]]+\*\*' "$FILE" | cut -d: -f1)
 if [ "$bullet_count" -gt 0 ]; then
   link_ratio=$((bullets_with_links * 100 / bullet_count))
 else
@@ -286,7 +446,7 @@ fi
 
 # No hallucinated links — check for known valid domains (2 pts)
 total_links=$( (grep -Eoc '\]\(https?://' "$FILE" || true) )
-valid_domains=$( (grep -Eoc '\]\(https?://(github\.blog|github\.com|docs\.github|code\.visualstudio\.com|learn\.microsoft|plugins\.jetbrains|marketplace\.eclipse|resources\.github|www\.youtube|aitour\.microsoft|github\.registration)' "$FILE" || true) )
+valid_domains=$( (grep -Eoc '\]\(https?://(github\.blog|github\.com|docs\.github|code\.visualstudio\.com|learn\.microsoft|developer\.microsoft\.com|devblogs\.microsoft\.com|plugins\.jetbrains|marketplace\.eclipse|resources\.github|www\.youtube|aitour\.microsoft|github\.registration|luma\.com|learn\.github\.com)' "$FILE" || true) )
 if [ "$total_links" -gt 0 ]; then
   valid_ratio=$((valid_domains * 100 / total_links))
 else

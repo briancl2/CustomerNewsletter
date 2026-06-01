@@ -44,6 +44,8 @@ Expand an item (sub-bullets, 3+ lines) when:
 4. **Cross-IDE with different features per IDE**: Nested parity bullet + rollout note
 5. **Cross-product integration** with measurable impact: Include metrics
 6. **Legal protection changes** (indemnity, DPA, terms): Always expand with sub-bullets explaining each protection
+7. **High-velocity release stream** (>=10 stable releases or >=5 capability families): Require release inventory and capability-to-link map before synthesis (`workspace/copilot_cli_release_inventory_START_to_END.md`, `workspace/copilot_app_release_inventory_START_to_END.md` when applicable, and `workspace/newsletter_phase3_capability_map_START_to_END.json`); use dense feature prose with inline capability links, not a short category summary
+8. **New app/workflow surface** (`TECHNICAL PREVIEW` or first named app/platform launch): Expanded feature treatment with workflow examples and public-safe inline links; never one-line compression when release evidence exists
 
 ## Compression Triggers
 
@@ -53,6 +55,8 @@ Compress an item (single bullet, consolidated) when:
 2. **Same-type group** (2+ related announcements from the same feature area): Single bullet with combined links
 3. **Simple admin feature** with no complexity: Single sentence, one link
 4. **Training/evergreen resource**: Include under Copilot at Scale ONLY when new resources were published that month. Do not include stale/evergreen training content. (Q4=B)
+
+Compression is not allowed for legal/CCC items outside Enterprise and Security, high-velocity CLI/App release streams without inventory-backed feature prose, or VS Code weekly coverage represented as a version list.
 
 ### Cross-Category Governance Bundling (G5)
 
@@ -87,7 +91,7 @@ Otherwise: no lead section; start with Copilot Latest Releases.
 - Security, compliance, and audit features
 - Administration, governance, and policy features
 - IDE feature parity updates
-- Evergreen training resources only when new items are published that month, up to 2-3 in Copilot at Scale (Q4=B)
+- Evergreen training resources (2-3 per month in Copilot at Scale)
 - Cross-product integrations (especially Azure, Microsoft 365, security toolchain)
 - Legal/indemnity changes (always expanded)
 

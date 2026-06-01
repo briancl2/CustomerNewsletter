@@ -25,7 +25,7 @@ cd "$(git rev-parse --show-toplevel)"
 # ── Config ──
 PHASE="${1:-all}"
 COPILOT="copilot"
-MODEL="${MODEL:-}"
+MODEL="gpt-5.5"
 MAX_REWORK_TOTAL=5
 MAX_REWORK_PER_SKILL=3
 CLI_TIMEOUT=600  # seconds per CLI session
@@ -40,11 +40,6 @@ info() { echo "  ▸ $1"; }
 pass() { echo "  ✅ $1"; }
 fail() { echo "  ❌ $1"; }
 warn() { echo "  ⚠️  $1"; }
-
-COPILOT_MODEL_ARGS=()
-if [ -n "$MODEL" ]; then
-  COPILOT_MODEL_ARGS=(--model "$MODEL")
-fi
 
 init_run() {
   mkdir -p "$RUN_DIR"/{scores,logs,diagnostics,artifacts}
@@ -128,24 +123,18 @@ phase_preflight() {
     exit 1
   fi
 
-  # Disk checks: verify required skills and examples populated
-  local skill_count example_count missing_required=0
-  skill_count=$(find .github/skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+  # Disk checks: verify examples populated
+  local skill_count example_count
+  skill_count=$(find .github/skills -name SKILL.md | wc -l | tr -d ' ')
   example_count=$(find .github/skills/*/examples -type f 2>/dev/null | wc -l | tr -d ' ')
-  info "Skills discovered: $skill_count | Required build skills: ${#SKILLS[@]} | Example files: $example_count"
+  info "Skills: $skill_count | Example files: $example_count"
 
-  for skill in "${SKILLS[@]}"; do
-    if [ ! -f ".github/skills/$skill/SKILL.md" ]; then
-      fail "Required skill missing: .github/skills/$skill/SKILL.md"
-      missing_required=$((missing_required + 1))
-    fi
-  done
-  if [ "$missing_required" -gt 0 ]; then
-    fail "Missing required build skills: $missing_required"
+  if [ "$skill_count" -ne 10 ]; then
+    fail "Expected 10 skills, found $skill_count"
     exit 1
   fi
-  if [ "$example_count" -lt "${#SKILLS[@]}" ]; then
-    fail "Expected >=${#SKILLS[@]} example files, found $example_count"
+  if [ "$example_count" -lt 10 ]; then
+    fail "Expected >=10 example files, found $example_count"
     exit 1
   fi
 
@@ -169,11 +158,11 @@ phase_fleet() {
 
   local fleet_log="$RUN_DIR/logs/fleet-build.log"
 
-  info "Dispatching fleet orchestrator..."
+  info "Dispatching fleet with Opus orchestrator..."
   info "Output: $fleet_log"
   info "Timeout: none (fleet manages its own lifecycle)"
 
-  "$COPILOT" "${COPILOT_MODEL_ARGS[@]}" \
+  $COPILOT --model "$MODEL" \
     -p "/fleet $(cat tools/fleet_build_skills.md)" \
     --allow-all --no-ask-user \
     2>&1 | tee "$fleet_log"
@@ -356,7 +345,7 @@ Max 50 lines."
     esac
 
     # Dispatch inner session
-    timeout "${CLI_TIMEOUT}" "$COPILOT" "${COPILOT_MODEL_ARGS[@]}" \
+    timeout "${CLI_TIMEOUT}" $COPILOT --model "$MODEL" \
       -p "$TEST_PROMPT" \
       --allow-all --no-ask-user \
       2>&1 | tee "$test_log" || true
@@ -485,7 +474,7 @@ Stop rules:
 - Total new content: max 200 lines
 - Do not rewrite from scratch -- patch the existing content"
 
-    timeout "${CLI_TIMEOUT}" "$COPILOT" "${COPILOT_MODEL_ARGS[@]}" \
+    timeout "${CLI_TIMEOUT}" $COPILOT --model "$MODEL" \
       -p "$FIX_PROMPT" \
       --allow-all --no-ask-user \
       2>&1 | tee "$fix_log" || true
@@ -533,7 +522,7 @@ Stop rules: Agent body must be <=150 lines. Total file <=200 lines.
 Deliverable: Modified .github/agents/customer_newsletter.agent.md
 Verification: After editing, run wc -l on the file and report the count."
 
-  timeout "${CLI_TIMEOUT}" "$COPILOT" "${COPILOT_MODEL_ARGS[@]}" \
+  timeout "${CLI_TIMEOUT}" $COPILOT --model "$MODEL" \
     -p "$REFACTOR_PROMPT" \
     --allow-all --no-ask-user \
     2>&1 | tee "$refactor_log" || true

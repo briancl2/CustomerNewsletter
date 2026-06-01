@@ -1,6 +1,6 @@
 # Newsletter Prompt Catalog
 
-These prompts drive the multi-phase newsletter generation workflow. Each phase is executed sequentially (except Phase 2, which can run in parallel with Phase 1).
+These prompts drive the multi-phase newsletter generation workflow. Phase 2 starts after the Phase 1C discoveries receipt exists.
 
 ## Prompt Phases
 
@@ -18,7 +18,7 @@ These prompts drive the multi-phase newsletter generation workflow. Each phase i
 ```mermaid
 flowchart LR
     P1A[Phase 1A] --> P1B[Phase 1B] --> P1C[Phase 1C] --> P3[Phase 3] --> P4[Phase 4]
-    P2[Phase 2] --> P4
+    P1C --> P2[Phase 2] --> P4
 ```
 
-Phases 1A→1B→1C→3 run sequentially. Phase 2 (events) runs independently and merges at Phase 4.
+Phases 1A->1B->1C run sequentially. Phase 2 (events) starts after the Phase 1C discoveries receipt exists, then Phase 3 and Phase 4 complete the final newsletter.

@@ -1,6 +1,6 @@
 ---
 name: content-curation
-description: "Transforms raw discoveries into polished, newsletter-ready content sections. Use when running Phase 3 of the newsletter pipeline. Selects and structures high-value items from 30-50 discoveries, applies GA/PREVIEW labels, and prepares complete section material for assembly. Keywords: content curation, phase 3, selection, formatting, enterprise relevance."
+description: "Transforms the compiled Phase 3 working set into polished, newsletter-ready content sections, with Phase 1C discoveries used only as a missing-data fallback. Use when running Phase 3 of the newsletter pipeline. Selects and structures high-value items, applies GA/PREVIEW labels, and prepares complete section material for assembly. Keywords: content curation, phase 3, selection, formatting, enterprise relevance."
 metadata:
   category: domain
   phase: "3"
@@ -8,19 +8,24 @@ metadata:
 
 # Content Curation
 
-Transform Phase 1C discoveries into polished, newsletter-ready content sections.
+Transform the Phase 3 working set into polished, newsletter-ready content sections, using Phase 1C discoveries only when the working set flags missing data.
 
 ## Quick Start
 
-1. Read Phase 1C discoveries from `workspace/newsletter_phase1a_discoveries_*.md`
-2. Select items using selection criteria with range-aware depth targets
-3. Organize into full newsletter sections: Lead (optional), Copilot (Latest + IDE Parity), Enterprise and Security, Platform, Resources and Best Practices
-4. Apply formatting: bold terms, GA/PREVIEW labels, embedded links, strip metadata
-5. Write output to `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md`
+1. In orchestrated runs, first generate `workspace/newsletter_phase3_working_set_YYYY-MM-DD.md` with `python3 tools/build_phase3_working_set.py START END`
+2. If `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md` does not exist yet, create the canonical scaffold with `python3 tools/init_phase3_curated_sections.py START END`
+3. Always edit the canonical scaffold in place. Do not create the curated sections artifact ad hoc through a generic create-file flow
+4. If the working set exists, use it as the primary Phase 3 input and do not reread raw discoveries, interim IDE files, or long reference docs unless it explicitly flags missing data
+5. Read Phase 1C discoveries from `workspace/newsletter_phase1a_discoveries_*.md` when no working set exists or the working set flags missing data
+6. Select items using selection criteria with range-aware depth targets
+7. Organize into full newsletter sections: Lead (optional), Copilot (Latest + IDE Parity), Enterprise and Security, Platform, Resources and Best Practices
+8. Apply formatting: bold terms, GA/PREVIEW labels, embedded links, strip metadata
+9. Validate the edited artifact with `python3 tools/validate_phase3_curated.py START END workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md`
 
 ## Inputs
 
-- **Phase 1C Discoveries**: `workspace/newsletter_phase1a_discoveries_*.md` (required)
+- **Phase 3 Working Set**: `workspace/newsletter_phase3_working_set_*.md` (primary input in orchestrated mode)
+- **Phase 1C Discoveries**: `workspace/newsletter_phase1a_discoveries_*.md` (fallback only when the working set is absent or flags missing data)
 
 ## Output
 
@@ -33,9 +38,19 @@ Transform Phase 1C discoveries into polished, newsletter-ready content sections.
 
 ## Core Workflow
 
-### Step 1: Analyze Discoveries
+### Step 0: Initialize the Canonical Artifact
 
-Read Phase 1C input. Inventory candidates by:
+If `workspace/newsletter_phase3_curated_sections_YYYY-MM-DD.md` is absent, run:
+
+```bash
+python3 tools/init_phase3_curated_sections.py START END
+```
+
+Then edit that scaffold in place for the remainder of Phase 3. Do not switch to a different filename or try to recreate the artifact via a generic create-file action.
+
+### Step 1: Analyze Working Set First
+
+Read the compiled Phase 3 working set first. Only fall back to Phase 1C discoveries if the working set is absent or its Missing Data Gate explicitly says data is missing. Inventory candidates by:
 - Enterprise relevance and impact
 - Recency within DATE_RANGE
 - Thematic clusters that could drive a lead section
@@ -63,11 +78,17 @@ Priority weights:
 
 ### Step 3: Organize Into Sections
 
-**Lead Section** (optional): Only when discoveries show a clear theme (major launch, vision update). Derive title from content cluster, not generic label.
+**Lead Section** (optional): Only when the working set bundles show a clear theme (major launch, vision update). If you must fall back to discoveries, derive the title from that same dominant cluster rather than a generic label.
 
 **Copilot (H1) + Latest Releases (H2)**: Use `# Copilot` then `## Latest Releases`. New features, model updates, and agent capabilities go here. VS Code features are grouped by feature theme (not by version number). Never reference specific VS Code version numbers in bullet text; version numbers appear only in links.
 
 **Enterprise and Security Updates**: Governance, billing, compliance, security controls, deprecations.
+
+**Legal venue routing (May 2026 guard)**: Standalone legal-readiness items such as Customer Copyright Commitment, CCC, Duplicate Detection, IP indemnity, legal terms changes, and required legal mitigations route to Enterprise and Security unless the lead theme itself is explicitly legal/compliance. Supporting DPA or Pre-Release Terms links may remain inside product/preview bullets when they document the status boundary; those supporting links do not drive the section venue. Do not place standalone legal-readiness content in UBB, cost, model-policy, or general rollout-readiness leads.
+
+**High-velocity release streams (May 2026 guard)**: If a surface has >=10 stable releases, >=5 major capability families, or an operator requests exhaustive release review, do not synthesize from a category summary alone. Require a release inventory and capability-to-link map before final prose. Canonical artifacts are `workspace/copilot_cli_release_inventory_START_to_END.md`, `workspace/copilot_app_release_inventory_START_to_END.md` when applicable, and `workspace/newsletter_phase3_capability_map_START_to_END.json`. Dense prose is acceptable only when it names concrete commands/features and links representative capabilities inline; source-tail links alone do not satisfy the gate.
+
+**Technical-preview app/product launches (May 2026 guard)**: Treat a new app/workflow surface as a product-category launch, not a routine feature. If release evidence exists, final prose must explain what users can do and link at least five major customer-visible capability clusters inline with public-safe targets. Authenticated release evidence can inform synthesis, but private release URLs and process notes stay out of customer-facing prose.
 
 **GitHub Platform Updates**: Actions, Projects, PR workflows, repository/platform improvements.
 > **Benchmark override:** When `BENCHMARK_MODE=feb2026_consistency`, fold these into Enterprise and Security instead of a standalone H1.
@@ -144,6 +165,10 @@ Before writing output:
 - [ ] Range-aware depth floor met (24+/18+/12+ bullets)
 - [ ] `Resources and Best Practices` material present when enablement sources exist
 - [ ] At least one curator-note signal (if notes exist) is reflected in curated sections
+- [ ] Legal/CCC content appears under Enterprise and Security unless the lead is explicitly legal
+- [ ] High-volume CLI/App bullets have release inventory evidence, a capability map, and enough inline capability links
+- [ ] VS Code prose is organized by feature themes, not inline version sequences
+- [ ] Authenticated/private release-process notes are absent from customer-facing prose
 
 ## Reference
 
@@ -155,7 +180,7 @@ Before writing output:
 
 ## Key Signals to Watch For
 
-Before curating, check for these high-weight signals in the discoveries:
+Before curating, check for these high-weight signals in the working set bundles, then use Phase 1C only if the working set explicitly says data is missing:
 1. **Competitive positioning**: CLI features (vs Claude Code), 3P agent support, OpenCode, BYOK (platform openness)
 2. **Governance clustering**: >=5 admin/policy/compliance items forming a narrative
 3. **Blog posts from news-insights/**: Major strategic announcements (CPO/CEO posts) that may not be in the changelog
@@ -164,6 +189,7 @@ Before curating, check for these high-weight signals in the discoveries:
 ## Done When
 
 - [ ] Curated sections file exists at `workspace/newsletter_phase3_curated_sections_*.md`
+- [ ] Canonical scaffold was initialized first when the curated file was absent
 - [ ] Range-aware depth floor is met (24+/18+/12+ bullets by window size)
 - [ ] Proper section structure is present (Lead if warranted, Copilot, Enterprise and Security, Platform, Resources and Best Practices)
 - [ ] GA/PREVIEW labels present where known
@@ -172,3 +198,4 @@ Before curating, check for these high-weight signals in the discoveries:
 - [ ] Copilot CLI consolidated bullet is under Copilot Everywhere and includes DPA + Pre-Release Terms links
 - [ ] No raw metadata, no em dashes, no raw URLs
 - [ ] Enterprise focus throughout
+- [ ] `python3 tools/validate_phase3_curated.py START END <artifact>` passes

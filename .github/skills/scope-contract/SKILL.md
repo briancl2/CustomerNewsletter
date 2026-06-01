@@ -13,10 +13,10 @@ Generate a testable scope manifest before the pipeline runs, then validate the n
 ## Quick Start
 
 ### Pre-Pipeline (Phase 0)
-1. Read DATE_RANGE and `kb/SOURCES.yaml`
-2. Check `archive/` for previous newsletter end date (verify no gaps)
-3. Generate scope manifest: expected versions, sources, categories
-4. Write to `workspace/newsletter_scope_contract_YYYY-MM-DD.json`
+1. Run `python3 tools/generate_scope_contract.py <START_DATE> <END_DATE>` (the helper reads the date range from these arguments)
+2. If it succeeds, use the generated manifest as the Phase 0 artifact
+3. Only fall back to manual source inspection if the helper cannot resolve the range
+4. Verify the output at `workspace/newsletter_scope_contract_YYYY-MM-DD.json`
 
 ### Post-Pipeline (after Phase 4.5)
 1. Read scope manifest
@@ -70,9 +70,9 @@ Generate a testable scope manifest before the pipeline runs, then validate the n
 ### Step 1: Determine Date Range Boundaries
 
 1. Read the requested DATE_RANGE (start, end)
-2. Find the previous newsletter in `archive/` by examining filenames
-3. Determine the previous newsletter's coverage end date (from its content or filename)
-4. Calculate gap: if `start - previous_end > 1 day`, flag the gap and recommend extending start date
+2. First try `python3 tools/generate_scope_contract.py <START_DATE> <END_DATE>`
+3. If the helper reuses an exact archived contract, keep that historical boundary metadata
+4. If the helper cannot resolve the range, inspect `archive/` manually for the previous newsletter end date and any gap
 5. Record in manifest
 
 ### Step 2: Determine Expected Versions
@@ -105,6 +105,14 @@ All standard newsletter categories. Mark any that had zero items in the previous
 ### Step 5: Write Manifest
 
 Write the JSON manifest to `workspace/newsletter_scope_contract_YYYY-MM-DD.json`.
+
+## Deterministic Fast Path
+
+Use `python3 tools/generate_scope_contract.py <START_DATE> <END_DATE>` as the default Phase 0 path.
+
+- For historical reruns, the helper prefers an exact archived scope contract when one exists for the same `DATE_RANGE`.
+- Otherwise it derives a bounded manifest from `kb/SOURCES.yaml`, including `vscode_updates.previous_versions_in_cycle`.
+- If the helper succeeds, do not spend extra time manually deep-reading `archive/` or `kb/SOURCES.yaml` unless a required field is still missing.
 
 ## Post-Pipeline Validation
 

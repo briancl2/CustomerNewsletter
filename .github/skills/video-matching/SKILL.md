@@ -28,7 +28,8 @@ Enrich newsletter entries with links to matching official YouTube videos from th
 ## Output
 
 - **Enriched Newsletter**: `output/YYYY-MM_month_newsletter.md` (overwrite in place)
-- Video matching report (inline with work)
+- **Video Matching Report**: `workspace/newsletter_phase4_6_video_matches_YYYY-MM-DD.md`
+- Record receipt with phase id `phase4_6_video`
 
 ## Core Workflow
 
@@ -113,3 +114,4 @@ For inline-linked entries (7+ links), add the video link at the end of the "See 
 - [ ] `[Video (Xm)]` links added to matched entries
 - [ ] All links validated
 - [ ] Enriched newsletter written to disk
+- [ ] Video matching report written to disk and receipt recorded

@@ -207,7 +207,7 @@ if [ -f "$OUTPUT" ]; then
   if [ -f "$rubric" ]; then
     echo ""
     echo "  Running editorial rubric..."
-    bash "$rubric" "$OUTPUT" 2>&1 | grep -E "TOTAL|PASS|FAIL" | head -3
+    bash "$rubric" --mode auto "$OUTPUT" 2>&1 | grep -E "TOTAL|PASS|FAIL" | head -3
   fi
 else
   echo "  [SKIP] No output file to validate yet."

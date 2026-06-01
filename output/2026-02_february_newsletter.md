@@ -4,25 +4,6 @@ This is a personally curated newsletter for my customers, focused on the most re
 
 ---
 
-# Co-Launch: Open-Sourcing the Newsletter Generation System
-
-This month's issue is being released alongside the system that drafted it.
-
-The February newsletter was generated from a single prompt and a few minor editorial edits:
-
-```text
-i want you to generate a from-scratch brand new february newsletter using the dates Dec 5 2025 to Feb 13 2026
-```
-
-If you want to reuse the workflow:
-
-- [Start here](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/start-here/)
-- [Short case study](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/case-study/)
-- [Timeline](https://briancl2.github.io/CustomerNewsletter/launch/2026-02/timeline/)
-- [Full technical report](https://briancl2.github.io/CustomerNewsletter/reports/newsletter_system_report_2026-02/)
-
----
-
 # Copilot Everywhere: More Agents, More Models, More Surfaces, One Platform
 
 **The theme this period is choice.** Use more agents, with more models, from more surfaces, all powered by one Copilot subscription. That means one set of terms protecting your data, one payment, one platform to manage users, set budgets, and govern policies.
@@ -79,7 +60,7 @@ If you want to reuse the workflow:
 
 > Note: **Copilot** features typically follow a predictable pattern in their release cycle, starting in **VS Code** (usually in **`PREVIEW`**), then rolling out to **Visual Studio** and **JetBrains** IDEs, followed by **Eclipse** and **Xcode**.
 
-Stay current with the latest changes: [Copilot Feature Matrix](https://docs.github.com/en/copilot/reference/copilot-feature-matrix?tool=ides) | [GitHub Changelog (Copilot)](https://github.blog/changelog/label/copilot/) | [VS Code Release Notes](https://code.visualstudio.com/updates/) | [Visual Studio Release Notes](https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-notes) | [JetBrains Plugin](https://plugins.jetbrains.com/plugin/17718-github-copilot/versions/stable) | [Xcode Releases](https://github.com/github/CopilotForXcode/releases) | [Copilot CLI Releases](https://github.com/github/copilot-cli/releases) | [GitHub Previews](https://github.com/features/preview) | [Preview Terms Changelog](https://github.com/customer-terms/updates)
+Stay current with the latest changes: [Copilot Feature Matrix](https://docs.github.com/en/copilot/reference/copilot-feature-matrix) | [GitHub Changelog (Copilot)](https://github.blog/changelog/label/copilot/) | [VS Code Release Notes](https://code.visualstudio.com/updates/) | [Visual Studio Release Notes](https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-notes) | [JetBrains Plugin](https://plugins.jetbrains.com/plugin/17718-github-copilot/versions/stable) | [Xcode Releases](https://github.com/github/CopilotForXcode/releases) | [Copilot CLI Releases](https://github.com/github/copilot-cli/releases) | [GitHub Previews](https://github.com/features/preview) | [Preview Terms Changelog](https://github.com/customer-terms/updates)
 
 ---
 
@@ -127,53 +108,38 @@ Stay current with the latest changes: [Copilot Feature Matrix](https://docs.gith
 
 Brian's personally curated YouTube playlists, updated monthly: [Copilot Tips and Training Video](https://www.youtube.com/playlist?list=PLCiDM8_DsPQ1WJ5Ss3e0Lsw8EaijUL_6D), [GitHub Enterprise, Actions, and GHAS videos](https://www.youtube.com/playlist?list=PLCiDM8_DsPQ3wk4atKpN-yOW1FtyxN48W), [How GitHub GitHubs videos](https://www.youtube.com/playlist?list=PLCiDM8_DsPQ1nWhqxi-UQF_O-gYWo5jpG)
 
-## Official Microsoft Learn Training (Free)
-
-Official instructor-led video courses from **Microsoft Learn**, available free on YouTube. These are GitHub's recommended training paths for structured team onboarding, certification preparation, and self-paced upskilling.
-
-| Course | Episodes | Total Length | Level | Playlist |
-|--------|----------|--------------|-------|----------|
-| **GH-300: GitHub Copilot** | 5 episodes: Introduction (41m), Exploring Features (1h15m), Generative AI Use Cases (42m), Writing Unit Tests (20m), Advanced Features (59m) | ~3h 17m | Intermediate | [Watch](https://www.youtube.com/watch?v=-1-ZeFMmlOM&list=PLahhVEj9XNTd8lE7clFGR1el35zaBmJbS) |
-| **GH-500: GitHub Advanced Security** | 5 episodes: Introduction to GHAS (36m), Security Data and Policies (40m), Dependabot Security Updates (28m), Secret Scanning (12m), Code Scanning (39m) | ~2h 35m | Intermediate | [Watch](https://www.youtube.com/watch?v=hb7AllAd7l0&list=PLahhVEj9XNTcJZjBU671JAiX8St3CV5dA) |
-| **GH-200: Automate Your Workflow with GitHub Actions** | 5 episodes: Course Introduction (5m), Intro to Actions (48m), Pipelines in Actions (1h7m), Extending Workflows (55m), Org and Enterprise Config (44m) | ~3h 19m | Beginner | [Watch](https://www.youtube.com/watch?v=8m9JBtGFMp8&list=PLahhVEj9XNTd5N_seZDoRXVIn6N1qAp-_) |
-| **AZ-2008: DevOps Foundations** | 6 episodes: Core Principles (3m), Discover DevOps (12m), Plan (20m), Develop (25m), Deliver (20m), Operate (24m) | ~1h 44m | Beginner | [Watch](https://www.youtube.com/watch?v=Vfz6WtUK6B0&list=PLahhVEj9XNTfLw9oLP-XeTUvw3IknTRwk) |
-
 ## Virtual Events
 
-| Date | Event | Category |
-|------|-------|----------|
-| Feb 17 | [Modernize Your Java Apps in Days with AI Agents](https://developer.microsoft.com/en-us/reactor/events/26640/) | Copilot, Agentic DevOps |
-| Feb 19 | [VS Code Agent Sessions Day](https://youtube.com/live/tAezuMSJuFs) | Copilot |
-| Feb 22 | [AI Dev Days Hackathon](https://developer.microsoft.com/en-us/reactor/events/26647/) | Copilot, Enterprise |
-| Feb 24 | [AI-Powered Workflows with GitHub and Azure DevOps](https://developer.microsoft.com/en-us/reactor/events/26641/) | Copilot, Agentic DevOps |
-| Feb 24 | [Python + Agents: Building AI Agents with Agent Framework](https://developer.microsoft.com/en-us/reactor/series/S-1631/) | Copilot, Developer Experience |
-| Feb 26 | [KUWC: Agents in the Wild](https://github.com/resources/events/github-kuwc-part-one26) | Copilot |
-| Mar 3 | [Get Secure and Stay Secure in the World of Agentic AI](https://developer.microsoft.com/en-us/reactor/events/26642/) | GHAS, Enterprise |
-| Mar 10 | [Root Cause Analysis with Code Context: Azure SRE Agent + GitHub](https://developer.microsoft.com/en-us/reactor/events/26780/) | Enterprise, Agentic DevOps |
-| Mar 19 | [VS Code Live: 1.110 Release](https://developer.microsoft.com/en-us/reactor/events/26589/) | Copilot |
-| Mar 24 | [Modernizing .NET at Scale with the GitHub Copilot App Mod Agent](https://developer.microsoft.com/en-us/reactor/events/26782/) | Copilot, Agentic DevOps |
-| Mar 26 | [KUWC: Instructions, Agents, Prompts, Skills](https://github.com/resources/events/github-kuwc-part-two26) | Copilot |
-| Apr 30 | [KUWC: Copilot Greatness: Best Practices + Metrics](https://github.com/resources/events/github-kuwc-part-three26) | Copilot, Enterprise |
-| May 28 | [KUWC: Making AI a Developer Team Sport](https://github.com/resources/events/github-kuwc-part-four26) | Copilot |
+Also, watch the [Copilot Fridays back catalog](https://resources.github.com/copilot-fridays-english-on-demand/): Prompt Fundamentals, Copilot for MLOps/Data Science, Copilot for Infrastructure Engineers, GitHub Enterprise Managed Users for Copilot Users
 
-Browse all GitHub-tagged Reactor events: [Microsoft Reactor](https://developer.microsoft.com/en-us/reactor/?search=github) | [Agentic DevOps Live Series](https://developer.microsoft.com/en-us/reactor/series/s-1625/)
+**KUWC: Agents in the Wild** is a four-part webinar series from GitHub covering how AI agents are transforming enterprise development workflows. [Register for the full series](https://github.registration.goldcast.io/series/da803488-9981-4bbe-a9d7-e0b701038150).
+
+| Date | Event | Categories |
+|------|-------|-----------|
+| Feb 26 | [KUWC: Agents in the Wild: What's New + What's Next](https://github.com/resources/events/github-kuwc-part-one26) | Copilot |
+| Mar 03 | [Agentic DevOps Live: Get Secure and Stay Secure in the World of Agentic AI](https://developer.microsoft.com/en-us/reactor/events/26642) | Enterprise |
+| Mar 10 | [Agentic DevOps Live: Root Cause Analysis with Code Context: Azure SRE Agent + GitHub Integration](https://developer.microsoft.com/en-us/reactor/events/26780) | Copilot, Enterprise |
+| Mar 17 | [Agentic DevOps Live: Extend Azure SRE Agent: Custom Runbooks and Ecosystem Tools](https://developer.microsoft.com/en-us/reactor/events/26781) | Enterprise |
+| Mar 24 | [Agentic DevOps Live: Modernizing .NET at Scale with the GitHub Copilot App Mod Agent](https://developer.microsoft.com/en-us/reactor/events/26782) | Copilot |
+| Mar 26 | [KUWC: Instructions, Custom Agents, Prompts, Skills - Oh My!](https://github.com/resources/events/github-kuwc-part-two26) | Copilot |
+| Mar 31 | [Agentic DevOps Live: From Idea to Intelligent Agent: Build, Debug and Deploy AI Experiences Fast in VS Code](https://developer.microsoft.com/en-us/reactor/events/26783) | Copilot |
+| Apr 07 | [Agentic DevOps Live: Code to Cloud: Fast-Track Delivery with GitHub Copilot and Azure](https://developer.microsoft.com/en-us/reactor/events/26784) | Copilot |
+| Apr 14 | [Agentic DevOps Live: Moving Fast Without Breaking Things Using GitHub Code Quality](https://developer.microsoft.com/en-us/reactor/events/26785) | GitHub Platform |
+| Apr 30 | [KUWC: How to Achieve Copilot Greatness: Best Practices + Metrics](https://github.com/resources/events/github-kuwc-part-three26) | Copilot |
+| May 28 | [KUWC: Making AI a Developer Team Sport](https://github.com/resources/events/github-kuwc-part-four26) | Developer Experience |
 
 ## In-Person Events
 
-| Event | Date | Location | Link |
-|-------|------|----------|------|
-| Microsoft AI Tour Sao Paulo | Feb 11, 2026 | Sao Paulo, Brazil | [Register](https://aitour.microsoft.com/flow/microsoft/saopaulo26/landingpage/page/cityhome) |
-| Microsoft AI Tour Mexico City | Feb 12, 2026 | Mexico City, Mexico | [Register](https://aitour.microsoft.com/flow/microsoft/mexicocity26/landingpage/page/cityhome) |
-| From SDLC to AI-Native Delivery | Feb 18, 2026 | Paris, France | [Register](https://github.registration.goldcast.io/events/3f6e5c24-d1c7-43c8-8907-4f971f3bbadb) |
-| Mastering GitHub Copilot Workshop | Feb 23, 2026 | London, UK | [Register](https://github.registration.goldcast.io/events/ec428ae7-9774-4fbb-b5a2-321b3925e362) |
-| Microsoft AI Tour London | Feb 24, 2026 | London, UK | [Register](https://aitour.microsoft.com/flow/microsoft/london262/landingpage/page/cityhome) |
-| GitHub Connect Toronto | Mar 5, 2026 | Toronto, ON | [Register](https://github.com/resources/events/github-connect-toronto26) |
-| Microsoft AI Tour Washington D.C. | Mar 10, 2026 | Washington D.C. | [Register](https://aitour.microsoft.com/flow/microsoft/washingtondc26/landingpage/page/cityhome) |
-| Microsoft AI Tour Paris | Mar 11, 2026 | Paris, France | [Register](https://aitour.microsoft.com/flow/microsoft/paris26/landingpage/page/cityhome) |
-| GitHub at RSAC 2026 | Mar 23-26, 2026 | San Francisco, CA | [Register](https://github.com/resources/events/github-rsac2026) |
-| Microsoft AI Tour Seoul | Mar 26, 2026 | Seoul, Korea | [Register](https://aitour.microsoft.com/flow/microsoft/aitour/landing/page/home) |
-| GitHub at Google Cloud Next 2026 | Apr 22-24, 2026 | Las Vegas, NV | [Register](https://github.com/resources/events/github-gcn2026) |
+| Date | Event | Location | Details |
+|------|-------|----------|---------|
+| Mar 05 | [GitHub Connect Toronto](https://github.com/resources/events/github-connect-toronto26) | Toronto, ON, Canada | Regional customer event featuring product demos, roadmap insights, and enterprise best practices |
+| Mar 24 | [GitHub at RSAC 2026](https://github.com/resources/events/github-rsac2026) | San Francisco, CA | Visit GitHub booth 2327 for security demos, supply chain deep dives, and expert conversations |
+| Apr 22-24 | [GitHub at Google Cloud Next 2026](https://github.com/resources/events/github-gcn2026) | Las Vegas, NV | Explore cloud-native development workflows and Copilot integrations with the GitHub team |
 
+## Behind the scenes
+
+- The **Agentic DevOps Live** series from Microsoft Reactor continues weekly with hands-on sessions covering GitHub Copilot, Azure DevOps integration, and agentic AI workflows. Past sessions are [available on demand](https://developer.microsoft.com/en-us/reactor/series/S-1625/).
+- Recommended watch: [Copilot Context Window and Custom Instructions Deep Dive](https://www.youtube.com/watch?v=0XoXNG65rfg), a comprehensive walkthrough of how Copilot generates the full context window, where custom instructions and prompt files are most effective, and how to build cost-efficient workflows using different model tiers.
 
 ---
 

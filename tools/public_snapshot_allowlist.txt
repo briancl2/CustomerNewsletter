@@ -1,0 +1,35 @@
+# Public snapshot allowlist (paths relative to private repo root)
+# Files and directories listed here are copied into the target public repo.
+
+.github/
+tools/
+kb/
+reference/
+tests/
+AGENTS.md
+LICENSE
+Makefile
+README.md
+requirements.txt
+.gitignore
+config/benchmark_modes/
+docs/
+mkdocs.yml
+legacy/
+archive/2024/June.md
+archive/2025/December.md
+output/2026-02_february_newsletter.md
+output/2026-04_april_newsletter.md
+output/2026-05_may_newsletter.md
+output/.gitkeep
+workspace/.gitkeep
+workspace/archived/.gitkeep
+
+# Public-safe release bundle layers only. Do not publish raw SOURCE_NOTES or
+# internal evidence directories from release bundles.
+release_bundle/2026-02_newsletter_launch/public/
+release_bundle/2026-04_newsletter_launch/START_HERE.md
+release_bundle/2026-04_newsletter_launch/run_april_production.sh
+release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md
+release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md
+release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md

@@ -62,6 +62,18 @@ The primary organizing unit is a **feature or update**, NOT a plugin/IDE version
 **Wrong** (version-based): "JetBrains 1.5.60 added X, Y, Z"
 **Right** (feature-based): Separate entries for X, Y, and Z with full metadata each
 
+### CRITICAL: High-Velocity Release Streams Need Inventory And Link Maps (May 2026)
+
+When a source has >=10 stable releases in `DATE_RANGE`, >=5 major capability families, or the operator explicitly asks for exhaustive release review, create an inventory before downstream synthesis. Do not rely on a short category summary.
+
+Required outputs in addition to the source interim:
+- Copilot CLI release inventory: `workspace/copilot_cli_release_inventory_START_to_END.md`
+- Copilot App release inventory, when an app/new-surface stream is in scope: `workspace/copilot_app_release_inventory_START_to_END.md`
+- Phase 3 capability-map input: capability name, family, evidence release tags/URLs, public-safe changelog/docs target, and whether the capability is required in final prose. The downstream canonical artifact is `workspace/newsletter_phase3_capability_map_START_to_END.json`.
+- VS Code theme summary for dense weekly release windows: `workspace/newsletter_phase1b_vscode_theme_summary_START_to_END.md`
+
+Evidence links and publication links are different fields. Authenticated GitHub release streams can support synthesis when available to the operator, but customer-facing output must use public-safe changelog/docs links unless publication policy explicitly changes.
+
 ### CRITICAL: IDE Monthly Update Deep-Read (G4)
 
 When an IDE monthly update is detected (VS Code release notes, Visual Studio monthly update, JetBrains plugin version), **deep-read the full release notes page**, not just the changelog summary. IDE release notes pages contain 10-20x more detail than changelog entries. Extract ALL sections; downstream curation will filter. This is the single highest-value extraction action per L20 and L34.
@@ -85,6 +97,7 @@ VS Code now ships weekly releases. A 30-day newsletter period typically includes
    - Evolution note only when status changed across versions (e.g., "experimental in v1.108, GA in v1.109")
 5. **NEVER output version-summary bullets** ("v1.108 introduced X, Y, Z"). The output is features, not versions.
 6. **NEVER reference VS Code version numbers in feature descriptions**. Version numbers appear only in link URLs and evolution metadata. The newsletter period is the unit, not any individual version.
+7. **Write a theme summary** when the scope contract lists 3+ VS Code versions. Save `workspace/newsletter_phase1b_vscode_theme_summary_START_to_END.md` with customer-facing themes, representative release-note anchors, and an explicit reminder that final prose must not list raw version sequences.
 
 **Why newest-first**: Weekly releases have heavy feature overlap. The newest page has the most mature description of each feature. Earlier pages only need to be scanned for deltas (new features, status transitions).
 
@@ -119,6 +132,8 @@ Each source has a fundamentally different data model. Use source-specific approa
 - **Xcode**: Single CHANGELOG.md on GitHub. "Added" and "Changed" sections are the primary content. Skip "Fixed" unless security-related. Cross-reference with GitHub Changelog for Xcode-specific announcements.
 
 - **Copilot CLI**: The **primary source is `github.com/github/copilot-cli/releases`**, NOT the GitHub blog changelog. The CLI ships daily releases (sometimes multiple per day), so a 30-day newsletter period can include 30+ releases. The blog changelog only publishes occasional summary posts that lag behind and miss most features. **Extraction strategy**: (1) Fetch the releases page and scan all stable releases (skip pre-releases with `-N` build suffixes appended to the version number, e.g., `v0.0.404-0`, `v0.0.404-1`; stable releases have no suffix after the final digit) whose date falls within DATE_RANGE. (2) Aggregate features across all releases into a single feature-centric list — never produce per-version bullets. (3) Categorize features by type: major capabilities (plan mode, background agents, plugins), platform integrations (ACP, MCP, SDK), quality-of-life (slash commands, permissions, themes), and bug fixes (skip unless security-related). (4) Cross-reference with GitHub blog changelog posts for richer narrative descriptions of major features — blog posts are supplementary links, not the discovery source. (5) The CLI is NOT in the Copilot feature matrix; pair CLI features with blog changelog links where available.
+
+- **Copilot App / new Copilot app surfaces**: When the operator provides or points to a GitHub release stream for a new app/workflow surface, do not stop at anonymous fetch failure. Try authenticated `gh api` or authenticated browser access before declaring the stream unavailable. If release evidence is available, keep release URLs in the evidence artifact when they are not public-safe, then map customer-visible capabilities to public changelog/docs anchors for final prose. Required capabilities to look for include start context, My work/inbox, focused sessions, plan/diff review, review comments/checks, PR creation, Agent Merge, terminal/browser validation, workflows, skills/prompts, MCP/canvas extensibility, model/usage affordances, and enterprise readiness.
 
 ### Copilot CLI Command Block (Benchmark Override)
 
@@ -188,6 +203,7 @@ Before moving to next chunk, verify:
 - [Visual Studio Intelligence](../../../reference/source-intelligence/visualstudio.md) - Dual-source: GH Changelog for features, MS Learn for patches. 42% discovery rate.
 - [JetBrains Intelligence](../../../reference/source-intelligence/jetbrains.md) - Highest survival (77%); always bundled into IDE Parity bullets
 - [Xcode Intelligence](../../../reference/source-intelligence/xcode.md) - Lowest survival (37%); most items are UI polish; only cross-IDE features survive
+- [Copilot App Intelligence](../../../reference/source-intelligence/copilot-app.md) - Authenticated evidence/public-link boundary and App capability clusters
 - [GitHub Changelog Intelligence](../../../reference/source-intelligence/github-changelog.md) - Richest source; COPILOT-labeled items survive at 80%; scan news-insights/ too
 
 ## Done When

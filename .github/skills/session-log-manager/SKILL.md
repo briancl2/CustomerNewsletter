@@ -167,6 +167,7 @@ python3 .agents/skills/session-log-manager/scripts/session-image-strip.py --work
 | Skill | Relationship |
 |---|---|
 | `session-log-analysis` | Analysis (parse + search). Complementary — manager handles storage, analysis handles insights. |
+| `reviewing-code-locally` | Pre-commit review. Can add session-health gate. |
 
 ## Done When
 

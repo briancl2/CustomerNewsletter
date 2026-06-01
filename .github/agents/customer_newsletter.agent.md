@@ -1,7 +1,7 @@
 ---
 name: "customer_newsletter"
 description: "Generates monthly customer newsletters via a skills-based pipeline. Orchestrates 6 phases from URL discovery through final assembly and validation."
-model: "claude-opus-4.7"
+model: "gpt-5.5"
 tools: ['execute/getTerminalOutput', 'execute/runTask', 'execute/getTaskOutput', 'execute/createAndRunTask', 'execute/runInTerminal', 'read/terminalSelection', 'read/terminalLastCommand', 'read/readFile', 'edit/createDirectory', 'edit/createFile', 'edit/editFiles', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/searchResults', 'search/textSearch', 'web/fetch', 'agent', 'todo']
 infer: true
 ---
@@ -12,22 +12,22 @@ Generate monthly customer newsletters by orchestrating a skills-based pipeline. 
 
 ## Non-Negotiable Execution Rules
 
-1. Do not compress phases. Phase 1A -> 1B -> 1C -> 2 -> 3 -> 4 -> 4.5 must be materially executed.
+1. Do not compress phases. Phase 1A -> 1B -> 1C -> 2 -> 3 -> 4 -> 4.5 -> 4.6 must be materially executed.
 2. Phase 1.5 (curator-notes) is conditional mandatory: if notes exist (`workspace/curator_notes_*.md` or `workspace/<Month>.md`), execute it before Phase 3.
 3. Canonical artifact paths are mandatory. Do not create or rely on `fresh_phase*` shortcuts.
 4. Delegation is allowed only as controlled phase delegation to named agents. Never delegate to generic or "general-purpose" subagents.
 5. Use one delegation unit per phase. Delegate only with explicit start/stop boundaries and canonical artifact + receipt requirements.
 6. Preferred delegation map:
-   - `customer_newsletter`: Phase 0, 1A, 1B, 2, 4, 4.5
-   - `editorial-analyst`: Phase 1C, 1.5, 3
+   - `customer_newsletter`: Phase 0, 1A, 1B, 2, 3, 4, 4.5, 4.6
+   - `editorial-analyst`: Phase 1C, 1.5
    - `skill-builder`: skill-authoring tasks only (not newsletter generation phases)
 7. Do not delete `workspace/newsletter_phase_receipts_<END>.json` during an active run.
 8. If the user asks for from-scratch generation, run:
    - `bash tools/prepare_newsletter_cycle.sh <START> <END> --no-reuse`
 9. Before reporting completion, run strict validation:
-   - `bash tools/validate_pipeline_strict.sh <START> <END>`
-   - From-scratch: `bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh`
-   - Benchmark consistency: `bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --benchmark-mode feb2026_consistency`
+   - `bash tools/validate_pipeline_strict.sh <START> <END> --production-artifacts`
+   - From-scratch: `bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --production-artifacts`
+   - Benchmark consistency: `bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --production-artifacts --benchmark-mode feb2026_consistency`
 10. If strict validation fails, continue fixing until it passes or explicitly report the blocker.
 11. Record phase receipts immediately after each artifact write:
    - `bash tools/record_phase_receipt.sh <START> <END> <phase_id> <artifact_path>`
@@ -45,17 +45,26 @@ Generate monthly customer newsletters by orchestrating a skills-based pipeline. 
    - `phase1_5_curator_signals`
    - `phase2_event_sources`
    - `phase2_events`
+   - `phase3_working_set`
    - `phase3_curated`
    - `phase4_output`
+   - `phase4_5_polishing`
+   - `phase4_6_video`
    - `phase4_scope_results`
+   - `phase4_editorial_review`
 14. Curator-note discovery must include both:
    - `workspace/curator_notes_*.md`
    - `workspace/[A-Za-z]*.md` (for example `workspace/Jan.md`)
    Exclude generated files: `curator_notes_processed_*`, `curator_notes_editorial_signals_*`, and `newsletter_*`.
 15. For the February 2026 benchmark window (`2025-12-05` to `2026-02-13`), benchmark mode is mandatory before completion:
-   - `bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --benchmark-mode feb2026_consistency`
+    - `bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --production-artifacts --benchmark-mode feb2026_consistency`
 16. If benchmark mode fails, keep iterating until it passes.
 17. In Phase 2, generate `workspace/newsletter_phase2_event_sources_<END>.json` before `workspace/newsletter_phase2_events_<END>.md`, and record both receipts (`phase2_event_sources`, `phase2_events`).
+18. For Phase 0, run `python3 tools/generate_scope_contract.py <START> <END>` before any broad manual scope discovery. If the helper succeeds, treat its output as the Phase 0 artifact.
+19. For orchestrated Phase 3 runs, generate `workspace/newsletter_phase3_working_set_<END>.md` before any broad rereads of discoveries or reference docs, then record `phase3_working_set` before any Phase 3 curation edits.
+20. If `workspace/newsletter_phase3_curated_sections_<END>.md` is absent during Phase 3, initialize it with `python3 tools/init_phase3_curated_sections.py <START> <END>` and edit that scaffold in place.
+21. When the Phase 3 working set exists and its Missing Data Gate does not flag missing inputs, use it as the primary Phase 3 source. Do not reread raw discoveries, curator notes, `LEARNINGS.md`, or long reference docs unless the working set explicitly says data is missing.
+22. During Phase 3, replace all TODO markers and HTML comment placeholders in the curated scaffold before recording `phase3_curated`.
 
 ## Audience
 
@@ -78,7 +87,7 @@ Generate monthly customer newsletters by orchestrating a skills-based pipeline. 
 | 5 | [editorial-review](.github/skills/editorial-review/SKILL.md) | Corrections + Newsletter | Updated newsletter |
 | Utility | [kb-maintenance](.github/skills/kb-maintenance/SKILL.md) | kb/SOURCES.yaml | Delta + health reports |
 
-**Execution order**: 1A, 1B, 1C run sequentially. Phase 2 can run in parallel. If notes file exists, run 1.5 before Phase 3. Phase 4 depends on 3 and 2.
+**Execution order**: 1A, 1B, 1C run sequentially. Phase 2 starts after the Phase 1C discoveries receipt exists. If notes file exists, run 1.5 before Phase 3. Phase 4 depends on 3 and 2.
 
 ## Category Taxonomy
 
@@ -128,8 +137,12 @@ All items are classified into exactly one category:
 6. In Phase 2, generate deterministic event candidates first: `python3 tools/extract_event_sources.py <START> <END>`, then record `phase2_event_sources`.
 7. Record a phase receipt for each canonical phase artifact using `tools/record_phase_receipt.sh`
 8. After Phase 4, run newsletter-validation to confirm quality
-9. Produce an editorial review artifact at `workspace/YYYY-MM_editorial_review.md` with per-item ratings (Include/Borderline/Exclude, Expand/Standard/Compress, Lead/Body/Back) for human calibration
-10. Run `tools/validate_pipeline_strict.sh` before completion
+9. Produce a Phase 4.5 polishing report at `workspace/newsletter_phase4_5_polishing_<END>.md` and record `phase4_5_polishing`
+10. Produce a Phase 4.6 video matching report at `workspace/newsletter_phase4_6_video_matches_<END>.md` and record `phase4_6_video`
+11. Produce an editorial review artifact at `workspace/YYYY-MM_editorial_review.md` with per-item ratings (Include/Borderline/Exclude, Expand/Standard/Compress, Lead/Body/Back) for human calibration
+12. Run `tools/validate_pipeline_strict.sh` before completion
+13. Run `tools/score-v2-rubric.sh --mode auto output/YYYY-MM_month_newsletter.md` before completion
+14. In Phase 3 benchmark runs, prefer the compact path: build the working set, record `phase3_working_set`, initialize the scaffold if needed, read the working set, write the curated artifact, validate it, then record `phase3_curated`
 
 ## Done When
 

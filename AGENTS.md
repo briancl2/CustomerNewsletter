@@ -6,16 +6,18 @@
 ## Operating Protocol
 
 Every change follows this numbered workflow. No exceptions.
-1. **Hypothesize** -- State a testable prediction with explicit PASS criteria (HIGR)
-2. **Score** -- Define a scoring rubric with acceptance threshold
-3. **Plan** -- Design the approach before building
-4. **Build** -- Implement the change
-5. **Test** -- Validate against PASS criteria using layered scoring (cheapest first)
-6. **Fix** -- Iterate until all criteria pass
-7. **Validate** -- Run quality checks (scoring battery and tests)
-8. **Document** -- Update HYPOTHESES.md, LEARNINGS.md, HANDOFF.md
-9. **Clean up** -- Delete old implementations (Deletion Discipline), archive stale artifacts
-10. **Report + Handoff** -- Write HANDOFF.md for session continuity
+
+1. **Hypothesize** — State a testable prediction with explicit PASS criteria (HIGR)
+2. **Score** — Define a scoring rubric with acceptance threshold
+3. **Plan** — Design the approach before building
+4. **Build** — Implement the change
+5. **Test** — Validate against PASS criteria using layered scoring (cheapest first)
+6. **Fix** — Iterate until all criteria pass
+7. **Review** — Run `make review` on ALL changes before committing. `--no-verify` is NEVER permitted.
+8. **Validate** — Run quality checks (scoring battery)
+9. **Document** — Update HYPOTHESES.md, LEARNINGS.md, HANDOFF.md in the private source repo. For public snapshot work, also update the public sync manifest or PR description with scope and validation.
+10. **Clean up** — Delete old implementations (Deletion Discipline), archive stale artifacts
+11. **Report + Handoff** — Write HANDOFF.md for session continuity
 
 ## Core Principles
 
@@ -28,15 +30,16 @@ Every change follows this numbered workflow. No exceptions.
 - **Feed-Forward Learnings**: Every finding becomes an L-number in LEARNINGS.md.
 - **Benchmark-Grounded**: Score against benchmark data, not intuition.
 
-## Agents (3)
+## Agents (4)
 
 | # | Agent | Purpose |
 |---|---|---|
 | 1 | customer_newsletter | 6-phase pipeline orchestrator |
 | 2 | editorial-analyst | Editorial intelligence mining + corrections |
 | 3 | skill-builder | Create and validate new skills |
+| 4 | upgrade-advisor | Produce recommendation bundles from repo findings |
 
-## Skills (17)
+## Skills (18)
 
 | # | Skill | Purpose |
 |---|---|---|
@@ -55,8 +58,9 @@ Every change follows this numbered workflow. No exceptions.
 | 13 | building-skill | Create new skills (meta-skill) |
 | 14 | scope-contract | Manage scope boundaries |
 | 15 | curator-notes | Phase 1.5: Process curator brain dump |
-| 16 | session-log-manager | Archive and health-check session logs |
+| 16 | reviewing-code-locally | Fast local code review |
 | 17 | deprecation-consolidation | Phase 4.5: Consolidate deprecation notices |
+| 18 | session-log-manager | Archive and inspect Copilot/IDE session logs |
 
 Skills are at `.github/skills/<name>/SKILL.md`.
 
@@ -75,7 +79,7 @@ Skills are at `.github/skills/<name>/SKILL.md`.
 |---|---|
 | HYPOTHESES.md | Hypothesis ledger — testable predictions |
 | LEARNINGS.md | Append-only operational lessons |
-| .github/skills/ | 17 skills |
+| .github/skills/ | 18 skills |
 | tools/ | Scoring + build automation |
 | reference/ | Editorial intelligence + source intelligence |
 | kb/ | Knowledge base (sources, taxonomy, maintenance) |

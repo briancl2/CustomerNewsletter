@@ -53,6 +53,9 @@ Default: 2-3 pipe-separated links at the end of the bullet.
 -   **Copilot CLI (`PREVIEW`)** -- [Plan mode](URL) for structured task planning, [/review](URL) for code review in the terminal, [repository memory](URL) across sessions, [ACP protocol support](URL) for agent orchestration, and [direct installation from gh](URL). The new [Copilot SDK](URL) provides libraries for Node.js, Python, Go, and .NET. Covered under the [DPA](URL) and [Pre-Release Terms](URL) while in preview.
 ```
 
+**Inventory-backed link density (May 2026):**
+When a bullet is built from a release inventory or capability map, link the named capabilities directly in prose. A high-volume CLI bullet needs at least six representative inline capability links when it cites 10+ stable releases or 5+ capability families. A Copilot App/new-surface bullet needs at least five public-safe inline capability links when it cites release-stream evidence. Generic trailing source links or a final source-tail block do not satisfy this requirement when the prose names many concrete capabilities.
+
 **Wrong** (sub-bullet link list):
 ```markdown
 -   **Feature** -- Description...
@@ -151,6 +154,7 @@ The IDE parity section uses **feature-centric**, **per-IDE paragraph** format wi
 ## VS Code Version Number Rule (L66)
 
 Never reference specific VS Code version numbers (v1.108, v1.109, etc.) in newsletter body text. With weekly releases, version numbers are meaningless to readers. Features are attributed to "VS Code" generically. Version URLs appear in links only (e.g., `[Release Notes](https://code.visualstudio.com/updates/v1_109#_agent-skills)`).
+If 3+ VS Code versions are needed for evidence continuity, put them in scope/interim artifacts or release-note URLs, not in a customer-facing sentence.
 ## IDE Parity Bundling
 
 **Cross-cycle validated (100% consistency across all 4 cycles):**
@@ -159,7 +163,7 @@ ALL IDE parity items ALWAYS nest under a single parent bullet. JetBrains and Xco
 
 ## Governance and Legal
 
-ALWAYS expand legal/indemnity changes with sub-bullets per curator guidance: the audience under-discovers legal changes and they remove enterprise adoption barriers. Surface under Copilot at Scale:
+ALWAYS expand standalone legal/indemnity changes with sub-bullets per curator guidance: the audience under-discovers legal changes and they remove enterprise adoption barriers. Surface under Enterprise and Security unless the item is embedded inside a broader product bullet whose lead is not legal/compliance:
 ```markdown
 -   **Updated IP indemnity coverage** - Copilot's IP indemnity now extends to agent mode outputs and MCP tool results for enterprise customers. - [Announcement](URL) | [Terms](URL)
 ```

@@ -1,6 +1,7 @@
 ---
 name: "skill-builder"
 description: "Builds individual newsletter pipeline skills from agent logic, prompt files, and benchmark examples. Use with /fleet for parallel skill construction."
+model: gpt-5.5
 tools: ['read/readFile', 'edit/createFile', 'edit/editFiles', 'edit/createDirectory', 'search/fileSearch', 'search/textSearch', 'search/listDirectory', 'search/codebase']
 infer: true
 ---

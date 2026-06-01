@@ -1,6 +1,6 @@
 ---
 name: events-extraction
-description: "Extracts and formats upcoming events and webinars from provided URLs. Use when running Phase 2 of the newsletter pipeline. Fetches event pages, classifies into canonical categories, formats virtual and in-person event tables. Can run in parallel with Phases 1A-1C. Keywords: events extraction, phase 2, webinars, conferences, event formatting."
+description: "Extracts and formats upcoming events and webinars from provided URLs. Use when running Phase 2 of the newsletter pipeline after the Phase 1C discoveries receipt exists. Fetches event pages, classifies into canonical categories, formats virtual and in-person event tables. Keywords: events extraction, phase 2, webinars, conferences, event formatting."
 metadata:
   category: domain
   phase: "2"
@@ -13,13 +13,15 @@ Extract, classify, and format upcoming events and webinars for the newsletter.
 ## Quick Start
 
 1. Receive list of event URLs (5-15 typical)
-2. Fetch each URL and extract event details
-3. Classify: Virtual, In-person, or Hybrid
-4. Assign canonical categories (max 2, prefer 1)
-5. Format into tables and bullet lists
-6. Write output to `workspace/newsletter_phase2_events_YYYY-MM-DD.md`
+2. Run `python3 tools/extract_event_sources.py <START_DATE> <END_DATE>`
+3. Record the `phase2_event_sources` receipt for the generated JSON
+4. Fetch each URL and extract event details
+5. Classify: Virtual, In-person, or Hybrid
+6. Assign canonical categories (max 2, prefer 1)
+7. Format into tables and bullet lists
+8. Write output to `workspace/newsletter_phase2_events_YYYY-MM-DD.md`
 
-**Independence**: This phase runs independently of Phases 1A-1C and can execute in parallel.
+**Sequencing**: This phase starts only after Phase 1C discoveries have been written and receipted.
 
 ## Inputs
 

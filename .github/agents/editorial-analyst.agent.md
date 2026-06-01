@@ -1,6 +1,7 @@
 ---
 name: "editorial-analyst"
 description: "Analyzes published newsletters and benchmark intermediates to extract editorial patterns, selection decisions, and thematic intelligence. Use for editorial intelligence mining."
+model: gpt-5.5
 tools: ['read/readFile', 'edit/createFile', 'edit/editFiles', 'search/fileSearch', 'search/textSearch', 'search/listDirectory', 'search/codebase']
 infer: true
 ---

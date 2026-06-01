@@ -1,4 +1,7 @@
-.PHONY: help validate-structure validate-skill validate-all-skills
+.PHONY: help check validate-structure validate-skill validate-all-skills
+
+check: ## Run the full repo validation battery
+	@bash tools/test_all.sh
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -7,6 +10,7 @@ validate-structure: ## Verify all required files and directories exist
 	@echo "Validating repo structure..."
 	@errors=0; \
 	for f in .github/agents/customer_newsletter.agent.md \
+		.github/agents/upgrade-advisor.agent.md \
 		AGENTS.md \
 		.github/prompts/README.md \
 		.github/prompts/run_pipeline.prompt.md \
@@ -98,12 +102,38 @@ validate-newsletter: ## Validate a newsletter file (FILE=path/to/newsletter.md)
 validate-kb: ## Run kb link health check (dry-run)
 	@python3 .github/skills/kb-maintenance/scripts/check_link_health.py --dry-run
 
+publish-public-snapshot: ## Publish allowlisted public-safe snapshot (PUBLIC_REPO= path, ARGS= optional)
+	@if [ -z "$(PUBLIC_REPO)" ]; then echo "Usage: make publish-public-snapshot PUBLIC_REPO=/path/to/public [ARGS='--no-commit']"; exit 1; fi
+	@bash tools/publish_public_snapshot.sh $(ARGS) "$(PUBLIC_REPO)"
+
 kb-poll: ## Poll sources for new content (dry-run)
 	@python3 .github/skills/kb-maintenance/scripts/poll_sources.py --dry-run
 
 newsletter: ## Generate newsletter pipeline (START= END= EVENTS= BENCHMARK_MODE=optional)
 	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter START=YYYY-MM-DD END=YYYY-MM-DD [EVENTS=path]"; exit 1; fi
 	@STRICT=$${STRICT:-1} BENCHMARK_MODE="$(BENCHMARK_MODE)" bash tools/run_newsletter.sh $(START) $(END) $(EVENTS)
+
+newsletter-gen: ## Live operator path: canonical prompt-rendered Copilot CLI run (START= END= MODE=production|benchmark MODEL=gpt-5.5)
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-gen START=YYYY-MM-DD END=YYYY-MM-DD [MODE=production|benchmark] [MODEL=gpt-5.5]"; exit 1; fi
+	@COPILOT_BIN="$${COPILOT_BIN:-copilot}"; if [ "$$COPILOT_BIN" = "copilot" ]; then COPILOT_BIN="$$(command -v copilot || true)"; [ -n "$$COPILOT_BIN" ] || COPILOT_BIN=/opt/homebrew/bin/copilot; fi; "$$COPILOT_BIN" --model "$${MODEL:-gpt-5.5}" --allow-all --deny-tool agent --no-ask-user --stream off -p "$$(bash tools/render_product_run_prompt.sh $(START) $(END) $${MODE:-production})"
+
+newsletter-proof-run: ## Live operator path: retained proof run wrapper (START= END= MODE=production|benchmark [RUN_DIR=] [SESSION_LOG=] [MODEL=] [EXPERIMENT_ID=] [RUN_CLASS=] [FIXTURE_PACK=] [SOURCE_PRUNING_POLICY=] [OUTPUT_SHAPE_POLICY=])
+	@if [ -z "$(START)" ] || [ -z "$(END)" ] || [ -z "$(MODE)" ]; then echo "Usage: make newsletter-proof-run START=YYYY-MM-DD END=YYYY-MM-DD MODE=production|benchmark [RUN_DIR=path] [SESSION_LOG=path] [MODEL=gpt-5.5] [EXPERIMENT_ID=id] [RUN_CLASS=class] [FIXTURE_PACK=id] [SOURCE_PRUNING_POLICY=path] [OUTPUT_SHAPE_POLICY=path]"; exit 1; fi
+	@MODEL="$${MODEL:-gpt-5.5}" EXPERIMENT_ID="$${EXPERIMENT_ID:-}" RUN_CLASS="$${RUN_CLASS:-ordinary_proof}" FIXTURE_PACK="$${FIXTURE_PACK:-}" bash tools/run_product_newsletter.sh $(START) $(END) $(MODE) $$( [ -n "$(RUN_DIR)" ] && printf '%s ' --run-dir "$(RUN_DIR)" ) $$( [ -n "$(SESSION_LOG)" ] && printf '%s ' --session-log "$(SESSION_LOG)" ) $$( [ -n "$(SOURCE_PRUNING_POLICY)" ] && printf '%s ' --source-pruning-policy "$(SOURCE_PRUNING_POLICY)" ) $$( [ -n "$(OUTPUT_SHAPE_POLICY)" ] && printf '%s ' --output-shape-policy "$(OUTPUT_SHAPE_POLICY)" )
+
+newsletter-cost-profiler: ## Build per-run and per-phase cost ledger from retained runs ([RUN_DIR=] [OUTPUT=] [PRICING_SNAPSHOT=])
+	@python3 tools/newsletter_cost_profiler.py $$( [ -n "$(RUN_DIR)" ] && printf '%s %s ' --run-dir "$(RUN_DIR)" ) $$( [ -n "$(OUTPUT)" ] && printf '%s %s ' --output "$(OUTPUT)" ) $$( [ -n "$(PRICING_SNAPSHOT)" ] && printf '%s %s ' --pricing-snapshot "$(PRICING_SNAPSHOT)" )
+
+newsletter-hotspot-auditor: ## Rank retained run cost/token hotspots ([PROFILER_JSON=] [RUN_DIR=] [OUTPUT=] [PRICING_SNAPSHOT=])
+	@python3 tools/newsletter_hotspot_auditor.py $$( [ -n "$(PROFILER_JSON)" ] && printf '%s %s ' --profiler-json "$(PROFILER_JSON)" ) $$( [ -n "$(RUN_DIR)" ] && printf '%s %s ' --run-dir "$(RUN_DIR)" ) $$( [ -n "$(OUTPUT)" ] && printf '%s %s ' --output "$(OUTPUT)" ) $$( [ -n "$(PRICING_SNAPSHOT)" ] && printf '%s %s ' --pricing-snapshot "$(PRICING_SNAPSHOT)" )
+
+newsletter-phase-experimenter: ## Inventory, materialize, or run bounded phase experiments (COMMAND=inventory|materialize|phase4-fast|phase3-curation MANIFEST= TARGET_REPO= SURFACE_ID= optional)
+	@if [ -z "$(COMMAND)" ] || [ -z "$(MANIFEST)" ]; then echo "Usage: make newsletter-phase-experimenter COMMAND=inventory|materialize|phase4-fast|phase3-curation MANIFEST=path [TARGET_REPO=path] [SURFACE_ID=id] [MODEL=gpt-5.5] [BENCHMARK_MODE=] [PHASE_TIMEOUT_SECONDS=900]"; exit 1; fi
+	@python3 tools/newsletter_phase_experimenter.py $(COMMAND) --manifest "$(MANIFEST)" $$( [ -n "$(SURFACE_ID)" ] && printf '%s %s ' --surface-id "$(SURFACE_ID)" ) $$( [ -n "$(TARGET_REPO)" ] && printf '%s %s ' --target-repo "$(TARGET_REPO)" ) $$( [ -n "$(MODEL)" ] && printf '%s %s ' --model "$(MODEL)" ) $$( [ -n "$(BENCHMARK_MODE)" ] && printf '%s %s ' --benchmark-mode "$(BENCHMARK_MODE)" ) $$( [ -n "$(RUN_DIR_OVERRIDE)" ] && printf '%s %s ' --run-dir-override "$(RUN_DIR_OVERRIDE)" ) $$( [ "$(COMMAND)" = "phase3-curation" ] && [ -n "$(PHASE_TIMEOUT_SECONDS)" ] && printf '%s %s ' --phase-timeout-seconds "$(PHASE_TIMEOUT_SECONDS)" )
+
+newsletter-render-prompt: ## Render the canonical product-run prompt (START= END= MODE=production|benchmark [SOURCE_PRUNING_POLICY=] [OUTPUT_SHAPE_POLICY=])
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-render-prompt START=YYYY-MM-DD END=YYYY-MM-DD [MODE=production|benchmark] [SOURCE_PRUNING_POLICY=path] [OUTPUT_SHAPE_POLICY=path]"; exit 1; fi
+	@bash tools/render_product_run_prompt.sh $(START) $(END) $${MODE:-production} $$( [ -n "$(SOURCE_PRUNING_POLICY)" ] && printf '%s ' --source-pruning-policy "$(SOURCE_PRUNING_POLICY)" ) $$( [ -n "$(OUTPUT_SHAPE_POLICY)" ] && printf '%s ' --output-shape-policy "$(OUTPUT_SHAPE_POLICY)" )
 
 newsletter-prepare: ## Prepare cycle marker (START= END= NO_REUSE=1 optional)
 	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-prepare START=YYYY-MM-DD END=YYYY-MM-DD [NO_REUSE=1]"; exit 1; fi
@@ -142,15 +172,94 @@ newsletter-fresh: ## Prepare no-reuse cycle, then run newsletter with strict gat
 	@bash tools/prepare_newsletter_cycle.sh $(START) $(END) --no-reuse
 	@STRICT=$${STRICT:-1} bash tools/run_newsletter.sh $(START) $(END) $(EVENTS)
 
-newsletter-orchestrated: ## Controlled phase-by-phase run with explicit agent delegation (START= END= MODEL= BENCHMARK_MODE= NO_REUSE=1)
-	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-orchestrated START=YYYY-MM-DD END=YYYY-MM-DD [MODEL=claude-opus-4.7] [BENCHMARK_MODE=feb2026_consistency] [NO_REUSE=1]"; exit 1; fi
+newsletter-orchestrated: ## Diagnostic-only phase-by-phase run with explicit agent delegation (START= END= MODEL= BENCHMARK_MODE= NO_REUSE=1)
+	@if [ -z "$(START)" ] || [ -z "$(END)" ]; then echo "Usage: make newsletter-orchestrated START=YYYY-MM-DD END=YYYY-MM-DD [MODEL=gpt-5.5] [BENCHMARK_MODE=feb2026_consistency] [NO_REUSE=1]"; exit 1; fi
 	@MODEL="$${MODEL:-$(MODEL)}" BENCHMARK_MODE="$${BENCHMARK_MODE:-$(BENCHMARK_MODE)}" NO_REUSE="$${NO_REUSE:-$(NO_REUSE)}" bash tools/run_newsletter_orchestrated.sh $(START) $(END)
+
+newsletter-orchestrated-proof: ## Retained phase-by-phase proof run with phase token telemetry (START= END= MODE=production|benchmark [RUN_DIR=] [MODEL=] [PHASE3_STDOUT_NO_TOOLS=1])
+	@if [ -z "$(START)" ] || [ -z "$(END)" ] || [ -z "$(MODE)" ]; then echo "Usage: make newsletter-orchestrated-proof START=YYYY-MM-DD END=YYYY-MM-DD MODE=production|benchmark [RUN_DIR=path] [MODEL=gpt-5.5] [PHASE3_STDOUT_NO_TOOLS=1]"; exit 1; fi
+	@MODEL="$${MODEL:-gpt-5.5}" bash tools/run_instrumented_orchestrated_proof.sh $(START) $(END) $(MODE) $$( [ -n "$(RUN_DIR)" ] && printf '%s ' --run-dir "$(RUN_DIR)" )
+
+stage16-fast: ## Stage 16 fast closure suite (bounded Phase 4-only check; no long orchestrated run)
+	@bash tools/test_validator.sh
+	@bash tools/test_benchmark_regression.sh
+	@MODEL="$${MODEL:-$(MODEL)}" BENCHMARK_MODE="$${BENCHMARK_MODE:-feb2026_consistency}" PHASE_TIMEOUT_SECONDS="$${PHASE_TIMEOUT_SECONDS:-900}" bash tools/run_newsletter_phase4_fast.sh 2025-12-05 2026-02-13
+	@bash tools/validate_pipeline_strict.sh 2025-12-05 2026-02-13 --benchmark-mode "$${BENCHMARK_MODE:-feb2026_consistency}"
+	@bash .github/skills/newsletter-validation/scripts/validate_newsletter.sh output/2026-02_february_newsletter.md
 
 test-archive: ## Run archive_workspace.sh test suite
 	@bash tools/test_archive_workspace.sh
 
 test-validator: ## Run newsletter validator self-test (known-good + known-bad)
 	@bash tools/test_validator.sh
+
+test-phase3: ## Run Phase 3 contract regression suite
+	@if [ -f workspace/newsletter_phase3_working_set_2026-04-16.md ]; then \
+		bash tools/test_phase3_contracts.sh; \
+	else \
+		echo "SKIP: Phase 3 contract tests require private April workspace fixture"; \
+	fi
+
+validate-phase3-instruction-contract: ## Validate the Phase 3 instruction/path contract
+	@python3 tools/validate_phase3_instruction_contract.py
+
+test-phase3-instruction: ## Run Phase 3 instruction/path contract regression suite
+	@bash tools/test_phase3_instruction_contract.sh
+
+test-phase-route-lock-telemetry: ## Run Phase telemetry route-lock regression suite
+	@bash tools/test_phase_route_lock_telemetry.sh
+
+backfill-receipt-order: ## Backfill receipt_order into a legacy receipt file (RECEIPTS= ARTIFACT_ROOT=)
+	@if [ -z "$(RECEIPTS)" ] || [ -z "$(ARTIFACT_ROOT)" ]; then echo "Usage: make backfill-receipt-order RECEIPTS=path/to/newsletter_phase_receipts.json ARTIFACT_ROOT=path/to/artifacts"; exit 1; fi
+	@python3 tools/backfill_receipt_order.py "$(RECEIPTS)" --artifact-root "$(ARTIFACT_ROOT)"
+
+test-receipt-order-backfill: ## Run retained receipt-order backfill regression suite
+	@bash tools/test_receipt_order_backfill.sh
+
+test-product-prompt: ## Run product prompt renderer regression suite
+	@bash tools/test_product_run_prompt.sh
+
+test-product-validation: ## Run retained product validation replay suite
+	@if [ -f tools/test_product_run_validation.sh ]; then \
+		bash tools/test_product_run_validation.sh; \
+	else \
+		echo "SKIP: retained product validation requires private retained-run tooling"; \
+	fi
+
+test-product-audit: ## Run product run-audit collector suite
+	@bash tools/test_product_run_audit.sh
+
+test-product-snapshot: ## Run retained product snapshot suite
+	@bash tools/test_product_run_snapshot.sh
+
+test-source-pruning: ## Run source/candidate pruning experiment tests
+	@bash tools/test_source_pruning_experiment.sh
+
+test-phase3-compact-working-set-gate: ## Run Phase 3 compact working-set gate packet tests
+	@if [ -f tools/test_phase3_compact_working_set_gate_packet.sh ]; then \
+		bash tools/test_phase3_compact_working_set_gate_packet.sh; \
+	else \
+		echo "SKIP: Phase 3 compact working-set gate tests require private feature-flag tooling"; \
+	fi
+
+test-phase3-v2-readiness: ## Run Phase 3 V2 readiness regression tests
+	@bash tools/test_phase3_v2_readiness.sh
+
+test-cost-opt-stack: ## Run integrated cost optimization stack render tests
+	@if [ -f tools/test_cost_opt_stack_orchestrator.sh ]; then \
+		bash tools/test_cost_opt_stack_orchestrator.sh; \
+	else \
+		echo "SKIP: cost optimization stack tests require private feature-flag tooling"; \
+	fi
+
+test-current-cycle-cost-stack-inputs: ## Run current-cycle cost stack input builder tests
+	@bash tools/test_current_cycle_cost_stack_inputs.sh
+
+test-output-shape: ## Run output-shape experiment tests
+	@bash tools/test_output_shape_experiment.sh
+
+test-output-shape-amplification: ## Run output-shape amplification trace receipt tests
+	@bash tools/test_output_shape_amplification_trace_receipt.sh
 
 test-benchmark: ## Run multi-cycle benchmark regression (Dec, Aug, Jun)
 	@bash tools/test_benchmark_regression.sh
@@ -167,6 +276,9 @@ test-intel-effectiveness: ## Test intelligence gap encoding effectiveness (targe
 test-polishing: ## Test polishing rules and benchmark data
 	@bash tools/test_polishing_rules.sh
 
+## Code review staged changes via Copilot CLI
+review:
+	@bash .github/skills/reviewing-code-locally/scripts/local_review.sh
 
 ## Archive VS Code and CLI session logs (uses new SLM skill)
 archive-sessions: ## Copy VS Code + CLI session logs to runs/sessions/

@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-04-20T18:15:00Z",
+  "intended_audience": "repo-upgrade-advisor",
+  "schema_version": "1.0.0",
+  "brief_record_schema": "agentic_root_cause_brief_v1",
+  "consumer_response_schema": "bounded_advisory_decision_v1",
+  "briefs": [
+    {
+      "schema_version": "1.0.0",
+      "hotspot_id": "prompt_family:external_critique",
+      "brief_type": "root_cause_hypothesis_check",
+      "intended_audience": "repo-upgrade-advisor",
+      "user_facing_outcome": "newsletter_external_critique_proving_ground",
+      "capability_family": "external_critique",
+      "oracle_ref": "oracle:external-critique-helper-v3",
+      "evidence_class": "helper_only",
+      "transfer_status": "helper_only",
+      "bounded_non_claim": "Helper-only critique evidence in the newsletter proving ground must stay blocked and non-remediating.",
+      "consumer_response_contract": {
+        "allowed_verdicts": [
+          "protect",
+          "re-bucket",
+          "candidate_remediation",
+          "insufficient_evidence"
+        ],
+        "required_fields": [
+          "verdict",
+          "rationale"
+        ],
+        "forbidden_fields": [
+          "tier",
+          "evidence_refs",
+          "class",
+          "surfaces",
+          "fix_summary"
+        ]
+      }
+    },
+    {
+      "schema_version": "1.0.0",
+      "hotspot_id": "prompt_family:external_critique_health",
+      "brief_type": "root_cause_hypothesis_check",
+      "intended_audience": "repo-upgrade-advisor",
+      "user_facing_outcome": "newsletter_external_critique_proving_ground",
+      "capability_family": "external_critique",
+      "oracle_ref": "oracle:external-critique-newsletter-anchor-v1",
+      "evidence_class": "bounded_current_anchor",
+      "transfer_status": "partial",
+      "bounded_non_claim": "The newsletter proving-ground anchor is bounded only and does not admit remediation or publication.",
+      "consumer_response_contract": {
+        "allowed_verdicts": [
+          "protect",
+          "re-bucket",
+          "candidate_remediation",
+          "insufficient_evidence"
+        ],
+        "required_fields": [
+          "verdict",
+          "rationale"
+        ],
+        "forbidden_fields": [
+          "tier",
+          "evidence_refs",
+          "class",
+          "surfaces",
+          "fix_summary"
+        ]
+      }
+    }
+  ]
+}

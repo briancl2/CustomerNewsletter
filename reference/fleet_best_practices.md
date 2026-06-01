@@ -17,7 +17,7 @@ Fleet is a prompt overlay on the existing session — not a separate runtime. Th
 
 ```bash
 # Non-interactive (confirmed working)
-copilot --model claude-opus-4.6 \
+copilot --model gpt-5.5 \
   -p "/fleet <task description>" \
   --allow-all --no-ask-user \
   2>&1 | tee output.txt
@@ -33,7 +33,7 @@ Define custom agents in `.github/agents/` with `model:` in frontmatter:
 ---
 name: quality-writer
 description: High-quality content writer
-model: claude-opus-4.6
+model: gpt-5.5
 tools: ["bash", "create", "edit", "view"]
 ---
 You are a quality-focused writer. [instructions]
@@ -116,6 +116,8 @@ Only use this level of detail for complex tasks. Simple "create file X with cont
 When two agents write to the same file, both report success. The slower writer's content silently overwrites the faster writer's.
 
 **Prevention:** Partition files in the decomposition. Assign each agent distinct files. This is how production fleet sessions achieved zero conflicts across 94 files with 8 parallel agents.
+
+For this newsletter repo specifically, use `/fleet` for bounded side-work such as editorial mining, skill-building, and source-partitioned analysis. Keep the single final newsletter output on a serialized path so only one agent writes it.
 
 If multiple agents must contribute to one file, have each write to a separate path, then have the orchestrator merge.
 
