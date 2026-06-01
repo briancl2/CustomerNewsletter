@@ -22,6 +22,10 @@ nav:
       - Start Here: launch/2026-02/start-here.md
       - Case Study: launch/2026-02/case-study.md
       - Timeline: launch/2026-02/timeline.md
+  - May 2026 Cost Bundle:
+      - Customer Companion: https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md
+      - System Release Notes: https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md
+      - Product Quick Hits: https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md
   - How It Works: how-it-works.md
   - Architecture: architecture.md
   - Reports:

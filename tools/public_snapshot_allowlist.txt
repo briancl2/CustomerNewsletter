@@ -25,11 +25,17 @@ output/.gitkeep
 workspace/.gitkeep
 workspace/archived/.gitkeep
 
-# Public-safe release bundle layers only. Do not publish raw SOURCE_NOTES or
-# internal evidence directories from release bundles.
+# Public-safe release bundle layers only. Do not publish raw source-note or
+# non-public evidence directories from release bundles.
 release_bundle/2026-02_newsletter_launch/public/
 release_bundle/2026-04_newsletter_launch/START_HERE.md
 release_bundle/2026-04_newsletter_launch/run_april_production.sh
+release_bundle/2026-05_newsletter_cost_optimization/README.md
+release_bundle/2026-05_newsletter_cost_optimization/START_HERE.md
 release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md
+release_bundle/2026-05_newsletter_cost_optimization/ADMIN_FINOPS_GUIDE.md
+release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_GUIDE.md
 release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md
 release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md
+release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_MAY_COST_SECTION.md
+release_bundle/2026-05_newsletter_cost_optimization/PUBLIC_SOURCES.md

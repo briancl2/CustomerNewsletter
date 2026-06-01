@@ -88,7 +88,73 @@ Rule:
 
 More context:
 - [release_bundle/2026-04_newsletter_launch/START_HERE.md](release_bundle/2026-04_newsletter_launch/START_HERE.md)
+- [release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md)
+- [release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md)
 - [release_bundle/2026-02_newsletter_launch/public/START_HERE.md](release_bundle/2026-02_newsletter_launch/public/START_HERE.md)
+
+## Current Release Bundle: May 2026
+
+The May 2026 bundle is the current public companion for the cost-aware newsletter
+generation work. It is meant to help a developer answer three practical
+questions:
+
+1. How do I generate a newsletter with fewer wasted tokens?
+2. How do I optimize a similar agentic workflow without lowering quality?
+3. What changed across the newsletter generation system beyond the May issue
+  itself?
+
+Start here:
+
+- [Start here](release_bundle/2026-05_newsletter_cost_optimization/START_HERE.md) -- thin pointer to the customer companion.
+- [Customer companion](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical landing page with developer and admin guidance for cost-aware Copilot usage.
+- [System release notes](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -- technical deep dive with exact before/after token counts, code links, and an illustrative cost translation.
+- [Admin and FinOps guide](release_bundle/2026-05_newsletter_cost_optimization/ADMIN_FINOPS_GUIDE.md) -- budgets, reporting, governance, attribution, baseline, and showback guidance.
+- [Developer guide](release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_GUIDE.md) -- cost-aware agentic workflows with public-safe worked examples.
+- [Product feature quick hits](release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md) -- first-party source inventory for billing, budgets, observability, routing, and token-mechanics references.
+
+Public wording intentionally uses rounded aggregate/proxy metrics and caveats.
+Exact retained-run logs, private paths, raw token tables, and internal source
+notes stay in the private source repository.
+
+## Lower-Token Newsletter Workflow
+
+The most reliable way to lower token pressure is to reduce repeated work while
+keeping validation in the route. Use the admitted prompt-rendered production path
+as the oracle for its pinned range, then use the diagnostic harness only when you
+need phase-level repair.
+
+```bash
+# 1. Prepare the cycle and clear stale intermediates.
+bash tools/prepare_newsletter_cycle.sh 2026-02-14 2026-04-16 --no-reuse
+
+# 2. Run the prompt-rendered production oracle for the admitted April range.
+make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production
+
+# 3. Validate the generated newsletter.
+make validate-newsletter FILE=output/2026-04_april_newsletter.md
+bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --require-fresh --production-artifacts
+```
+
+`MODE=production` is intentionally pinned in
+[render_product_run_prompt.sh](tools/render_product_run_prompt.sh). For other
+date ranges, use the same workflow pattern, but do not swap arbitrary dates into
+`MODE=production` unless the helper has been extended and validated for that
+range.
+
+Optimization order:
+
+1. Bind the date range, source set, and acceptance criteria before generation.
+2. Reuse accepted artifacts only when identity, freshness, and scope are clear.
+3. Compact expensive curation inputs only after preserving required source
+  classes and fallback.
+4. Suppress broad search or tools only when the relevant files and artifacts are
+  already known.
+5. Promote model, reasoning, or output-shape changes only after route-level
+  validation passes.
+
+The May bundle explains the measured workflow signal and the claim boundaries in
+more detail. It does not claim Copilot billing savings, durable savings, model
+superiority, or universal percentages.
 
 ## System Overview
 
@@ -150,8 +216,17 @@ make newsletter START= END=   # Full pipeline orchestration
 make help                      # Show all 62 targets
 ```
 
+Newsletter-specific validation can also be run directly:
+
+```bash
+bash .github/skills/newsletter-validation/scripts/validate_newsletter.sh output/YYYY-MM_month_newsletter.md
+bash tools/validate_pipeline_strict.sh START_DATE END_DATE --require-fresh --production-artifacts
+bash tools/score-v2-rubric.sh output/YYYY-MM_month_newsletter.md
+```
+
 ## Documentation
 
 - [Public repo guide](reference/public_repo_guide.md) -- publication boundary and review checklist
+- [May cost optimization bundle](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical shipped-newsletter companion, persona paths, playbooks, examples, and system release notes
 - [April launch bundle](release_bundle/2026-04_newsletter_launch/START_HERE.md) -- production command and validation gates
 - [February public launch bundle](release_bundle/2026-02_newsletter_launch/public/START_HERE.md) -- public case study and runnable example
