@@ -8,9 +8,11 @@ If you only read one page, start here:
 - [Start here (Feb 2026)](launch/2026-02/start-here.md)
 
 For the current cost-aware workflow release:
-- [May 2026 cost optimization companion](https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md)
+- [May 2026 cost optimization companion](https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) (canonical landing page from the shipped newsletter)
 - [May 2026 system release notes](https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md)
 - [May 2026 product feature quick hits](https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md)
+
+The companion's `START HERE` section routes to the start-here copy, FinOps playbook, worked examples, admin guide, developer guide, and source references.
 
 Then, if you want the backstory:
 - [Short case study](launch/2026-02/case-study.md)
@@ -28,6 +30,8 @@ The May 2026 release bundle explains how the newsletter generation system was up
 - how to apply the same workflow patterns to other agentic systems
 - what changed across the source-pruning, artifact-reuse, compact-working-set, validation, and publication surfaces
 - which Copilot billing, budget, reporting, model-routing, and provider token-mechanics sources support the guidance
+- how FinOps teams can reason about baselines, budget layers, showback, and savings-claim discipline
+- worked examples for content generation, docs updates, debugging, budget-block triage, and custom agent workflows
 
 The bundle uses rounded aggregate/proxy workflow metrics with explicit non-billing caveats. Private run logs, exact token tables, retained evidence paths, and internal source notes are not published.
 

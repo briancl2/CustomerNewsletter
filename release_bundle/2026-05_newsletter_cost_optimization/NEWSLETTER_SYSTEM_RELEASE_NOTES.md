@@ -25,7 +25,7 @@ The headline: the system got cheaper because it did less repeated work, not beca
 | Task | Command or file | Use it when |
 |---|---|---|
 | Run a production-like newsletter generation | `make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production` | You want the admitted prompt-rendered production oracle. |
-| Retain proof artifacts for a production run | `make newsletter-proof-run START=2026-02-14 END=2026-04-16 MODE=production` | You need retained evidence for the admitted April range in the private source repo. |
+| Retain proof artifacts for a production run | `make newsletter-proof-run START=2026-02-14 END=2026-04-16 MODE=production` | You need retained evidence for the admitted April range in the source repo. |
 | Prepare a clean cycle | [prepare_newsletter_cycle.sh](../../tools/prepare_newsletter_cycle.sh) | You need to clear stale intermediates before a run. |
 | Render the exact product prompt | [render_product_run_prompt.sh](../../tools/render_product_run_prompt.sh) | You want to inspect or run the prompt outside Make. |
 | Diagnose phase-local behavior | [run_newsletter_orchestrated.sh](../../tools/run_newsletter_orchestrated.sh) | The prompt-rendered route failed and needs phase-local repair. |
@@ -61,17 +61,17 @@ The diagnostic path is for localizing failures and measuring candidate route cha
 - Added an allowlist-and-prune publication flow so public snapshots copy only approved surfaces and remove stale target-only files before validation. See [publish_public_snapshot.sh](../../tools/publish_public_snapshot.sh), [public_snapshot_allowlist.txt](../../tools/public_snapshot_allowlist.txt), and [public_snapshot_prune.txt](../../tools/public_snapshot_prune.txt).
 - Made the publisher pull-request safe by default. It now leaves changes uncommitted unless `--commit` is explicitly provided. This helps reviewers inspect the public diff before publishing.
 - Added target safety checks so the publisher refuses to run against the source repo, refuses nested source/target layouts, validates relative allowlist and prune entries, and treats sensitive-scan errors as hard failures.
-- Expanded sensitive-pattern scanning for local paths, private source links, private proof markers, stale release-bundle internals, and other non-public terms.
+- Expanded sensitive-pattern scanning for local paths, non-public source links, proof markers, stale release-bundle internals, and other non-public terms.
 
 ### Public Snapshot Boundary
 
-- Removed raw public copies of private `planning/`, `workspace/`, `runs/`, internal February source notes, and stale output variants from the public snapshot boundary.
-- Replaced broad `config/` publication with the public benchmark-mode config only: [feb2026_consistency.json](../../config/benchmark_modes/feb2026_consistency.json). Internal experiment policies, feature flags, fixture packs, and retained-run benchmark lanes stay private.
+- Removed raw public copies of non-public `planning/`, `workspace/`, `runs/`, February source notes, and stale output variants from the public snapshot boundary.
+- Replaced broad `config/` publication with the public benchmark-mode config only: [feb2026_consistency.json](../../config/benchmark_modes/feb2026_consistency.json). Experiment policies, feature flags, fixture packs, and retained-run benchmark lanes stay out of the public bundle.
 - Kept customer-safe release material selective: February public launch assets, April launch command notes, and May customer-facing cost guidance. See [February public launch](../2026-02_newsletter_launch/public/START_HERE.md), [April launch notes](../2026-04_newsletter_launch/START_HERE.md), and [May customer companion](CUSTOMER_COMPANION.md).
 
 ### Stronger Validation Gates
 
-- Updated the all-suite test runner to distinguish required public-safe suites from private retained-fixture suites. When private-only fixtures are absent from the public snapshot, those suites are skipped with an explicit reason rather than failing the public build. See [test_all.sh](../../tools/test_all.sh).
+- Updated the all-suite test runner to distinguish required public-safe suites from retained-fixture suites. When non-public fixtures are absent from the public snapshot, those suites are skipped with an explicit reason rather than failing the public build. See [test_all.sh](../../tools/test_all.sh).
 - Added targeted validator coverage for May root-cause drift classes in [validate_newsletter.sh](../../.github/skills/newsletter-validation/scripts/validate_newsletter.sh) and its self-test harness [test_validator.sh](../../tools/test_validator.sh).
 - Added or synced regression coverage for phase contracts, product prompt rendering, scope alignment, public newsletter validation, external critique fixtures, source-pruning receipts, output-shape receipts, and route-lock telemetry under [tools/](../../tools/) and [tests/](../../tests/).
 
@@ -104,7 +104,7 @@ The accepted route is not one trick. It is a set of controls that reduce repeate
 4. Reuse accepted artifacts instead of asking later phases to search again.
 5. Use compact working sets only where source coverage and fallback are available.
 6. Validate before claiming movement: newsletter validation, strict pipeline validation, and editorial scoring.
-7. If a route gets cheaper but quality falls, repair the route or reject it. Do not lower the quality bar.
+7. If a route gets cheaper but quality falls, repair the route or reject it while keeping the quality bar unchanged.
 
 ### Applying The Pattern Elsewhere
 
@@ -127,11 +127,11 @@ For another agentic workflow, copy the pattern rather than the numbers:
 
 ### Broader System Changes Beyond Cost Optimization
 
-- The public/private boundary is now a first-class release surface. Snapshot allowlists, prune lists, and sensitive scans define what can leave the private source repo.
+- The public/non-public boundary is now a first-class release surface. Snapshot allowlists, prune lists, and sensitive scans define what can leave the source repo.
 - The newsletter validator now carries more product-specific drift checks, so public output quality does not depend only on human review.
 - The source-intelligence layer was refreshed for Copilot CLI and Copilot app surfaces so future newsletters can reason over current product areas.
 - The `upgrade-advisor` agent makes system-improvement recommendations bounded by workflow, harness, validation, and execution-surface evidence.
-- Public tests now distinguish required public-safe suites from private retained-fixture suites, which makes the public repo runnable without private run logs.
+- Public tests now distinguish required public-safe suites from retained-fixture suites, which makes the public repo runnable without non-public run logs.
 - The release bundle itself now acts as a handoff artifact: it pairs user guidance, technical change mapping, source inventory, validation evidence, and claim boundaries.
 
 ### Published Outputs
@@ -142,10 +142,10 @@ For another agentic workflow, copy the pattern rather than the numbers:
 ## Validation Summary
 
 - Public sensitive-pattern scan: pass.
-- Public `make test-all`: required public suites pass; private retained-fixture suites skip when private fixtures are absent.
+- Public `make test-all`: required public suites pass; retained-fixture suites skip when non-public fixtures are absent.
 - April newsletter validation: pass, 0 warnings.
 - May newsletter validation: pass, 0 warnings.
-- Private full-suite validation before public sync: required suites pass, with only the expected private workspace fixture skip.
+- Source full-suite validation before public sync: required suites pass, with only the expected retained workspace fixture skip.
 
 Recommended validation when adapting this release:
 
@@ -159,4 +159,4 @@ bash tools/score-v2-rubric.sh output/YYYY-MM_month_newsletter.md
 
 ## Publication Boundary
 
-This release note intentionally excludes private run logs, private planning bursts, raw internal evidence, local machine paths, retained-run benchmark artifacts, and non-public source notes. Those materials remain in the private source repo and are represented here only as public-safe workflow descriptions.
+This release note intentionally excludes non-public run logs, planning bursts, raw evidence, local machine paths, retained-run benchmark artifacts, and non-public source notes. Those materials are represented here only as public-safe workflow descriptions.

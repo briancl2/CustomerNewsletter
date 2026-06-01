@@ -105,8 +105,11 @@ questions:
 
 Start here:
 
+- [Start here](release_bundle/2026-05_newsletter_cost_optimization/START_HERE.md) -- same landing guidance as the top of the customer companion.
 - [Customer companion](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- developer and admin guidance for cost-aware Copilot usage.
 - [System release notes](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -- technical map of what changed, where it changed, and how to use the changes.
+- [FinOps playbook](release_bundle/2026-05_newsletter_cost_optimization/FINOPS_PLAYBOOK.md) -- budget-layer, attribution, baseline, and showback guidance.
+- [Worked examples](release_bundle/2026-05_newsletter_cost_optimization/WORKED_EXAMPLES.md) -- public-safe scenarios for reducing repeated agent work.
 - [Product feature quick hits](release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md) -- first-party source inventory for billing, budgets, observability, routing, and token-mechanics references.
 
 Public wording intentionally uses rounded aggregate/proxy metrics and caveats.
@@ -224,6 +227,6 @@ bash tools/score-v2-rubric.sh output/YYYY-MM_month_newsletter.md
 ## Documentation
 
 - [Public repo guide](reference/public_repo_guide.md) -- publication boundary and review checklist
-- [May cost optimization bundle](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- developer/admin playbook and system release notes
+- [May cost optimization bundle](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical shipped-newsletter companion, persona paths, playbooks, examples, and system release notes
 - [April launch bundle](release_bundle/2026-04_newsletter_launch/START_HERE.md) -- production command and validation gates
 - [February public launch bundle](release_bundle/2026-02_newsletter_launch/public/START_HERE.md) -- public case study and runnable example

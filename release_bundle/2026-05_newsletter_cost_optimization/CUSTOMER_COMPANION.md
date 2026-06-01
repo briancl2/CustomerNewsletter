@@ -4,6 +4,28 @@ This is the customer-safe companion to the May 2026 newsletter. It summarizes pr
 
 Use this file when you want the operating guidance. Use [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) when you want the implementation map of what changed in the newsletter generation system.
 
+## START HERE
+
+This landing section appears in both [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md) and [START_HERE.md](START_HERE.md). The shipped May newsletter intentionally links to `CUSTOMER_COMPANION.md`; treat this file as the canonical companion and use `START_HERE.md` as the same quick entry point when browsing the release bundle directory.
+
+| Time | Path | Use when |
+|---|---|---|
+| 3 minutes | [EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md) | You need the core message, role routing, and safe summary language. |
+| 10 minutes | Keep reading this companion | You want the practical UBB, developer workflow, governance, and source-link guidance in one place. |
+| Implementation planning | [DEVELOPER_WORKFLOW_GUIDE.md](DEVELOPER_WORKFLOW_GUIDE.md), [ADMIN_READINESS_GUIDE.md](ADMIN_READINESS_GUIDE.md), [FINOPS_PLAYBOOK.md](FINOPS_PLAYBOOK.md), [WORKED_EXAMPLES.md](WORKED_EXAMPLES.md) | You are turning the guidance into team operating practices. |
+| Technical deep dive | [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md), [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md), [PUBLIC_SOURCES.md](PUBLIC_SOURCES.md) | You want implementation details, product controls, validation surfaces, and public sources. |
+
+| Role | Recommended path |
+|---|---|
+| Developer or team lead | [DEVELOPER_WORKFLOW_GUIDE.md](DEVELOPER_WORKFLOW_GUIDE.md) -> [WORKED_EXAMPLES.md](WORKED_EXAMPLES.md) -> [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) |
+| Architect or platform owner | [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -> [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) -> [WORKED_EXAMPLES.md](WORKED_EXAMPLES.md) |
+| Admin or governance owner | [ADMIN_READINESS_GUIDE.md](ADMIN_READINESS_GUIDE.md) -> [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) -> [PUBLIC_SOURCES.md](PUBLIC_SOURCES.md) |
+| FinOps or billing owner | [FINOPS_PLAYBOOK.md](FINOPS_PLAYBOOK.md) -> [ADMIN_READINESS_GUIDE.md](ADMIN_READINESS_GUIDE.md) -> [CUSTOMER_COMPANION.md#measurement-checklist](CUSTOMER_COMPANION.md#measurement-checklist) |
+| Security owner | [ADMIN_READINESS_GUIDE.md](ADMIN_READINESS_GUIDE.md) -> [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) governance and security rows |
+| Executive or customer-facing lead | [EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md) -> [NEWSLETTER_MAY_COST_SECTION.md](NEWSLETTER_MAY_COST_SECTION.md) -> [CUSTOMER_COMPANION.md#boundary](CUSTOMER_COMPANION.md#boundary) |
+
+This bundle provides workflow guidance, public-source references, and public-safe lessons from the newsletter generation system. It is not billing proof, a durable savings claim, a model recommendation, or a universal benchmark.
+
 ## Executive Summary
 
 - **UBB starts June 1 for affected customers.** Metered Copilot interactions use GitHub AI Credits where applicable.
@@ -12,14 +34,7 @@ Use this file when you want the operating guidance. Use [NEWSLETTER_SYSTEM_RELEA
 - **Routing clarification:** Auto model selection can help route work by task and model health, but it should be treated as workflow guidance, not billing proof.
 - **Budgets and behavior must be paired.** ULBs, cost-center budgets, enterprise limits, alerts, and usage exports work best when developers also get workflow guidance.
 - **The useful optimization target is finished work.** Measure the route to a correct, reviewed, tested result, not only one prompt or one phase.
-- **A real workflow moved materially.** In this newsletter system, retained aggregate/proxy comparisons showed roughly **25-45% less token mass** after workflow changes such as phase-specific routing, compact working sets, artifact reuse, and quality-gated fallback. Treat that as a measured workflow signal, not billing proof.
-
-## Read This First
-
-- **Developers and team leads:** read [Developer Workflow Guide](#developer-workflow-guide), then [Decision Tree](#decision-tree), then [Scenario Guidance](#scenario-guidance).
-- **Platform engineering:** read [What Changed In The Workflow](#what-changed-in-the-workflow), then [Measurement Checklist](#measurement-checklist).
-- **FinOps, admins, and billing owners:** read [Admin Checklist](#admin-checklist), then [Budget And Governance Notes](#budget-and-governance-notes).
-- **Reviewers and approvers:** read [Claim Discipline](#claim-discipline) and [Boundary](#boundary) before reusing any metric.
+- **A real workflow moved materially.** In this newsletter system, rounded aggregate/proxy comparisons showed roughly **25-45% less token mass** after workflow changes such as phase-specific routing, compact working sets, artifact reuse, and quality-gated fallback. Treat that as a workflow-specific engineering signal, not billing proof or a transferable savings percentage.
 
 ## Mental Model
 
@@ -117,7 +132,7 @@ Is spend concentrated in a few people, teams, or surfaces?
 
 Are developers blocked by budgets?
 	-> Diagnose user-level, cost-center, and enterprise budget layers.
-	-> Do not ask teams to weaken validation to work around a block.
+	-> Keep validation in place while owners decide whether the fix is an override, budget change, or workflow guidance.
 
 Is the same context reused frequently?
 	-> Stabilize instructions, prompt prefixes, source bundles, and tool schemas.
@@ -133,7 +148,7 @@ Is the same context reused frequently?
 | Architecture decision | Ask for options, tradeoffs, constraints, and a recommendation. | Reasoning/frontier where complexity warrants it. | Bound the question and require assumptions. |
 | Implementation from a known plan | Start fresh with approved plan and file list. | Mid-tier where quality gates are strong. | Avoid re-research; run tests; stop at planned scope. |
 | Unknown failure debugging | Provide logs, stack traces, repro steps, and recent changes. | Reasoning for root cause, then cheaper scoped patching where appropriate. | Use hypothesis -> test -> fix -> validation. |
-| Test generation | Provide target behavior, edge cases, and framework. | Lightweight or mid-tier. | Do not rewrite production code unless requested. |
+| Test generation | Provide target behavior, edge cases, and framework. | Lightweight or mid-tier. | Keep production code unchanged unless the task explicitly includes it. |
 | Repeated team workflow | Convert into instructions, prompt files, skills, or custom agents. | Depends on workflow complexity. | Reduce repeated discovery and inconsistent tool use. |
 
 ## Terms
@@ -163,7 +178,7 @@ Is the same context reused frequently?
 - Make sure support teams can diagnose which budget layer caused a block.
 - Review usage weekly during rollout, then monthly once stable. Look for concentrated per-user consumption, premium-model concentration, temporary spikes, and teams blocked before completing productive work.
 - Track Copilot code review separately from normal chat and agent usage because it may consume AI Credits and GitHub Actions minutes.
-- For internal agentic workflows built with the Copilot SDK, OpenTelemetry can connect agent sessions, tool calls, and application traces. For standard VS Code and Copilot CLI usage, start with GitHub usage reports and available IDE/CLI telemetry, then add SDK/OpenTelemetry where you own the workflow harness.
+- For custom agentic workflows built with the Copilot SDK, OpenTelemetry can connect agent sessions, tool calls, and application traces. For standard VS Code and Copilot CLI usage, start with GitHub usage reports and available IDE/CLI telemetry, then add SDK/OpenTelemetry where your team owns the workflow harness.
 
 ## Developer Playbook
 
@@ -180,19 +195,18 @@ Do:
 - Keep repository instructions short, specific, and grounded in repeated agent failure modes.
 - Reuse artifacts only when identity, freshness, and scope are clear.
 
-Do not:
+Common pitfalls:
 
-- Do not claim savings from shorter prompts alone.
-- Do not treat phase-local token movement as full-route savings.
-- Do not strip context without a fallback path to restore required source material.
-- Do not force lower reasoning or cheaper models without quality evidence.
-- Do not treat internal telemetry as billing proof.
-- Do not quote private exact token counts in customer material unless the evidence owner approves the metric and caveat.
-- Do not turn one workflow experiment into a universal model recommendation.
-- Do not use output length limits as the primary cost-control strategy.
-- Do not let agents browse, search, or tool-call freely when the relevant files are already known.
-- Do not raise user-level budgets without checking enterprise-level and cost-center budgets.
-- Do not describe BYOK, provider pricing, or OpenTelemetry generically when the question is Copilot billing or reporting.
+- Shorter prompts alone rarely fix an expensive workflow if retries, repairs, or broad search continue.
+- Phase-local token movement is diagnostic until the full route and quality gates are measured.
+- Context reduction needs a fallback path for required source material.
+- Lower reasoning or cheaper models should be promoted only when quality evidence supports the route.
+- Workflow telemetry is engineering evidence; invoice-grade billing claims need billing data.
+- One workflow experiment should not become a universal model recommendation.
+- Output length limits work best as a formatting tool, not the primary cost-control strategy.
+- Agents should have bounded search and tool access when the relevant files are already known.
+- User-level budget changes should be checked against cost-center and enterprise budgets.
+- BYOK, provider pricing, and OpenTelemetry guidance should specify the surface and whether the question is Copilot billing, reporting, or custom workflow instrumentation.
 
 ## Claim Discipline
 
@@ -200,11 +214,11 @@ Label every optimization claim by evidence type:
 
 - **Official product behavior:** first-party GitHub or Microsoft product documentation, changelog, or release note.
 - **GitHub usage report/export:** usage reporting or export evidence.
-- **Internal telemetry:** private aggregate/proxy data from this repo or retained experiments.
+- **Workflow telemetry:** aggregate/proxy data from a bounded workflow or experiment.
 - **Workflow experiment:** bounded experimental result with quality and provenance checks.
 - **Recommendation/inference:** guidance derived from evidence, not direct proof.
 
-Do not turn one evidence type into another. Internal telemetry is not billing proof, and one workflow experiment is not a universal model benchmark.
+Keep evidence types separate. Workflow telemetry is not billing proof, and one workflow experiment is not a universal model benchmark.
 
 ## Measurement Checklist
 
@@ -236,7 +250,7 @@ Before claiming savings, confirm:
 
 ### Provider Token Mechanics
 
-Use these for general token, context, caching, batch, reasoning, and evaluation concepts. Do not use them as Copilot billing sources.
+Use these for general token, context, caching, batch, reasoning, and evaluation concepts. Use GitHub Copilot billing documentation for Copilot charge and AI Credit questions.
 
 - [OpenAI pricing](https://developers.openai.com/api/docs/pricing)
 - [OpenAI cost optimization](https://developers.openai.com/api/docs/guides/cost-optimization)

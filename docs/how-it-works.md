@@ -6,6 +6,7 @@ way.
 
 If you want to run it, start with:
 - [Start here (Feb 2026)](launch/2026-02/start-here.md)
+- [May 2026 cost optimization companion](https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md)
 - [May 2026 system release notes](https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md)
 
 ## Pipeline Phases
