@@ -1,6 +1,6 @@
 # May 2026 Cost-Aware Copilot Usage Bundle
 
-> **Bottom line:** A customer-facing bundle on UBB readiness and cost-aware Copilot usage; start at the companion and branch by role. **For:** developers, admins, FinOps, security, and executives. **Read time:** 1 minute for this map.
+> **Bottom line:** A customer-facing bundle on UBB readiness and cost-aware Copilot usage; start at the companion and branch by role. The headline result behind it: re-engineering this newsletter's own AI workflow cut roughly 27-45% of the direct provider tokens per run while quality gates held. **For:** developers and Admin & FinOps owners. **Read time:** 1 minute for this map.
 
 This customer-facing bundle accompanies the May 2026 GitHub Customer Newsletter. It focuses on UBB readiness, cost-aware Copilot usage, workflow design, product controls, and first-party source links.
 

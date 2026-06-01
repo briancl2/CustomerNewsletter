@@ -1,6 +1,6 @@
 # Product Feature Quick Hits For Cost Management
 
-> **Bottom line:** A first-party-source-backed inventory of Copilot cost, visibility, routing, and governance features with conservative status labels. **For:** admins, platform owners, and developers auditing what is available and where. **Read time:** scan by `Group` column, about 5 minutes.
+> **Bottom line:** A first-party-source-backed inventory of Copilot cost, visibility, routing, and governance features with conservative status labels. **For:** developers and Admin & FinOps owners auditing what is available and where. **Read time:** scan by `Group` column, about 5 minutes.
 
 This is a first-party-source-backed inventory of features related to cost management, cost visibility, token efficiency, routing, and governance. Use the `Group` column for operational scanning before reading individual rows. Status labels are conservative: `GA` or `PREVIEW` appear only where the source explicitly supports that status.
 

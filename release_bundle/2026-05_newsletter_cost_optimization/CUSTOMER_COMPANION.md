@@ -1,10 +1,14 @@
 # Customer Companion: Cost-Aware Copilot Usage
 
-> **Bottom line:** Pair usage-based billing controls with better workflow design, measurement, and governance; this companion is the single landing page for the May 2026 cost guidance. **For:** any reader who followed the newsletter link, plus developers, admins, FinOps, and executives. **Read time:** about 10 minutes, or use the role routing below.
+> **Bottom line:** Re-engineering this newsletter's own AI workflow cut **roughly 27-45% of the direct provider tokens per run (about $6-12 per run in API-equivalent terms)** while quality gates held. The same moves -- route over prompt, compact context, artifact reuse, quality-gated fallback -- paired with usage-based billing controls are how you hold agentic Copilot costs down. Those dollar figures are illustrative API-equivalent estimates on direct provider tokens, **not** a GitHub Copilot AI Credits bill. **For:** developers and Admin & FinOps owners (and any reader who followed the newsletter link). **Read time:** about 10 minutes, or use the role routing below.
 
 This is the customer-safe companion to the May 2026 newsletter. It summarizes practical usage-based billing (UBB), Copilot governance, and cost-aware workflow guidance without exposing experiment logs or stronger claims than the evidence supports.
 
 Use this file when you want the operating guidance. Use [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) when you want the implementation map of what changed in the newsletter generation system, including exact before/after token counts and an illustrative cost translation.
+
+## From Brian
+
+I build and run the newsletter generation system behind this bundle, and I authored the May 2026 newsletter. I directed the AI agents that did the heavy lifting -- discovery, retrieval, curation, assembly -- and I shaped the cost-optimization work this companion summarizes. The numbers here are not hypothetical: I measured them on my own pipeline while producing real newsletters. What I learned was simple and a little humbling -- the cheapest prompt is rarely the cheapest workflow. Most of the savings came from making the system stop repeating work, not from asking it for shorter answers. If you are a developer or someone responsible for AI costs, that is the lever I would reach for first. -- Brian
 
 ## START HERE
 
@@ -20,15 +24,15 @@ This is the canonical landing page for the bundle. The shipped May newsletter in
 | Role | Recommended path |
 |---|---|
 | Developer or team lead | [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) -> [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) |
-| Architect or platform owner | [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -> [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) -> [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) |
-| Admin or governance owner | [ADMIN_FINOPS_GUIDE.md](ADMIN_FINOPS_GUIDE.md) -> [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) -> [PUBLIC_SOURCES.md](PUBLIC_SOURCES.md) |
-| FinOps or billing owner | [ADMIN_FINOPS_GUIDE.md](ADMIN_FINOPS_GUIDE.md) -> [Measurement Checklist](#measurement-checklist) |
-| Security owner | [ADMIN_FINOPS_GUIDE.md](ADMIN_FINOPS_GUIDE.md) -> [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) governance and security rows |
-| Executive or customer-facing lead | [Executive Summary](#executive-summary) -> [NEWSLETTER_MAY_COST_SECTION.md](NEWSLETTER_MAY_COST_SECTION.md) -> [Boundary](#boundary) |
+| Admin & FinOps owner | [ADMIN_FINOPS_GUIDE.md](ADMIN_FINOPS_GUIDE.md) -> [Measurement Checklist](#measurement-checklist) -> [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md) |
+
+If you just need the core message and the takeaways in three minutes, read the [Executive Summary](#executive-summary) below; if you are presenting the cost story, the [NEWSLETTER_MAY_COST_SECTION.md](NEWSLETTER_MAY_COST_SECTION.md) excerpt is the verbatim newsletter section.
 
 This bundle provides workflow guidance, public-source references, and public-safe lessons from the newsletter generation system. It is not billing proof, a durable savings claim, a model recommendation, or a universal benchmark.
 
 ## Executive Summary
+
+> **Expected savings, concretely.** In my own newsletter runs, the accepted optimized route moved a full current-cycle generation from about 9.0M to about 5.0M direct provider tokens (~45% fewer), and a fixed-corpus run from about 7.8M to about 5.7M (~27% fewer). At a blended illustrative rate of about $3 per million direct provider tokens (a `gpt-5.5`-class list price -- substitute your own from the [OpenAI pricing](https://developers.openai.com/api/docs/pricing) page), that is roughly **$12 per current-cycle run** and **$6 per fixed-corpus run** of API-equivalent token cost removed. These are illustrative engineering estimates on direct provider tokens, **not** a GitHub Copilot AI Credits bill. For the full before/after tables and the cost math, see [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md).
 
 - **UBB starts June 1 for affected customers.** Metered Copilot interactions use GitHub AI Credits where applicable.
 - **Developer clarification:** code completions and Next Edit Suggestions are not billed in AI Credits for paid Copilot plans. Developers should use GitHub's model and pricing documentation to understand which interactions can consume AI Credits.
@@ -36,7 +40,7 @@ This bundle provides workflow guidance, public-source references, and public-saf
 - **Routing clarification:** Auto model selection can help route work by task and model health, but it should be treated as workflow guidance, not billing proof.
 - **Budgets and behavior must be paired.** ULBs, cost-center budgets, enterprise limits, alerts, and usage exports work best when developers also get workflow guidance.
 - **The useful optimization target is finished work.** Measure the route to a correct, reviewed, tested result, not only one prompt or one phase.
-- **A real workflow moved materially.** In this newsletter system, rounded aggregate/proxy comparisons showed roughly **25-45% less token mass** after workflow changes such as phase-specific routing, compact working sets, artifact reuse, and quality-gated fallback. Treat that as a workflow-specific engineering signal, not billing proof or a transferable savings percentage.
+- **A real workflow moved materially.** When I applied phase-specific routing, compact working sets, artifact reuse, and quality-gated fallback to my own newsletter system, rounded aggregate/proxy comparisons showed roughly **27-45% less token mass** per run. Treat that as a workflow-specific engineering signal, not billing proof or a transferable savings percentage.
 
 ## Mental Model
 
@@ -57,17 +61,17 @@ The practical target is not the shortest prompt. It is the route that reaches a 
 
 ## What Changed In The Workflow
 
-The cost story behind this newsletter is concrete: the generation system was changed to do less repeated AI work while keeping validation in the loop.
+The cost story behind this newsletter is concrete: I changed the generation system to do less repeated AI work while keeping validation in the loop. For the exact before/after token counts and the cost translation, see [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md); for the developer patterns behind each change, see [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md).
 
 | Change | Customer-safe takeaway | Metric signal |
 |---|---|---:|
-| Phase-specific routing | Different phases deserve different model/reasoning choices; test the route, not the model in isolation. | Integrated comparisons showed roughly 25-45% lower aggregate/proxy token mass. |
+| Phase-specific routing | Different phases deserve different model/reasoning choices; test the route, not the model in isolation. | Integrated comparisons showed roughly 27-45% lower aggregate/proxy token mass. |
 | Compact working set | Smaller context can help when required source classes and fallback are preserved. | One Phase 3 example reduced the curation token load by roughly nine-tenths. |
 | Artifact reuse / no-refetch | Reuse accepted artifacts instead of re-fetching, but bind identity, freshness, and scope first. | Helped reduce repeated retrieval and synthesis work inside the accepted route. |
 | stdout/no-tools route | Suppress unnecessary tools only after readiness checks pass; keep fallback available. | Repaired route passed V2 quality and newsletter validation. |
 | Failed output-shape policy | Shorter output instructions can increase total route cost by causing compensation elsewhere. | Negative result; not promoted. |
 
-The point is not that these exact percentages transfer to another team. The point is that finished-workflow measurement can reveal where agentic work is being repeated, amplified, or repaired.
+The point is not that these exact percentages transfer to another team. The point I took away is that finished-workflow measurement can reveal where agentic work is being repeated, amplified, or repaired.
 
 ## Developer Workflow Guide
 
@@ -162,6 +166,8 @@ Is the same context reused frequently?
 - **Additional spend:** metered charges after included pooled credits are exhausted.
 
 ## Admin Checklist
+
+For the full admin and FinOps operating model -- budgets, reporting, showback, and governance -- see [ADMIN_FINOPS_GUIDE.md](ADMIN_FINOPS_GUIDE.md). For the product controls behind these actions, see [PRODUCT_FEATURE_QUICK_HITS.md](PRODUCT_FEATURE_QUICK_HITS.md).
 
 | Owner | Action | Why It Matters | Source |
 |---|---|---|---|

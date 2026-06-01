@@ -1,6 +1,6 @@
 # Newsletter Generation System Release Notes
 
-> **Bottom line:** The newsletter generation system was re-engineered to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run while quality gates stayed in force. **For:** developers, platform owners, and architects who want the technical map and the before/after evidence. **Read time:** about 12 minutes.
+> **Bottom line:** I re-engineered this newsletter's generation system to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run -- about $6-12 per run in illustrative API-equivalent terms -- while quality gates stayed in force. Those dollar figures are estimates on direct provider tokens, **not** a GitHub Copilot AI Credits bill. **For:** developers and Admin & FinOps owners who want the technical map and the before/after evidence. **Read time:** about 12 minutes.
 
 This note summarizes the customer-safe newsletter generation system changes included with the May 2026 public catch-up. It is about the reusable newsletter pipeline itself, not the May newsletter content.
 
@@ -8,7 +8,7 @@ Use this file when you want the technical map: what changed, where it changed, w
 
 ## Measured Impact
 
-The cost optimization work produced measurable aggregate/proxy movement in retained comparison runs. These are workflow-engineering measurements of direct provider token totals, not GitHub Copilot billing claims.
+The cost optimization work I ran produced measurable aggregate/proxy movement in retained comparison runs. These are workflow-engineering measurements of direct provider token totals, not GitHub Copilot billing claims.
 
 | Comparison run | Before (tokens) | After (tokens) | Change | Quality status |
 |---|---:|---:|---:|---|
@@ -18,7 +18,7 @@ The cost optimization work produced measurable aggregate/proxy movement in retai
 | Cheaper but blocked route | 5,785,064 | 4,501,184 | about -22% | Rejected: quality fell below threshold (V2 `39/50`). |
 | Repaired optimized route | — | 4,388,338 | — | Accepted: V2 `48/50`, newsletter validation passed. |
 
-On the integrated runs, requests and tool calls dropped alongside tokens: the fixed-corpus run moved from `126` to `102` requests and `212` to `184` tool calls; the current-cycle run moved from `125` to `93` requests and `267` to `149` tool calls. The system got cheaper because it did less repeated work, not because it merely asked for shorter answers.
+On the integrated runs, requests and tool calls dropped alongside tokens: the fixed-corpus run moved from `126` to `102` requests and `212` to `184` tool calls; the current-cycle run moved from `125` to `93` requests and `267` to `149` tool calls. The system got cheaper because I made it do less repeated work, not because it merely asked for shorter answers -- that was the central lesson I took from the May cycle.
 
 These totals count direct provider tokens across the full route. They are engineering evidence under bounded workflow conditions; they are not a durable percentage, a universal benchmark, or a Copilot AI Credits invoice.
 

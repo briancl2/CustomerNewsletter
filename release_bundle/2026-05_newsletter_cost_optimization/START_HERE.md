@@ -1,6 +1,6 @@
 # Start Here
 
-> **Bottom line:** The canonical landing page for this bundle is the customer companion. **For:** anyone browsing the release bundle directory. **Read time:** under 1 minute.
+> **Bottom line:** The canonical landing page for this bundle is the customer companion. **For:** developers and Admin & FinOps owners browsing the release bundle directory. **Read time:** under 1 minute.
 
 The May 2026 cost-aware Copilot bundle is led by **[CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md)**. The shipped newsletter links there, and it carries the role routing, reading paths, and guidance for the whole bundle.
 

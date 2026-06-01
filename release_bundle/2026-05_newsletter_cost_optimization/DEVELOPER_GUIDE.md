@@ -1,6 +1,6 @@
 # Developer Guide: Cost-Aware Agentic Workflows
 
-> **Bottom line:** Optimize the route, not the prompt; a shorter prompt can still cost more if it drives retries, broad search, and repairs. **For:** developers, platform engineers, and AI workflow owners. **Read time:** about 9 minutes.
+> **Bottom line:** Optimize the route, not the prompt; a shorter prompt can still cost more if it drives retries, broad search, and repairs. **For:** developers and AI workflow owners. **Read time:** about 9 minutes.
 
 This guide is for developers reducing token and cost pressure without weakening quality. It pairs core rules with worked scenarios. For the system that produced these lessons and its before/after numbers, see [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md).
 
