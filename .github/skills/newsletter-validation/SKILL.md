@@ -46,6 +46,20 @@ The [validate_newsletter.sh](scripts/validate_newsletter.sh) script checks:
 - Legal/CCC content outside the active Enterprise/Security/Governance/Legal/Compliance heading path unless the issue is explicitly legal-led
 - VS Code body-prose sequences with 3+ `1.xxx` version numbers
 - Under-linked release-inventory bullets for Copilot App and high-volume Copilot CLI, using generic release-count/release-stream triggers rather than one month-specific count
+- Specific-labeled inline links that point to a generic landing page instead of the deep/anchored source (WARN; see Link Specificity)
+
+### Link Specificity (Inline Deep-Link Policy)
+
+Applies to **inline contextual links in prose** -- a link whose label names a specific feature, capability, or claim. Such a link must point to the most specific source that documents that exact thing: a section anchor, a dated changelog post, or a deep doc page. It must not point to a generic landing page, a bare version page, or a blog root.
+
+- Correct: a sentence about OpenTelemetry signals for agents links to `code.visualstudio.com/updates/v1_122#_richer-opentelemetry-signals-for-agents`, not to `code.visualstudio.com/updates/v1_122` or a blog index.
+- Duplicate inline links to the same **deep, anchored** URL are allowed when each use is the direct, specific source for its surrounding claim.
+- **No repeated generic page in one breath.** A non-anchored or generic page (a tutorial root, doc landing, or bare version page with no `#` anchor) must appear at most once per bullet, table row, or sentence. Do not link the same generic page from several phrases in a row: link it once on the most specific phrase and keep a single trailing/source pointer. Repeating one generic page across multiple claims adds visual noise without adding specificity, and is the most common form of low-value link duplication.
+- In role/action tables, the `Source` column is the row's canonical pointer; do not also link that same generic URL from the `Action` and `Why` columns. Reserve inline links in those columns for a *different*, more specific source.
+- Exemption: aggregated reference/source-list sections (for example a `Source Links` section or a consolidated public-sources file) and generically labeled pointers (`[Release Notes]`, `[Changelog]`, `[Docs]`, `[GitHub Blog]`) may use stable canonical landing pages. The label-to-URL mapping in the manual rubric still applies there.
+- If no deep source exists for a specific claim, narrow the link label so it accurately describes the landing page, and record the exception.
+
+The `validate_newsletter.sh` check is WARN-level. It flags: (1) specific-labeled inline links to bare VS Code version pages (no `#` anchor) and to blog roots; (2) a non-anchored URL repeated 3+ times in a single line (one inline use plus one trailing/source pointer is fine -- more than that is the repeated-generic-page pattern); and (3) specific-labeled inline links to bare `docs.github.com` section indices (for example `.../copilot` or `.../copilot/reference` with no article). Generic labels are exempt. WARN does not block, but each flag must be resolved or justified before publication.
 
 ### Strict Pipeline Artifact Contract
 

@@ -44,7 +44,7 @@ This bundle provides workflow guidance, public-source references, and public-saf
 
 ## Mental Model
 
-Copilot UBB is token-based, but it is not simply each provider's public API bill passed through unchanged. Copilot uses GitHub AI Credits, Copilot-specific model pricing, cached-token categories where applicable, and feature-specific billing behavior. GitHub Copilot billing docs are authoritative for Copilot charges. Provider API docs are useful for understanding token economics, caching, context windows, reasoning controls, and batch-style optimization patterns.
+Copilot bills metered usage in GitHub AI Credits, based on the model used and the number of tokens each interaction consumes. GitHub's [Copilot billing docs](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing) are the authoritative source for what is charged. Provider API pricing pages are background only: useful for understanding token economics, but they are not your Copilot bill.
 
 Useful finished-work cost is closer to this shape:
 
