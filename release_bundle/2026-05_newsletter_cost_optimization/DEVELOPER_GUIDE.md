@@ -47,7 +47,7 @@ Optimize the route, not the prompt. A prompt can be shorter while the workflow c
 
 ## Worked Examples
 
-These examples apply the rules above without treating this newsletter system as a universal benchmark. They use public-safe patterns: bind the task, preserve required context, validate output, and avoid claiming billing savings from workflow telemetry alone.
+These examples apply the rules above without treating this newsletter system as a universal benchmark. They use general patterns: bind the task, preserve required context, validate output, and avoid claiming billing savings from workflow telemetry alone.
 
 ### Example 1: Newsletter Or Content Generation
 

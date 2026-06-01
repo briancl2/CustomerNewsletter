@@ -15,7 +15,7 @@ Every change follows this numbered workflow. No exceptions.
 6. **Fix** — Iterate until all criteria pass
 7. **Review** — Run `make review` on ALL changes before committing. `--no-verify` is NEVER permitted.
 8. **Validate** — Run quality checks (scoring battery)
-9. **Document** — Update HYPOTHESES.md, LEARNINGS.md, HANDOFF.md in the private source repo. For public snapshot work, also update the public sync manifest or PR description with scope and validation.
+9. **Document** — Update HYPOTHESES.md, LEARNINGS.md, and HANDOFF.md. For published changes, also record scope and validation in the PR description.
 10. **Clean up** — Delete old implementations (Deletion Discipline), archive stale artifacts
 11. **Report + Handoff** — Write HANDOFF.md for session continuity
 

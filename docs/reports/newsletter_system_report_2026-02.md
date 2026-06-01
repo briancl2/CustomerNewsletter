@@ -1,6 +1,6 @@
 # Building a Self-Learning Newsletter System with GitHub Copilot
 
-**Report Date:** February 2026 | **Repository:** Private source repository (sanitized for public release) | **Audience:** Copilot developers and technical practitioners
+**Report Date:** February 2026 | **Repository:** GitHub customer newsletter generation system | **Audience:** Copilot developers and technical practitioners
 
 ---
 

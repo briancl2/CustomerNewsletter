@@ -17,7 +17,6 @@ validate-structure: ## Verify all required files and directories exist
 		.github/skills/editorial-review/SKILL.md \
 		reference/editorial-intelligence.md \
 		reference/github_common_jargon.md \
-		reference/public_repo_guide.md \
 		README.md Makefile .gitignore; do \
 		if [ ! -f "$$f" ]; then echo "MISSING: $$f"; errors=$$((errors + 1)); fi; \
 	done; \
@@ -101,10 +100,6 @@ validate-newsletter: ## Validate a newsletter file (FILE=path/to/newsletter.md)
 
 validate-kb: ## Run kb link health check (dry-run)
 	@python3 .github/skills/kb-maintenance/scripts/check_link_health.py --dry-run
-
-publish-public-snapshot: ## Publish allowlisted public-safe snapshot (PUBLIC_REPO= path, ARGS= optional)
-	@if [ -z "$(PUBLIC_REPO)" ]; then echo "Usage: make publish-public-snapshot PUBLIC_REPO=/path/to/public [ARGS='--no-commit']"; exit 1; fi
-	@bash tools/publish_public_snapshot.sh $(ARGS) "$(PUBLIC_REPO)"
 
 kb-poll: ## Poll sources for new content (dry-run)
 	@python3 .github/skills/kb-maintenance/scripts/poll_sources.py --dry-run

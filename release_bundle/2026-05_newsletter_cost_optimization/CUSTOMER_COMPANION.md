@@ -2,7 +2,7 @@
 
 > **Bottom line:** Re-engineering this newsletter's own AI workflow cut **roughly 27-45% of the direct provider tokens per run (about $6-12 per run in API-equivalent terms)** while quality gates held. The same moves -- route over prompt, compact context, artifact reuse, quality-gated fallback -- paired with usage-based billing controls are how you hold agentic Copilot costs down.
 
-This is the customer-safe companion to the May 2026 newsletter. It summarizes practical usage-based billing (UBB), Copilot governance, and cost-aware workflow guidance without exposing experiment logs or stronger claims than the evidence supports.
+This is the companion to the May 2026 newsletter. It summarizes practical usage-based billing (UBB), Copilot governance, and cost-aware workflow guidance without exposing experiment logs or stronger claims than the evidence supports.
 
 Use this file when you want the operating guidance. Use [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md) when you want the implementation map of what changed in the newsletter generation system, including exact before/after token counts and an illustrative cost translation.
 
@@ -28,7 +28,7 @@ This is the canonical landing page for the bundle. The shipped May newsletter in
 
 If you just need the core message and the takeaways in three minutes, read the [Executive Summary](#executive-summary) below; if you are presenting the cost story, the [NEWSLETTER_MAY_COST_SECTION.md](NEWSLETTER_MAY_COST_SECTION.md) excerpt is the verbatim newsletter section.
 
-This bundle provides workflow guidance, public-source references, and public-safe lessons from the newsletter generation system. It is not billing proof, a durable savings claim, a model recommendation, or a universal benchmark.
+This bundle provides workflow guidance, public-source references, and practical lessons from the newsletter generation system. It is not billing proof, a durable savings claim, a model recommendation, or a universal benchmark.
 
 ## Executive Summary
 
@@ -63,7 +63,7 @@ The practical target is not the shortest prompt. It is the route that reaches a 
 
 The cost story behind this newsletter is concrete: I changed the generation system to do less repeated AI work while keeping validation in the loop. For the exact before/after token counts and the cost translation, see [NEWSLETTER_SYSTEM_RELEASE_NOTES.md](NEWSLETTER_SYSTEM_RELEASE_NOTES.md); for the developer patterns behind each change, see [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md).
 
-| Change | Customer-safe takeaway | Metric signal |
+| Change | Takeaway | Metric signal |
 |---|---|---:|
 | Phase-specific routing | Different phases deserve different model/reasoning choices; test the route, not the model in isolation. | Integrated comparisons showed roughly 27-45% lower aggregate/proxy token mass. |
 | Compact working set | Smaller context can help when required source classes and fallback are preserved. | One Phase 3 example reduced the curation token load by roughly nine-tenths. |

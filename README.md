@@ -46,9 +46,8 @@ Experiment-only optimization helpers:
 regression diagnosis. `newsletter-orchestrated-proof` packages that diagnostic
 path as retained evidence with phase-session telemetry for cost experiments.
 
-Retained production authority lives in the private source repository. The public
-snapshot keeps the runnable pipeline, selected outputs, and customer-safe bundle
-material, but not raw run logs or session evidence.
+This repository keeps the runnable pipeline, selected outputs, and release bundle
+material. Raw run logs and session evidence are not tracked here.
 
 VS Code flow: open the repo, select the `customer_newsletter` agent, then run:
 
@@ -108,12 +107,12 @@ Start here:
 - [Customer companion](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical landing page with developer and admin guidance for cost-aware Copilot usage.
 - [System release notes](release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md) -- technical deep dive with exact before/after token counts, code links, and an illustrative cost translation.
 - [Admin and FinOps guide](release_bundle/2026-05_newsletter_cost_optimization/ADMIN_FINOPS_GUIDE.md) -- budgets, reporting, governance, attribution, baseline, and showback guidance.
-- [Developer guide](release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_GUIDE.md) -- cost-aware agentic workflows with public-safe worked examples.
+- [Developer guide](release_bundle/2026-05_newsletter_cost_optimization/DEVELOPER_GUIDE.md) -- cost-aware agentic workflows with worked examples.
 - [Product feature quick hits](release_bundle/2026-05_newsletter_cost_optimization/PRODUCT_FEATURE_QUICK_HITS.md) -- first-party source inventory for billing, budgets, observability, routing, and token-mechanics references.
 
-Public wording intentionally uses rounded aggregate/proxy metrics and caveats.
-Exact retained-run logs, private paths, raw token tables, and internal source
-notes stay in the private source repository.
+Published wording intentionally uses rounded aggregate/proxy metrics and caveats.
+Exact retained-run logs, raw token tables, and detailed source notes are not
+tracked here.
 
 ## Lower-Token Newsletter Workflow
 
@@ -198,7 +197,7 @@ Engineering Managers, DevOps Leads, and IT Leadership at large regulated enterpr
 | `tools/` | Scoring, build automation, archival scripts |
 | `output/` | Final newsletter files |
 | `archive/` | Historical newsletters by year |
-| `workspace/` | Pipeline intermediates during local runs; public snapshot keeps only `.gitkeep` |
+| `workspace/` | Pipeline intermediates during local runs; only `.gitkeep` is tracked |
 | `benchmark/` | Gitignored benchmark scratch space, created on demand |
 
 ## Methodology
@@ -230,6 +229,5 @@ bash tools/score-v2-rubric.sh output/YYYY-MM_month_newsletter.md
 
 ## Documentation
 
-- [Public repo guide](reference/public_repo_guide.md) -- publication boundary and review checklist
 - [May cost optimization bundle](release_bundle/2026-05_newsletter_cost_optimization/CUSTOMER_COMPANION.md) -- canonical shipped-newsletter companion, persona paths, playbooks, examples, and system release notes
 - [February public launch bundle](release_bundle/2026-02_newsletter_launch/public/START_HERE.md) -- public case study and runnable example

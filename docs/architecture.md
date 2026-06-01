@@ -37,7 +37,6 @@ flowchart LR
 - Strict validation: `tools/validate_pipeline_strict.sh`
 - Production prompt rendering: `tools/render_product_run_prompt.sh`
 - Newsletter validation: `.github/skills/newsletter-validation/scripts/validate_newsletter.sh`
-- Public snapshot boundary: `tools/public_snapshot_allowlist.txt`, `tools/public_snapshot_prune.txt`, and `tools/public_snapshot_worldfacing_prune.txt`
 - Deterministic event sources:
   - `kb/EVENT_SOURCES.yaml`
   - `tools/extract_event_sources.py`
