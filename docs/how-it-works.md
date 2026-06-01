@@ -6,6 +6,7 @@ way.
 
 If you want to run it, start with:
 - [Start here (Feb 2026)](launch/2026-02/start-here.md)
+- [May 2026 system release notes](https://github.com/briancl2/CustomerNewsletter/blob/main/release_bundle/2026-05_newsletter_cost_optimization/NEWSLETTER_SYSTEM_RELEASE_NOTES.md)
 
 ## Pipeline Phases
 
@@ -31,6 +32,23 @@ Examples:
 - `workspace/newsletter_phase3_curated_sections_*.md`
 - `output/YYYY-MM_month_newsletter.md`
 
+## Cost-Aware Run Pattern
+
+The current production-like route starts with a clean cycle, runs the admitted prompt-rendered production command for its pinned range, and validates the output before any cost or quality claim is made.
+
+```bash
+bash tools/prepare_newsletter_cycle.sh 2026-02-14 2026-04-16 --no-reuse
+make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production
+make validate-newsletter FILE=output/2026-04_april_newsletter.md
+bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --require-fresh --production-artifacts
+```
+
+`MODE=production` is pinned to the April 2026 range by the prompt renderer. For another date range, reuse the workflow pattern and validation gates, but first extend and validate the admitted prompt-rendered mode for that range.
+
+The token-efficient path is about reducing repeated work, not just shortening prompts. The system now emphasizes accepted source sets, artifact reuse, compact Phase 3 curation inputs, readiness checks, and fallback to fuller context when quality is at risk.
+
+Use `tools/run_newsletter_orchestrated.sh` for phase-local diagnosis when the prompt-rendered route needs repair. Treat it as diagnostic unless the release notes for a given run say otherwise.
+
 ## Self-Learning Loop
 
 Corrections are encoded into skills and references, then validated by scoring and rule
@@ -45,3 +63,5 @@ Finding -> Root cause -> Skill/rule update -> Regenerate -> Validate -> Record l
 ## Trust Disk, Not Self-Reports
 
 The system relies on file-based proof and deterministic checks rather than agent claims.
+
+For cost-related claims, the proof must also say what it does not prove. The May bundle labels workflow movement as aggregate/proxy evidence, not Copilot billing proof, durable savings, model superiority, or fleet readiness.
