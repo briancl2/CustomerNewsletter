@@ -1,6 +1,6 @@
 # Newsletter Generation System Release Notes
 
-> **Bottom line:** I re-engineered this newsletter's generation system to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run -- about $6-12 per run in illustrative API-equivalent terms -- while quality gates stayed in force. Those dollar figures are estimates on direct provider tokens, **not** a GitHub Copilot AI Credits bill. **For:** developers and Admin & FinOps owners who want the technical map and the before/after evidence. **Read time:** about 12 minutes.
+> **Bottom line:** I re-engineered this newsletter's generation system to do less repeated AI work; the accepted route cut aggregate token totals by roughly 27-45% per run -- about $6-12 per run in illustrative API-equivalent terms -- while quality gates stayed in force. **For:** developers and Admin & FinOps owners who want the technical map and the before/after evidence. **Read time:** about 12 minutes.
 
 This note summarizes the customer-safe newsletter generation system changes included with the May 2026 public catch-up. It is about the reusable newsletter pipeline itself, not the May newsletter content.
 

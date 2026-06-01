@@ -1,6 +1,6 @@
 # Customer Companion: Cost-Aware Copilot Usage
 
-> **Bottom line:** Re-engineering this newsletter's own AI workflow cut **roughly 27-45% of the direct provider tokens per run (about $6-12 per run in API-equivalent terms)** while quality gates held. The same moves -- route over prompt, compact context, artifact reuse, quality-gated fallback -- paired with usage-based billing controls are how you hold agentic Copilot costs down. Those dollar figures are illustrative API-equivalent estimates on direct provider tokens, **not** a GitHub Copilot AI Credits bill. **For:** developers and Admin & FinOps owners (and any reader who followed the newsletter link). **Read time:** about 10 minutes, or use the role routing below.
+> **Bottom line:** Re-engineering this newsletter's own AI workflow cut **roughly 27-45% of the direct provider tokens per run (about $6-12 per run in API-equivalent terms)** while quality gates held. The same moves -- route over prompt, compact context, artifact reuse, quality-gated fallback -- paired with usage-based billing controls are how you hold agentic Copilot costs down.
 
 This is the customer-safe companion to the May 2026 newsletter. It summarizes practical usage-based billing (UBB), Copilot governance, and cost-aware workflow guidance without exposing experiment logs or stronger claims than the evidence supports.
 
@@ -8,7 +8,7 @@ Use this file when you want the operating guidance. Use [NEWSLETTER_SYSTEM_RELEA
 
 ## From Brian
 
-I build and run the newsletter generation system behind this bundle, and I authored the May 2026 newsletter. I directed the AI agents that did the heavy lifting -- discovery, retrieval, curation, assembly -- and I shaped the cost-optimization work this companion summarizes. The numbers here are not hypothetical: I measured them on my own pipeline while producing real newsletters. What I learned was simple and a little humbling -- the cheapest prompt is rarely the cheapest workflow. Most of the savings came from making the system stop repeating work, not from asking it for shorter answers. If you are a developer or someone responsible for AI costs, that is the lever I would reach for first. -- Brian
+For May's newsletter, I set out to learn how to optimize my generation workflow to understand what works and what doesn't for cost reduction. I asked Copilot to do most of the heavy lifting, setting up experiments, measuring what works and what doesn't, and then baking in the proven learnings into the newsletter generation process. The most humbling finding is that the cheapest or shortest prompt is rarely the cheapest workflow. Most of the savings came from making the system stop repeating work, not from asking for shorter responses. If you are a developer or otherwise responsible for AI costs, that is the lever I would reach for first -- Brian
 
 ## START HERE
 
