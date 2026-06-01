@@ -4,9 +4,11 @@ set -euo pipefail
 SOURCE_ROOT="$(cd "$(git rev-parse --show-toplevel)" && pwd -P)"
 ALLOWLIST_FILE="$SOURCE_ROOT/tools/public_snapshot_allowlist.txt"
 PRUNE_FILE="$SOURCE_ROOT/tools/public_snapshot_prune.txt"
+WORLDFACING_PRUNE_FILE="$SOURCE_ROOT/tools/public_snapshot_worldfacing_prune.txt"
 TARGET_ROOT="${PUBLIC_REPO_PATH:-$HOME/Projects/CustomerNewsletter}"
 COMMIT_CHANGES=0
 DRY_RUN=0
+WORLDFACING=0
 
 validate_relative_path() {
   local rel_path="$1"
@@ -20,7 +22,7 @@ validate_relative_path() {
 
 usage() {
   cat <<'USAGE'
-Usage: publish_public_snapshot.sh [--commit] [--no-commit] [--dry-run] [--target PATH] [PATH]
+Usage: publish_public_snapshot.sh [--commit] [--no-commit] [--dry-run] [--world-facing] [--target PATH] [PATH]
 
 Copies the allowlisted public-safe snapshot from the private repo to the target
 public repo, prunes known stale target-only files, scans for sensitive markers,
@@ -28,11 +30,13 @@ runs the public test suite, and leaves the result ready for PR review unless
 --commit is explicitly provided.
 
 Options:
-  --commit      Commit changed files after validation.
-  --no-commit   Leave changes unstaged for a PR branch review (default).
-  --dry-run     Show copy/prune actions without changing files or committing.
-  --target PATH Public repo target path. A positional PATH is also accepted.
-  -h, --help    Show this help.
+  --commit       Commit changed files after validation.
+  --no-commit    Leave changes unstaged for a PR branch review (default).
+  --dry-run      Show copy/prune actions without changing files or committing.
+  --world-facing Apply the extra world-facing prune list (tools/public_snapshot_worldfacing_prune.txt)
+                 to strip artifacts kept only in the GitHub-employee -public snapshot.
+  --target PATH  Public repo target path. A positional PATH is also accepted.
+  -h, --help     Show this help.
 USAGE
 }
 
@@ -50,6 +54,10 @@ while [ "$#" -gt 0 ]; do
     --dry-run)
       DRY_RUN=1
       COMMIT_CHANGES=0
+      shift
+      ;;
+    --world-facing)
+      WORLDFACING=1
       shift
       ;;
     --target)
@@ -126,7 +134,8 @@ echo "Prune list: $PRUNE_FILE"
 
 run_prune_list() {
   local phase="$1"
-  [ -f "$PRUNE_FILE" ] || return 0
+  local prune_file="$2"
+  [ -f "$prune_file" ] || return 0
 
   while IFS= read -r rel_path || [ -n "$rel_path" ]; do
     case "$rel_path" in
@@ -146,11 +155,11 @@ run_prune_list() {
       rm -rf "$target_path"
       echo "PRUNE: $rel_path"
     fi
-  done < "$PRUNE_FILE"
+  done < "$prune_file"
   echo "Prune phase completed: $phase"
 }
 
-run_prune_list "pre-sync"
+run_prune_list "pre-sync" "$PRUNE_FILE"
 
 while IFS= read -r rel_path || [ -n "$rel_path" ]; do
   case "$rel_path" in
@@ -185,7 +194,12 @@ while IFS= read -r rel_path || [ -n "$rel_path" ]; do
   fi
 done < "$ALLOWLIST_FILE"
 
-run_prune_list "post-sync"
+run_prune_list "post-sync" "$PRUNE_FILE"
+
+if [ "$WORLDFACING" -eq 1 ]; then
+  echo "Applying world-facing prune list: $WORLDFACING_PRUNE_FILE"
+  run_prune_list "world-facing" "$WORLDFACING_PRUNE_FILE"
+fi
 
 if [ "$DRY_RUN" -eq 1 ]; then
   echo "Dry run complete; skipping scan, tests, and commit."
@@ -193,24 +207,39 @@ if [ "$DRY_RUN" -eq 1 ]; then
 fi
 
 echo "Running sensitive-pattern scan..."
-SENSITIVE_PATTERN="(/Users/|file://|docs\.google\.com|slack\.com|sales intelligence vault|@sales-collaborator|customer account|Salesforce summaries|M365 email dumps|Revenue MCP|MEDDPICC gaps|economic buyer|renewal prep|CASE_STUDY_INTERNAL|TIMELINE_VERBATIM_UNCLIPPED|BMA_EVIDENCE_ATLAS|raw token count|provider-token accounting|private GitHub discussion)"
+# Markers checked across the entire allowlisted tree.
+SENSITIVE_PATTERN="(/Users/|file:///|sales intelligence vault|@sales-collaborator|customer account|Salesforce summaries|M365 email dumps|Revenue MCP|MEDDPICC gaps|economic buyer|renewal prep|CASE_STUDY_INTERNAL|TIMELINE_VERBATIM_UNCLIPPED|BMA_EVIDENCE_ATLAS|raw token count|provider-token accounting|private GitHub discussion)"
+# Internal-domain markers. The curator-notes skill lists these in a
+# link-classification table, so it is exempt for THESE patterns only -- every
+# other marker above is still scanned in that file.
+DOMAIN_PATTERN="(docs\.google\.com|slack\.com)"
 if ! command -v rg >/dev/null 2>&1; then
   echo "ERROR: ripgrep (rg) is required for sensitive-pattern scanning."
   exit 1
 fi
 
+# --hidden so the allowlisted-to-public .github/ tree is scanned too (rg skips
+# hidden dirs by default); .git/ internals are excluded.
 set +e
-rg -n -i "$SENSITIVE_PATTERN" "$TARGET_ROOT" \
+rg -n -i --hidden "$SENSITIVE_PATTERN" "$TARGET_ROOT" \
+  -g '!**/.git/**' \
   -g '!**/tools/publish_public_snapshot.sh' \
   -g '!**/tools/public_snapshot_prune.txt'
 scan_status=$?
+rg -n -i --hidden "$DOMAIN_PATTERN" "$TARGET_ROOT" \
+  -g '!**/.git/**' \
+  -g '!**/tools/publish_public_snapshot.sh' \
+  -g '!**/tools/public_snapshot_prune.txt' \
+  -g '!**/.github/skills/curator-notes/SKILL.md'
+domain_status=$?
 set -e
 
-if [ "$scan_status" -eq 0 ]; then
+# rg exit codes: 0 = match found (fail), 1 = no match (ok), >1 = error.
+if [ "$scan_status" -eq 0 ] || [ "$domain_status" -eq 0 ]; then
   echo "ERROR: sensitive patterns detected in target repo."
   exit 1
-elif [ "$scan_status" -ne 1 ]; then
-  echo "ERROR: sensitive-pattern scan failed with exit status $scan_status."
+elif [ "$scan_status" -ne 1 ] || [ "$domain_status" -ne 1 ]; then
+  echo "ERROR: sensitive-pattern scan failed (main=$scan_status domain=$domain_status)."
   exit 1
 fi
 

@@ -43,17 +43,32 @@ Do not publish:
 
 ## Publishing Workflow
 
-Use the private source repository as the source of truth:
+Use the private source repository as the source of truth. There are two public
+targets:
+
+- The GitHub-employee `-public` snapshot, which may carry slightly more internal
+  detail.
+- The fully public, world-facing `CustomerNewsletter` repo, which must be the
+  most sanitized.
 
 ```bash
+# GitHub-employee -public snapshot (keeps employee-visible extras):
 bash tools/publish_public_snapshot.sh --no-commit /path/to/briancl2-customer-newsletter-public
+
+# World-facing public repo (applies the extra world-facing prune):
+bash tools/publish_public_snapshot.sh --no-commit --world-facing /path/to/CustomerNewsletter
 ```
 
 Then review the public checkout diff, run validation, commit on a public branch,
 and open a pull request.
 
 The allowlist lives at `tools/public_snapshot_allowlist.txt`. Target-only files
-that should be removed during publication live in `tools/public_snapshot_prune.txt`.
+that should be removed during every publication live in
+`tools/public_snapshot_prune.txt`. Paths that are kept in the `-public` snapshot
+but stripped from the world-facing repo (for example, material that never
+shipped as an official release) live in
+`tools/public_snapshot_worldfacing_prune.txt` and are applied only with
+`--world-facing`.
 
 ## Review Checklist
 

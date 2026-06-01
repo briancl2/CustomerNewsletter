@@ -11,8 +11,10 @@ flowchart LR
   D --> E["Phase 2 Events"]
   E --> F["Phase 3 Content Curation"]
   F --> G["Phase 4 Assembly"]
-  G --> H["Phase 4.5 Polishing"]
-  H --> I["Validation + Scoring"]
+  G --> H["Phase 4.5 Polishing + Deprecation Consolidation"]
+  H --> I["Phase 4.6 Video Matching (optional)"]
+  I --> J["Validation + Scoring"]
+  J --> K["Phase 5 Editorial Review"]
 ```
 
 ## Self-Learning Propagation
@@ -35,7 +37,7 @@ flowchart LR
 - Strict validation: `tools/validate_pipeline_strict.sh`
 - Production prompt rendering: `tools/render_product_run_prompt.sh`
 - Newsletter validation: `.github/skills/newsletter-validation/scripts/validate_newsletter.sh`
-- Public snapshot boundary: `tools/public_snapshot_allowlist.txt` and `tools/public_snapshot_prune.txt`
+- Public snapshot boundary: `tools/public_snapshot_allowlist.txt`, `tools/public_snapshot_prune.txt`, and `tools/public_snapshot_worldfacing_prune.txt`
 - Deterministic event sources:
   - `kb/EVENT_SOURCES.yaml`
   - `tools/extract_event_sources.py`

@@ -57,19 +57,21 @@ The strongest levers were source/candidate discipline, compact synthesis inputs,
 | Validate retained artifacts | [validate_pipeline_strict.sh](../../tools/validate_pipeline_strict.sh) | You need source, scope, freshness, and production-artifact gates. |
 | Score editorial quality | [score-v2-rubric.sh](../../tools/score-v2-rubric.sh) | You need rubric-level quality evidence. |
 
-Production-like path for the admitted April range:
+Production-like path (the prompt renderer pins `production` to its admitted range):
 
 ```bash
-bash tools/prepare_newsletter_cycle.sh 2026-02-14 2026-04-16 --no-reuse
-make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production
-make validate-newsletter FILE=output/2026-04_april_newsletter.md
-bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --require-fresh --production-artifacts
+bash tools/prepare_newsletter_cycle.sh <START> <END> --no-reuse
+make newsletter-gen START=<START> END=<END> MODE=production
+make validate-newsletter FILE=output/YYYY-MM_month_newsletter.md
+bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --production-artifacts
 ```
 
 The prompt renderer currently pins `production` mode to `2026-02-14` through
-`2026-04-16` and `benchmark` mode to `2025-12-05` through `2026-02-13`. For other
-date ranges, treat the commands above as the workflow pattern, then extend and
-validate the admitted prompt-rendered mode before using `MODE=production`.
+`2026-04-16` and `benchmark` mode to `2025-12-05` through `2026-02-13`. Substitute
+the pinned `<START>`/`<END>` and the matching `output/YYYY-MM_month_newsletter.md`
+for the mode you run. For other date ranges, treat the commands above as the
+workflow pattern, then extend and validate the admitted prompt-rendered mode
+before using `MODE=production`.
 
 Diagnostic path:
 
@@ -91,7 +93,7 @@ The diagnostic path is for localizing failures and measuring candidate route cha
 
 - Removed raw public copies of non-public `planning/`, `workspace/`, `runs/`, February source notes, and stale output variants from the public snapshot boundary.
 - Replaced broad `config/` publication with the public benchmark-mode config only: [feb2026_consistency.json](../../config/benchmark_modes/feb2026_consistency.json). Experiment policies, feature flags, fixture packs, and retained-run benchmark lanes stay out of the public bundle.
-- Kept customer-safe release material selective: February public launch assets, April launch command notes, and May customer-facing cost guidance. See [February public launch](../2026-02_newsletter_launch/public/START_HERE.md), [April launch notes](../2026-04_newsletter_launch/START_HERE.md), and [May customer companion](CUSTOMER_COMPANION.md).
+- Kept customer-safe release material selective: February public launch assets and May customer-facing cost guidance. See [February public launch](../2026-02_newsletter_launch/public/START_HERE.md) and [May customer companion](CUSTOMER_COMPANION.md).
 
 ### Stronger Validation Gates
 
@@ -162,14 +164,12 @@ For another agentic workflow, copy the pattern rather than the numbers:
 
 ### Published Outputs
 
-- Added the April 2026 generated newsletter alongside the existing February and May outputs. See [2026-04_april_newsletter.md](../../output/2026-04_april_newsletter.md).
 - Refreshed the May newsletter body and May public cost companion links so customer-facing cost guidance points to public-safe material. See [2026-05_may_newsletter.md](../../output/2026-05_may_newsletter.md) and [CUSTOMER_COMPANION.md](CUSTOMER_COMPANION.md).
 
 ## Validation Summary
 
 - Public sensitive-pattern scan: pass.
 - Public `make test-all`: required public suites pass; retained-fixture suites skip when non-public fixtures are absent.
-- April newsletter validation: pass, 0 warnings.
 - May newsletter validation: pass, 0 warnings.
 - Source full-suite validation before public sync: required suites pass, with only the expected retained workspace fixture skip.
 

@@ -1,7 +1,7 @@
 # AGENTS.md
 
 > Primary AI instruction surface for briancl2-customer-newsletter (platform-agnostic).
-> Monthly GitHub customer newsletter pipeline: 6-phase LLM-driven system with skills, scoring, and intelligence mining.
+> Monthly GitHub customer newsletter pipeline: six core phases plus optional polish, video-enrichment, and editorial stages, driven by LLM skills, scoring, and intelligence mining.
 
 ## Operating Protocol
 
@@ -34,7 +34,7 @@ Every change follows this numbered workflow. No exceptions.
 
 | # | Agent | Purpose |
 |---|---|---|
-| 1 | customer_newsletter | 6-phase pipeline orchestrator |
+| 1 | customer_newsletter | Pipeline orchestrator (phases 1A-5) |
 | 2 | editorial-analyst | Editorial intelligence mining + corrections |
 | 3 | skill-builder | Create and validate new skills |
 | 4 | upgrade-advisor | Produce recommendation bundles from repo findings |

@@ -20,7 +20,7 @@ Generate a detailed, evidence-based report documenting how this automated newsle
 
 1. **Read the git log** to understand the full build timeline:
    ```bash
-   cd /Users/briancl2/repos/briancl2-customer-newsletter
+   cd <repo-root>
    git --no-pager log --oneline --reverse
    ```
 
@@ -145,7 +145,7 @@ Also show:
 
 1. **Discover and analyze VS Code session logs** for this workspace:
    ```bash
-   python3 /Users/briancl2/repos/build-meta-analysis/.agents/skills/session-log-analysis/scripts/parse_session.py \
+   python3 <path-to-session-log-analysis>/scripts/parse_session.py \
      --vscode-workspace briancl2-customer-newsletter
    ```
 
@@ -158,7 +158,7 @@ Also show:
 
 3. **Search session history for key patterns**:
    ```bash
-   python3 /Users/briancl2/repos/build-meta-analysis/.agents/skills/session-log-analysis/scripts/search_sessions.py \
+   python3 <path-to-session-log-analysis>/scripts/search_sessions.py \
      "newsletter" --workspace briancl2-customer-newsletter --last 48h
    ```
 

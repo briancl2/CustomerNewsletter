@@ -81,19 +81,21 @@ Use the admitted prompt-rendered production route as the source of truth for its
 
 ```bash
 # Prepare a clean cycle so old intermediates do not pollute the route.
-bash tools/prepare_newsletter_cycle.sh 2026-02-14 2026-04-16 --no-reuse
+bash tools/prepare_newsletter_cycle.sh <START> <END> --no-reuse
 
-# Run the canonical prompt-rendered production path for the admitted April range.
-make newsletter-gen START=2026-02-14 END=2026-04-16 MODE=production
+# Run the canonical prompt-rendered production path for its pinned range.
+make newsletter-gen START=<START> END=<END> MODE=production
 
 # Validate the generated issue and retained artifacts.
-make validate-newsletter FILE=output/2026-04_april_newsletter.md
-bash tools/validate_pipeline_strict.sh 2026-02-14 2026-04-16 --require-fresh --production-artifacts
+make validate-newsletter FILE=output/YYYY-MM_month_newsletter.md
+bash tools/validate_pipeline_strict.sh <START> <END> --require-fresh --production-artifacts
 ```
 
-`MODE=production` is pinned by the prompt renderer. For another month, copy the
-workflow shape and validation discipline, but first add or admit the new date
-range instead of assuming the April production mode accepts arbitrary dates.
+`MODE=production` is pinned by the prompt renderer. Substitute its pinned
+`<START>`/`<END>` and the matching `output/YYYY-MM_month_newsletter.md`. For
+another month, copy the workflow shape and validation discipline, but first add
+or admit the new date range instead of assuming the production mode accepts
+arbitrary dates.
 
 Use these rules while running or adapting the pipeline:
 
