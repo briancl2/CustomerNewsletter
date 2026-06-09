@@ -30,6 +30,17 @@ jobs:
       - name: Install docs dependencies
         run: pip install -r requirements.txt
 
+      - name: Closure identity
+        env:
+          CLOSURE_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          CLOSURE_PHASE: pages-build
+          CLOSURE_TRIGGER: ${{ github.event_name }}
+          EVIDENCE_REUSE_KEY: ${{ github.workflow }}:${{ github.ref }}:${{ github.sha }}
+          PARENT_COMMAND: github-actions:pages-build
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: python3 tools/emit_closure_identity.py --phase pages-build --parent-command "github-actions:pages-build"
+
       - name: Build docs
         run: mkdocs build --strict
 

@@ -62,6 +62,7 @@ echo ""
 # Layer 1: Structural validation (cheapest, run first)
 run_suite "Structure Validation" "make validate-structure"
 run_suite "Skill Validation (18 skills)" "make validate-all-skills"
+run_suite "Closure Identity Correlation" "make test-closure-identity"
 
 # Layer 2: Unit tests
 run_suite "Archive Workspace Tests (13 assertions)" "bash tools/test_archive_workspace.sh"

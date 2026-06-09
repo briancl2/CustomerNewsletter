@@ -1,7 +1,15 @@
-.PHONY: help check validate-structure validate-skill validate-all-skills
+.PHONY: help check closure-identity validate-structure validate-skill validate-all-skills test-closure-identity
+
+CLOSURE_PHASE ?= local-validation
+CLOSURE_PARENT_COMMAND ?= make closure-identity
+CLOSURE_IDENTITY_FIELDS = closure_run_id closure_phase closure_trigger evidence_reuse_key parent_command github_run_id github_run_attempt
 
 check: ## Run the full repo validation battery
+	@$(MAKE) --no-print-directory closure-identity CLOSURE_PHASE=check CLOSURE_PARENT_COMMAND="make check"
 	@bash tools/test_all.sh
+
+closure-identity: ## Emit local/CI closure-run identity fields
+	@CLOSURE_IDENTITY_FIELDS="$(CLOSURE_IDENTITY_FIELDS)" python3 tools/emit_closure_identity.py --phase "$(CLOSURE_PHASE)" --parent-command "$(CLOSURE_PARENT_COMMAND)"
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -184,6 +192,9 @@ stage16-fast: ## Stage 16 fast closure suite (bounded Phase 4-only check; no lon
 
 test-archive: ## Run archive_workspace.sh test suite
 	@bash tools/test_archive_workspace.sh
+
+test-closure-identity: ## Run closure-run identity regression tests
+	@bash tools/test_closure_identity.sh
 
 test-validator: ## Run newsletter validator self-test (known-good + known-bad)
 	@bash tools/test_validator.sh
