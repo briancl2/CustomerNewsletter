@@ -132,7 +132,9 @@ Additional processing rules:
 5. Consolidate model rollout changes (multiple models GA/PREVIEW) into a single "Model availability updates" entry (GA first, then PREVIEW) instead of separate scattered bullets.
 6. Governance / legal / indemnity changes appear under Enterprise.
 7. Record (internally) when an update is VS Code–centric for downstream implicit Copilot mapping in events.
-8. Preserve original raw tags in an internal note field if captured, but FINAL displayed category must be one canonical category only.
+8. Preserve original raw tags only in an internal note field if captured:
+   - For output, write exactly one `Category` value from the canonical taxonomy above.
+   - For ambiguous or unmapped items, choose the closest canonical category and add internal note metadata `Reviewer Action`: `review_category_mapping` with a brief mapping note. This metadata is not rendered in the final markdown.
 </decision>
 </phase>
 
